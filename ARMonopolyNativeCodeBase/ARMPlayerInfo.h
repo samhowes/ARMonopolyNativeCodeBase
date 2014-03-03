@@ -10,8 +10,8 @@
 
 @interface ARMPlayerInfo : NSObject
 
-+ (id) sharedInstance;
-- (BOOL) saveInstanceToArchive;
++ (id)sharedInstance;
+- (BOOL)saveInstanceToArchive;
 
 // Local Player info
 @property NSString *playerDisplayName;
