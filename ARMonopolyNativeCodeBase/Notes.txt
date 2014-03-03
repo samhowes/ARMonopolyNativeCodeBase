@@ -1,0 +1,36 @@
+
+Notes:
+ - By adding the unity subview to ARMViewController in ARMAppController:createViewHierarchyImpl, I don't have to have Test/ARMViewcontroller classes, and can just have one production class.
+
+Tasks:
+ R Integrate New Updated Unity code from the "New" project
+ R Add user hints about finding a game tile
+ R Integrate Networking/Create a networking implementation
+ R Test Bluetooth
+ - Do the artwork for the App Icon and loading screens
+ R Splash screen
+ R Re-launch screen
+
+ 
+Bugs:
+ - Changing the orientation fails
+ - Using the device camera to take a picture fails
+
+
+DONE:
+Update UserData
+Dynamically form The current players in the main screen
+Separate the settings screen into three individual views
+Integrate Bluetooth
+Implement the user data model
+Integrate data model changes into Unity
+
+CommitNotes:
+Stable version with all settings view controllers
+ - Bluetooth controller doesn't crash, but doesn't work properly either
+ 	- Need to test with another BLE device
+ - Moving to another task: Adding the current players to the home screen
+not sure wtf just happened with git
+
+
+asldkfja;lskdjf

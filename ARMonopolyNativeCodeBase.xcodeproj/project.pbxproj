@@ -12,13 +12,23 @@
 		A5C5BA2618C4E8E000435B10 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2518C4E8E000435B10 /* UIKit.framework */; };
 		A5C5BA2C18C4E8E000435B10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA2A18C4E8E000435B10 /* InfoPlist.strings */; };
 		A5C5BA2E18C4E8E000435B10 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA2D18C4E8E000435B10 /* main.m */; };
-		A5C5BA3218C4E8E000435B10 /* ARMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA3118C4E8E000435B10 /* ARMAppDelegate.m */; };
 		A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA3318C4E8E000435B10 /* Images.xcassets */; };
 		A5C5BA3B18C4E8E000435B10 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA3A18C4E8E000435B10 /* XCTest.framework */; };
 		A5C5BA3C18C4E8E000435B10 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2118C4E8E000435B10 /* Foundation.framework */; };
 		A5C5BA3D18C4E8E000435B10 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2518C4E8E000435B10 /* UIKit.framework */; };
 		A5C5BA4518C4E8E000435B10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA4318C4E8E000435B10 /* InfoPlist.strings */; };
 		A5C5BA4718C4E8E000435B10 /* ARMonopolyNativeCodeBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA4618C4E8E000435B10 /* ARMonopolyNativeCodeBaseTests.m */; };
+		A5C5BA6B18C4E99B00435B10 /* ARMBluetoothViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5318C4E99B00435B10 /* ARMBluetoothViewController.m */; };
+		A5C5BA6C18C4E99B00435B10 /* ARMEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5518C4E99B00435B10 /* ARMEditProfileViewController.m */; };
+		A5C5BA6D18C4E99B00435B10 /* ARMNetworkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5718C4E99B00435B10 /* ARMNetworkViewController.m */; };
+		A5C5BA6E18C4E99B00435B10 /* ARMPlayerInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */; };
+		A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */; };
+		A5C5BA7118C4E99B00435B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA5F18C4E99B00435B10 /* Main.storyboard */; };
+		A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6118C4E99B00435B10 /* installPlugin.sh */; };
+		A5C5BA7318C4E99B00435B10 /* LeDiscovery.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6318C4E99B00435B10 /* LeDiscovery.m */; };
+		A5C5BA7418C4E99B00435B10 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6418C4E99B00435B10 /* LOGO.png */; };
+		A5C5BA7518C4E99B00435B10 /* Notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6518C4E99B00435B10 /* Notes.txt */; };
+		A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,14 +50,34 @@
 		A5C5BA2B18C4E8E000435B10 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A5C5BA2D18C4E8E000435B10 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A5C5BA2F18C4E8E000435B10 /* ARMonopolyNativeCodeBase-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARMonopolyNativeCodeBase-Prefix.pch"; sourceTree = "<group>"; };
-		A5C5BA3018C4E8E000435B10 /* ARMAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARMAppDelegate.h; sourceTree = "<group>"; };
-		A5C5BA3118C4E8E000435B10 /* ARMAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARMAppDelegate.m; sourceTree = "<group>"; };
 		A5C5BA3318C4E8E000435B10 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A5C5BA3918C4E8E000435B10 /* ARMonopolyNativeCodeBaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ARMonopolyNativeCodeBaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C5BA3A18C4E8E000435B10 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		A5C5BA4218C4E8E000435B10 /* ARMonopolyNativeCodeBaseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ARMonopolyNativeCodeBaseTests-Info.plist"; sourceTree = "<group>"; };
 		A5C5BA4418C4E8E000435B10 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A5C5BA4618C4E8E000435B10 /* ARMonopolyNativeCodeBaseTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARMonopolyNativeCodeBaseTests.m; sourceTree = "<group>"; };
+		A5C5BA5018C4E99B00435B10 /* ARMAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMAppController.h; sourceTree = "<group>"; };
+		A5C5BA5118C4E99B00435B10 /* ARMAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMAppController.m; sourceTree = "<group>"; };
+		A5C5BA5218C4E99B00435B10 /* ARMBluetoothViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMBluetoothViewController.h; sourceTree = "<group>"; };
+		A5C5BA5318C4E99B00435B10 /* ARMBluetoothViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMBluetoothViewController.m; sourceTree = "<group>"; };
+		A5C5BA5418C4E99B00435B10 /* ARMEditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMEditProfileViewController.h; sourceTree = "<group>"; };
+		A5C5BA5518C4E99B00435B10 /* ARMEditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMEditProfileViewController.m; sourceTree = "<group>"; };
+		A5C5BA5618C4E99B00435B10 /* ARMNetworkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNetworkViewController.h; sourceTree = "<group>"; };
+		A5C5BA5718C4E99B00435B10 /* ARMNetworkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNetworkViewController.m; sourceTree = "<group>"; };
+		A5C5BA5818C4E99B00435B10 /* ARMPlayerInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMPlayerInfo.h; sourceTree = "<group>"; };
+		A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMPlayerInfo.m; sourceTree = "<group>"; };
+		A5C5BA5A18C4E99B00435B10 /* ARMPlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMPlayViewController.h; sourceTree = "<group>"; };
+		A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMPlayViewController.m; sourceTree = "<group>"; };
+		A5C5BA5C18C4E99B00435B10 /* ARMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMSettingsViewController.h; sourceTree = "<group>"; };
+		A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMSettingsViewController.m; sourceTree = "<group>"; };
+		A5C5BA6018C4E99B00435B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Main.storyboard; sourceTree = "<group>"; };
+		A5C5BA6118C4E99B00435B10 /* installPlugin.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = installPlugin.sh; sourceTree = "<group>"; };
+		A5C5BA6218C4E99B00435B10 /* LeDiscovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeDiscovery.h; sourceTree = "<group>"; };
+		A5C5BA6318C4E99B00435B10 /* LeDiscovery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeDiscovery.m; sourceTree = "<group>"; };
+		A5C5BA6418C4E99B00435B10 /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOGO.png; sourceTree = "<group>"; };
+		A5C5BA6518C4E99B00435B10 /* Notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Notes.txt; sourceTree = "<group>"; };
+		A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestAppDelegate.h; sourceTree = "<group>"; };
+		A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestAppDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,8 +137,11 @@
 		A5C5BA2718C4E8E000435B10 /* ARMonopolyNativeCodeBase */ = {
 			isa = PBXGroup;
 			children = (
-				A5C5BA3018C4E8E000435B10 /* ARMAppDelegate.h */,
-				A5C5BA3118C4E8E000435B10 /* ARMAppDelegate.m */,
+				A5C5BA7818C4E9D000435B10 /* Classes */,
+				A5C5BA5E18C4E99B00435B10 /* Base.lproj */,
+				A5C5BA6118C4E99B00435B10 /* installPlugin.sh */,
+				A5C5BA6418C4E99B00435B10 /* LOGO.png */,
+				A5C5BA6518C4E99B00435B10 /* Notes.txt */,
 				A5C5BA3318C4E8E000435B10 /* Images.xcassets */,
 				A5C5BA2818C4E8E000435B10 /* Supporting Files */,
 			);
@@ -142,6 +175,71 @@
 				A5C5BA4318C4E8E000435B10 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A5C5BA5E18C4E99B00435B10 /* Base.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				A5C5BA5F18C4E99B00435B10 /* Main.storyboard */,
+			);
+			path = Base.lproj;
+			sourceTree = "<group>";
+		};
+		A5C5BA7818C4E9D000435B10 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				A5C5BA7918C4EA1500435B10 /* DeployOnly */,
+				A5C5BA7A18C4EA3300435B10 /* Settings */,
+				A5C5BA7B18C4EA3D00435B10 /* Model */,
+				A5C5BA5A18C4E99B00435B10 /* ARMPlayViewController.h */,
+				A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */,
+				A5C5BA7C18C4EA4C00435B10 /* Bluetooth */,
+				A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */,
+				A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		A5C5BA7918C4EA1500435B10 /* DeployOnly */ = {
+			isa = PBXGroup;
+			children = (
+				A5C5BA5018C4E99B00435B10 /* ARMAppController.h */,
+				A5C5BA5118C4E99B00435B10 /* ARMAppController.m */,
+			);
+			name = DeployOnly;
+			sourceTree = "<group>";
+		};
+		A5C5BA7A18C4EA3300435B10 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				A5C5BA5218C4E99B00435B10 /* ARMBluetoothViewController.h */,
+				A5C5BA5318C4E99B00435B10 /* ARMBluetoothViewController.m */,
+				A5C5BA5418C4E99B00435B10 /* ARMEditProfileViewController.h */,
+				A5C5BA5518C4E99B00435B10 /* ARMEditProfileViewController.m */,
+				A5C5BA5618C4E99B00435B10 /* ARMNetworkViewController.h */,
+				A5C5BA5718C4E99B00435B10 /* ARMNetworkViewController.m */,
+				A5C5BA5C18C4E99B00435B10 /* ARMSettingsViewController.h */,
+				A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		A5C5BA7B18C4EA3D00435B10 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A5C5BA5818C4E99B00435B10 /* ARMPlayerInfo.h */,
+				A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		A5C5BA7C18C4EA4C00435B10 /* Bluetooth */ = {
+			isa = PBXGroup;
+			children = (
+				A5C5BA6218C4E99B00435B10 /* LeDiscovery.h */,
+				A5C5BA6318C4E99B00435B10 /* LeDiscovery.m */,
+			);
+			name = Bluetooth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,6 +301,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = A5C5BA1518C4E8E000435B10;
 			productRefGroup = A5C5BA1F18C4E8E000435B10 /* Products */;
@@ -220,8 +319,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5C5BA7118C4E99B00435B10 /* Main.storyboard in Resources */,
 				A5C5BA2C18C4E8E000435B10 /* InfoPlist.strings in Resources */,
+				A5C5BA7418C4E99B00435B10 /* LOGO.png in Resources */,
 				A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */,
+				A5C5BA7518C4E99B00435B10 /* Notes.txt in Resources */,
+				A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,7 +344,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5C5BA2E18C4E8E000435B10 /* main.m in Sources */,
-				A5C5BA3218C4E8E000435B10 /* ARMAppDelegate.m in Sources */,
+				A5C5BA6B18C4E99B00435B10 /* ARMBluetoothViewController.m in Sources */,
+				A5C5BA7318C4E99B00435B10 /* LeDiscovery.m in Sources */,
+				A5C5BA6E18C4E99B00435B10 /* ARMPlayerInfo.m in Sources */,
+				A5C5BA6D18C4E99B00435B10 /* ARMNetworkViewController.m in Sources */,
+				A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */,
+				A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */,
+				A5C5BA6C18C4E99B00435B10 /* ARMEditProfileViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +387,14 @@
 				A5C5BA4418C4E8E000435B10 /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		A5C5BA5F18C4E99B00435B10 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A5C5BA6018C4E99B00435B10 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
