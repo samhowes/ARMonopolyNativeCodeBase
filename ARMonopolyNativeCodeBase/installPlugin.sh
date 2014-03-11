@@ -24,9 +24,10 @@ ARMAppController.h              ARMAppController.m              \
 CLASSES="\
 ARMPlayViewController.h         ARMPlayViewController.m         \
 $DATA_MODEL $SETTINGS_CONTROLLERS $BLUETOOTH $DEPLOY_ONLY"
+LOGO="LOGO.png"
 
 
-COPY_FILES="$STORYBOARD $CLASSES"
+COPY_FILES="$STORYBOARD $CLASSES $LOGO"
 COMPILE_DIR="../../ARMonopolyProduct/Libraries/"
 
 ### Copy all the files over

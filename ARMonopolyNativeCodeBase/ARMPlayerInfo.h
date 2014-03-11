@@ -11,7 +11,12 @@
 @interface ARMPlayerInfo : NSObject
 
 + (id)sharedInstance;
+
+/* Save the user data to a persistent archive on disk */
 - (BOOL)saveInstanceToArchive;
+
+/* If we have adequate data for use with the game server */
+- (BOOL)isReadyForLogin;
 
 // Local Player info
 @property NSString *playerDisplayName;

@@ -9,7 +9,7 @@
 
 @synthesize window;
 
-- (void)application:(UIApplication *)application didFinishLaunchingWithOptions(NSDictionary *)launchOptions
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [ARMPlayerInfo sharedInstance]; // initialize the player data
     return [super application:application didFinishLaunchingWithOptions:launchOptions];

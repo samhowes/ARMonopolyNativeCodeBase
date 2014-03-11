@@ -9,6 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "ARMPlayerInfo.h"
 
-@interface ARMNetworkViewController : UITableViewController
+typedef enum GameServerConnectionStatus {
+    kNotInitialized = 0,
+    kConnectingToServer = 1,
+    kSendingProfile = 2,
+    kRetrievingGameSessions = 3,
+    kConnectedToServer = 4,
+    kFailedToConnectToServer = 5
+} GameServerConnectionStatus;
+
+@interface ARMNetworkViewController : UITableViewController <UITableViewDelegate, NSURLSessionTaskDelegate>
 
 @end

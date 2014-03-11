@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A533D7C718C7E91200EB42A8 /* face.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F852E18C7E221005EE662 /* face.png */; };
+		A533D7C818C7E91200EB42A8 /* face2.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F852F18C7E221005EE662 /* face2.png */; };
+		A533D7C918C7E91200EB42A8 /* face3.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853018C7E221005EE662 /* face3.png */; };
+		A533D7CA18C7E91200EB42A8 /* face4.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853118C7E221005EE662 /* face4.png */; };
+		A533D7CB18C7E91200EB42A8 /* LOGO.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853218C7E221005EE662 /* LOGO.png */; };
+		A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */; };
+		A59F853318C7E221005EE662 /* face.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F852E18C7E221005EE662 /* face.png */; };
+		A59F853418C7E221005EE662 /* face2.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F852F18C7E221005EE662 /* face2.png */; };
+		A59F853518C7E221005EE662 /* face3.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F853018C7E221005EE662 /* face3.png */; };
+		A59F853618C7E221005EE662 /* face4.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F853118C7E221005EE662 /* face4.png */; };
+		A59F853718C7E221005EE662 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F853218C7E221005EE662 /* LOGO.png */; };
 		A5C5BA2218C4E8E000435B10 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2118C4E8E000435B10 /* Foundation.framework */; };
 		A5C5BA2418C4E8E000435B10 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2318C4E8E000435B10 /* CoreGraphics.framework */; };
 		A5C5BA2618C4E8E000435B10 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2518C4E8E000435B10 /* UIKit.framework */; };
@@ -41,7 +52,29 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		A533D7C618C7E90100EB42A8 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Documents;
+			dstSubfolderSpec = 16;
+			files = (
+				A533D7C718C7E91200EB42A8 /* face.png in CopyFiles */,
+				A533D7C818C7E91200EB42A8 /* face2.png in CopyFiles */,
+				A533D7C918C7E91200EB42A8 /* face3.png in CopyFiles */,
+				A533D7CA18C7E91200EB42A8 /* face4.png in CopyFiles */,
+				A533D7CB18C7E91200EB42A8 /* LOGO.png in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		A59F852E18C7E221005EE662 /* face.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face.png; sourceTree = "<group>"; };
+		A59F852F18C7E221005EE662 /* face2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face2.png; sourceTree = "<group>"; };
+		A59F853018C7E221005EE662 /* face3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face3.png; sourceTree = "<group>"; };
+		A59F853118C7E221005EE662 /* face4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face4.png; sourceTree = "<group>"; };
+		A59F853218C7E221005EE662 /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOGO.png; sourceTree = "<group>"; };
 		A5C5BA1E18C4E8E000435B10 /* ARMonopolyNativeCodeBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARMonopolyNativeCodeBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C5BA2118C4E8E000435B10 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A5C5BA2318C4E8E000435B10 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -104,9 +137,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A59F852D18C7E221005EE662 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				A59F852E18C7E221005EE662 /* face.png */,
+				A59F852F18C7E221005EE662 /* face2.png */,
+				A59F853018C7E221005EE662 /* face3.png */,
+				A59F853118C7E221005EE662 /* face4.png */,
+				A59F853218C7E221005EE662 /* LOGO.png */,
+			);
+			name = images;
+			path = ARMonopolyNativeCodeBase/images;
+			sourceTree = "<group>";
+		};
 		A5C5BA1518C4E8E000435B10 = {
 			isa = PBXGroup;
 			children = (
+				A59F852D18C7E221005EE662 /* images */,
 				A5C5BA2718C4E8E000435B10 /* ARMonopolyNativeCodeBase */,
 				A5C5BA4018C4E8E000435B10 /* ARMonopolyNativeCodeBaseTests */,
 				A5C5BA2018C4E8E000435B10 /* Frameworks */,
@@ -137,6 +184,7 @@
 		A5C5BA2718C4E8E000435B10 /* ARMonopolyNativeCodeBase */ = {
 			isa = PBXGroup;
 			children = (
+				A5F88A1218CE816600D8E263 /* iPad */,
 				A5C5BA5E18C4E99B00435B10 /* Base.lproj */,
 				A5C5BA6118C4E99B00435B10 /* installPlugin.sh */,
 				A5C5BA6418C4E99B00435B10 /* LOGO.png */,
@@ -188,14 +236,14 @@
 		A5C5BA7818C4E9D000435B10 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A5C5BA5A18C4E99B00435B10 /* ARMPlayViewController.h */,
+				A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */,
+				A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */,
+				A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */,
 				A5C5BA7918C4EA1500435B10 /* DeployOnly */,
 				A5C5BA7A18C4EA3300435B10 /* Settings */,
 				A5C5BA7B18C4EA3D00435B10 /* Model */,
-				A5C5BA5A18C4E99B00435B10 /* ARMPlayViewController.h */,
-				A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */,
 				A5C5BA7C18C4EA4C00435B10 /* Bluetooth */,
-				A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */,
-				A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -242,6 +290,13 @@
 			name = Bluetooth;
 			sourceTree = "<group>";
 		};
+		A5F88A1218CE816600D8E263 /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -252,6 +307,7 @@
 				A5C5BA1A18C4E8E000435B10 /* Sources */,
 				A5C5BA1B18C4E8E000435B10 /* Frameworks */,
 				A5C5BA1C18C4E8E000435B10 /* Resources */,
+				A533D7C618C7E90100EB42A8 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -290,6 +346,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Sam Howes";
 				TargetAttributes = {
+					A5C5BA1D18C4E8E000435B10 = {
+						DevelopmentTeam = RP7Z4RE8LZ;
+					};
 					A5C5BA3818C4E8E000435B10 = {
 						TestTargetID = A5C5BA1D18C4E8E000435B10;
 					};
@@ -322,9 +381,14 @@
 				A5C5BA7118C4E99B00435B10 /* Main.storyboard in Resources */,
 				A5C5BA2C18C4E8E000435B10 /* InfoPlist.strings in Resources */,
 				A5C5BA7418C4E99B00435B10 /* LOGO.png in Resources */,
+				A59F853518C7E221005EE662 /* face3.png in Resources */,
 				A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */,
 				A5C5BA7518C4E99B00435B10 /* Notes.txt in Resources */,
+				A59F853418C7E221005EE662 /* face2.png in Resources */,
+				A59F853618C7E221005EE662 /* face4.png in Resources */,
+				A59F853718C7E221005EE662 /* LOGO.png in Resources */,
 				A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */,
+				A59F853318C7E221005EE662 /* face.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,6 +413,7 @@
 				A5C5BA6E18C4E99B00435B10 /* ARMPlayerInfo.m in Sources */,
 				A5C5BA6D18C4E99B00435B10 /* ARMNetworkViewController.m in Sources */,
 				A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */,
+				A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */,
 				A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */,
 				A5C5BA6C18C4E99B00435B10 /* ARMEditProfileViewController.m in Sources */,
 			);
@@ -477,10 +542,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Prefix.pch";
 				INFOPLIST_FILE = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -490,10 +558,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Prefix.pch";
 				INFOPLIST_FILE = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

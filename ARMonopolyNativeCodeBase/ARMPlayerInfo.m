@@ -73,6 +73,17 @@
 	return self;
 }
 
+- (BOOL)isReadyForLogin
+{
+    if (playerDisplayName && playerDisplayImage && gameTileBluetoothID)
+    {
+        return YES;
+    }
+    
+    return NO;
+}
+
+/************************ Coding Methods ***********************************/
 - (NSArray *)keysForEncoding;
 {
 	return [NSArray arrayWithObjects:@"playerDisplayName",
