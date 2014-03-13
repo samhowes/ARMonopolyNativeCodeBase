@@ -9,15 +9,24 @@
 #import <UIKit/UIKit.h>
 #import "ARMPlayerInfo.h"
 
+const NSString *kGameServerCreateSessionPostBodyKey = @"sessionName";
+const NSString *kGameServerCreateSessionURLString = @"/game_sessions/create";
+const NSString *ARMGameServerURLString = @"http://111.18.0.252:3000";
+
 typedef enum GameServerConnectionStatus {
-    kNotInitialized = 0,
-    kConnectingToServer = 1,
-    kSendingProfile = 2,
-    kRetrievingGameSessions = 3,
-    kConnectedToServer = 4,
-    kFailedToConnectToServer = 5
+    kNotInitialized,
+    kConnectingToServer,
+    kSendingProfile,
+    kRetrievingGameSessions,
+    kConnectedToServer,
+    kJoiningGameSession,
+    kInGameSession,
+    kFailedToConnectToServer,
+    kCreatingGameSession
 } GameServerConnectionStatus;
 
 @interface ARMNetworkViewController : UITableViewController <UITableViewDelegate, NSURLSessionTaskDelegate>
+
+-(IBAction)userDidPressBarButtonItem:(id)sender;
 
 @end

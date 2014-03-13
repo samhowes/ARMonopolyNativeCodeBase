@@ -8,6 +8,7 @@
 
 #import "ARMPlayViewController.h"
 #import "ARMPlayerInfo.h"
+#import "ARMNetworkPlayer.h"
 
 @interface ARMPlayViewController ()
 
@@ -41,7 +42,7 @@
 
 - (void)populatePlayersLabel
 {
-    NSArray *playersArray = [[ARMPlayerInfo sharedInstance] playersInSession];
+    NSArray *playersArray = [[ARMPlayerInfo sharedInstance] playersInSessionArray];
     NSString *errorString = @"No Players: Tap ⚙ to join a game";
     NSString *titleString = @"Players:";
     NSMutableString *displayString = [NSMutableString new];
@@ -57,9 +58,9 @@
         [displayString appendString:titleString];
         
         // add each player to the toolbar
-        for (NSString *name in playersArray)
+        for (ARMNetworkPlayer *player in playersArray)
         {
-            [displayString appendFormat:@" %@", name];
+            [displayString appendFormat:@"  %@", [player playerName]];
         }
     }
     
@@ -73,12 +74,13 @@
 }
 
 
+
 - (IBAction)displayCurrentPlayers:(id)sender
 {
     NSMutableString *listPlayersString = [NSMutableString new];
-    for (NSString *name in [[ARMPlayerInfo sharedInstance] playersInSession])
+    for (ARMNetworkPlayer *player in [[ARMPlayerInfo sharedInstance] playersInSessionArray])
     {
-        [listPlayersString appendFormat:@"%@\n", name];
+        [listPlayersString appendFormat:@"%@\n", [player playerName]];
     }
     [[[UIAlertView alloc] initWithTitle:@"All Current Players:"
                                 message:listPlayersString

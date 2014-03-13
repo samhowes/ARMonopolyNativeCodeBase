@@ -12,10 +12,12 @@
 
 @synthesize playerDisplayName;
 @synthesize playerDisplayImage;
-@synthesize gameTileBluetoothID;
-@synthesize sessionID;
-@synthesize playersInSession;
+@synthesize gameTileImageTargetID;
 
+@synthesize clientID;
+@synthesize sessionID;
+@synthesize playersInSessionArray;
+@synthesize lastConnectionStatus;
 
 /****************************************************************************/
 /*								Class Methods                               */
@@ -56,7 +58,7 @@
 {
 	self = [super init];
 	if (self) {
-		playersInSession = [[NSMutableArray alloc] init];
+		playersInSessionArray = [[NSMutableArray alloc] init];
 	}
 	return self;
 }
@@ -75,7 +77,7 @@
 
 - (BOOL)isReadyForLogin
 {
-    if (playerDisplayName && playerDisplayImage && gameTileBluetoothID)
+    if (playerDisplayName && playerDisplayImage && gameTileImageTargetID)
     {
         return YES;
     }

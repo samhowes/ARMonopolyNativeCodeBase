@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ARMNetworkViewController.h"
+
+typedef enum GameServerConnectionStatus GameServerConnectionStatus;
 
 @interface ARMPlayerInfo : NSObject
 
@@ -23,11 +26,13 @@
 
 @property UIImage *playerDisplayImage;
 
-@property NSString *gameTileBluetoothID;
+@property NSString *gameTileImageTargetID;
 
 // Networking Properties
+@property GameServerConnectionStatus lastConnectionStatus;
 @property NSString *sessionID;
-
-@property NSMutableArray *playersInSession;
+@property NSString *sessionName;
+@property NSString *clientID;
+@property NSMutableArray *playersInSessionArray;
 
 @end

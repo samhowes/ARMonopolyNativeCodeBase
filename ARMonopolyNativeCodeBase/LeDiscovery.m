@@ -325,7 +325,7 @@ NSString *const kTileDisplayStringCharacteristicUUIDString 	= @"4431";
 	}
 	else if (service != tileConfigurationService)
 	{
-		NSLog(@"Wrong service reportin to this peripheral: %@\n", service.UUID);
+		NSLog(@"Wrong service reporting to this peripheral: %@\n", service.UUID);
 		return;
 	}
 	else if (error)

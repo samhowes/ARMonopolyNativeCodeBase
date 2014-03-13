@@ -296,7 +296,7 @@
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="GameSessionCell" id="kc6-ra-gV6">
                                 <rect key="frame" x="0.0" y="55" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kc6-ra-gV6">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kc6-ra-gV6" id="piE-CJ-3IT">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
@@ -313,6 +313,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="gameSessionsTableView" destination="YeC-RW-kIl" id="3Dh-1f-Ngo"/>
+                        <outlet property="rightNavigationBarButtonItem" destination="Hxd-6w-2xB" id="cq6-hR-fmS"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LOW-gT-AN7" userLabel="First Responder" sceneMemberID="firstResponder"/>

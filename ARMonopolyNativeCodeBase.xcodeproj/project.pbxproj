@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A503B22A18D211BC000D7595 /* ARMGameServerCommunicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */; };
+		A52F6FAD18D1489500799EA4 /* ARMNetworkPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */; };
 		A533D7C718C7E91200EB42A8 /* face.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F852E18C7E221005EE662 /* face.png */; };
 		A533D7C818C7E91200EB42A8 /* face2.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F852F18C7E221005EE662 /* face2.png */; };
 		A533D7C918C7E91200EB42A8 /* face3.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853018C7E221005EE662 /* face3.png */; };
@@ -70,6 +72,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A503B22818D211BB000D7595 /* ARMGameServerCommunicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMGameServerCommunicator.h; sourceTree = "<group>"; };
+		A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMGameServerCommunicator.m; sourceTree = "<group>"; };
+		A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNetworkPlayer.h; sourceTree = "<group>"; };
+		A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNetworkPlayer.m; sourceTree = "<group>"; };
 		A59F852E18C7E221005EE662 /* face.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face.png; sourceTree = "<group>"; };
 		A59F852F18C7E221005EE662 /* face2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face2.png; sourceTree = "<group>"; };
 		A59F853018C7E221005EE662 /* face3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face3.png; sourceTree = "<group>"; };
@@ -277,6 +283,10 @@
 			children = (
 				A5C5BA5818C4E99B00435B10 /* ARMPlayerInfo.h */,
 				A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */,
+				A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */,
+				A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */,
+				A503B22818D211BB000D7595 /* ARMGameServerCommunicator.h */,
+				A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -409,6 +419,8 @@
 			files = (
 				A5C5BA2E18C4E8E000435B10 /* main.m in Sources */,
 				A5C5BA6B18C4E99B00435B10 /* ARMBluetoothViewController.m in Sources */,
+				A503B22A18D211BC000D7595 /* ARMGameServerCommunicator.m in Sources */,
+				A52F6FAD18D1489500799EA4 /* ARMNetworkPlayer.m in Sources */,
 				A5C5BA7318C4E99B00435B10 /* LeDiscovery.m in Sources */,
 				A5C5BA6E18C4E99B00435B10 /* ARMPlayerInfo.m in Sources */,
 				A5C5BA6D18C4E99B00435B10 /* ARMNetworkViewController.m in Sources */,

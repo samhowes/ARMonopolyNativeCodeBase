@@ -3,7 +3,7 @@ Notes:
  - By adding the unity subview to ARMViewController in ARMAppController:createViewHierarchyImpl, I don't have to have Test/ARMViewcontroller classes, and can just have one production class.
 
 Tasks:
- R Integrate Networking/Create a networking implementation
+ R Continue Networking
  R Test Bluetooth
  R Copy files from bundle folder to documents at launch
 
@@ -15,11 +15,13 @@ Tasks:
 Networking Notes:
  
 TODO:
-  - Post username and device ID
-    - Receive and Set the client-id cookie
-    - Receive the image URL location
-  - PUT the image to the URL
-  - GET Available game sessions
+  √ Post username and device ID
+    √ Receive and Set the client-id cookie
+    √ Receive the image URL location
+  • PUT the image to the URL
+    √ Generate the PUT request
+    - PUT the actual image to the URL
+  √ GET Available game sessions
   - Join a session
     - Receive users in the session
   - Create new session
@@ -32,6 +34,7 @@ Bugs:
 
 
 DONE:
+Integrate Networking/Create a networking implementation
 Update UserData
 Dynamically form The current players in the main screen
 Separate the settings screen into three individual views
