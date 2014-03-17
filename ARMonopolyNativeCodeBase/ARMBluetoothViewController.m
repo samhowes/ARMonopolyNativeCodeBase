@@ -7,23 +7,21 @@
 //
 
 #import "ARMBluetoothViewController.h"
-#import "LeDiscovery.h"
+#import "ARMBluetoothManager.h"
 
-@interface ARMBluetoothViewController () <LeDiscoveryDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface ARMBluetoothViewController () <ARMBluetoothManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 {
-	BOOL isRunningAsPlugin;
+    ARMBluetoothManager *bluetoothManager;
 }
-
-
-@property (retain, nonatomic) NSMutableArray		*connectedServices;
-@property (retain, nonatomic) IBOutlet UILabel 		*currentlyConnectedDevice;
-@property (retain, nonatomic) IBOutlet UITableView 	*devicesTable;
+@property (retain, nonatomic) NSMutableArray		*connectedServices;         //rename
+@property (retain, nonatomic) IBOutlet UILabel 		*currentlyConnectedDevice;  //rename
+@property (retain, nonatomic) IBOutlet UITableView 	*devicesTable;              //rename
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *bluetoothActivitySpinner;
 
 @end
 
 @implementation ARMBluetoothViewController
 
-@synthesize bleDelegate;
 @synthesize connectedServices;
 @synthesize currentlyConnectedDevice;
 @synthesize devicesTable;
@@ -37,61 +35,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	isRunningAsPlugin = NO;
 	[devicesTable setDataSource:self];
-	//[devicesTable reloadData];
-	[self initBluetooth];
+	[devicesTable reloadData];          //change
+    
+    bluetoothManager = [ARMBluetoothManager sharedInstance];
+	[bluetoothManager setDelegate:self];
 }
 
-- (void)initBluetooth
+- (void)viewWillAppear:(BOOL)animated
 {
-	connectedServices = [NSMutableArray new];
-	
-	bleDelegate = [LeDiscovery sharedInstance];
-	[bleDelegate setDiscoveryDelegate:self];
-	[bleDelegate startScanningForUUIDString:kTileConfigurationServiceUUIDString];
+    [bluetoothManager startBluetooth];
 }
 
-- (void)didReceiveMemoryWarning
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void)viewDidUnload
-{
-	[self destroyBluetooth];
-	[super viewDidUnload];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[self destroyBluetooth];
-	[super viewDidDisappear:animated];
-}
-
-- (void)destroyBluetooth
-{
-	if (!isRunningAsPlugin) {
-		[self setDevicesTable:nil];
-		[self setCurrentlyConnectedDevice:nil];
-	}
-	//[bleDelegate currentlyConnectedDevice];
-	[bleDelegate stopScanning];
-	[bleDelegate setDiscoveryDelegate:nil];
-	[bleDelegate deleteSharedInstance];
-	bleDelegate = nil;
-}
-
-- (NSArray *)getFoundDeviceNames
-{
-	NSMutableArray *outputArray = [[NSMutableArray alloc]init];
-	for (CBPeripheral *peripheral in [bleDelegate foundPeripherals])
-	{
-		[outputArray addObject:[[NSString alloc] initWithString:peripheral.name]];
-	}
-	
-	return outputArray;
+    [bluetoothManager finishTasksWithoutDelegateAndPreserveState];
+    [super viewWillDisappear:animated];
 }
 
 
@@ -99,9 +58,10 @@
 /****************************************************************************/
 /*                       	TableViewDelegate Methods                       */
 /****************************************************************************/
-- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section//rework completely
 {
-	NSInteger numberOfPeripherals = [[bleDelegate foundPeripherals] count];
+	return 0;
+  /*  NSInteger numberOfPeripherals = [[bleDelegate foundPeripherals] count];
 	if (![bleDelegate isBluetoothOn])
 	{
 		return 0;
@@ -113,46 +73,95 @@
 	else
 	{
 		return numberOfPeripherals;
-	}
+	} */
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-	if (![bleDelegate isBluetoothOn])
-	{
-		return @"";
-	}
-	else
-	{
-		return @"GAME TILES";
-	}
+	if (!bluetoothManager)
+    {
+        return @"System Bluetooth not initialized";
+    }
+    else
+    {
+        switch ([bluetoothManager state])
+        {
+            case kInitializing:
+                return @"Starting Bluetooth...";
+                break;
+            
+            case kWaitingForBluetoothToBeEnabled:
+                return @"Bluetooth disabled";
+                break;
+                
+            case kReadyToScan:
+                return @"Ready to scan for devices";
+                break;
+            
+            case kResettingBecauseOfSystemReset:
+                return @"Restarting Bluetooth...";
+                break;
+            
+            case kFatalUnauthorized:
+                return @"Bluetooth Unauthorized";
+                break;
+            
+            case kFatalUnsupported:
+                return nil; // we'll put the message in the footer
+                break;
+            
+            case kNotInitialized:
+            default:
+                return @"Bluetooth not initialized";
+                break;
+
+        }
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-	if (![bleDelegate isBluetoothOn])
+	switch ([bluetoothManager state]) {
+        case kFatalUnauthorized:
+            return @"Enable Bluetooth access in Settings";
+            break;
+            
+        case kFatalUnsupported:
+            return @"Bluetooth Low Energy is not supported on this device.";
+            break;
+            
+        case kWaitingForBluetoothToBeEnabled:
+            return @"Please enable Bluetooth. This app will not function properly with Bluetooth disabled.";
+            break;
+            
+        default:
+            return nil;
+            break;
+    }
+    /*if (![bleDelegate isBluetoothOn])   // use bleDelegate connectionState in a switch statemet
 	{
 		return @"Device's Bluetooth is powered off. Go to System Settings enable Bluetooth.";
 	}
 	else
 	{
 		return @"";
-	}
+	} */
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *cellID = @"DeviceList";
+	static NSString *cellID = @"DeviceList"; // move this to a konstant at the top
+    // use bleDelegate connectionState in a switch statemet
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
 	
-	if ([[bleDelegate foundPeripherals] count] == 0)
+	/*if ([[bleDelegate foundPeripherals] count] == 0)
 	{
 		cell.textLabel.text = @"Searching for devices...";
 	}
 	else
 	{
 		cell.textLabel.text = [[[bleDelegate foundPeripherals] objectAtIndex:indexPath.row] name];
-	}
+	} */
 	
 	return cell;
 }
@@ -162,22 +171,66 @@
 /****************************************************************************/
 /*                       LeDiscoveryDelegate Methods                        */
 /****************************************************************************/
-- (void) discoveryDidRefresh
+- (void)bluetoothManagerDidRefreshWithError:(NSError *)error
 {
-	if (!isRunningAsPlugin) {
-		if (bleDelegate.stringReadFromPeripheral) {
-			[currentlyConnectedDevice setText:bleDelegate.stringReadFromPeripheral];
-		}
-		[devicesTable reloadData];
-	}
-	
+    if (error)
+    {
+        NSString *errorString;
+        switch ([error code])
+        {
+            case kBluetoothPoweredOffErrorCode:
+                // The system will notify the user the first time this error occurs
+                break;
+                
+            case kBluetoothPoweredOffWhenResumingErrorCode:
+                errorString = @"Bluetooth is disabled. Please enable Bluetooth in Settings.\n\nThis app will not function properly with Bluetooth disabled.";
+                break;
+                
+            case kBluetoothUnauthorizedErrorCode:
+                errorString = @"This app needs Bluetooth permissions to function properly. Please grant permissions in Settings";
+                break;
+            case kBluetoothUnsupportedErrorCode:
+                errorString = @"This device does not support Bluetooth Low Energy.\nThis app will not function properly without Bluetooth Low Energy.";
+                break;
+            case kBluetoothUnknownStateErrorCode:
+                errorString = @"An unknown internal error has occured.";
+                break;
+            case kBluetoothResettingErrorCode:
+                errorString = @"Please be patient while Bluetooth restarts.";
+                break;
+            default:
+                errorString = @"An unknown developer error has occured.";
+                break;
+        }
+        
+        if (errorString)
+        {
+            [[[UIAlertView alloc] initWithTitle:@"Bluetooth Error"
+                                        message:errorString
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
+    }
+    else
+    {
+        // not sure what to do here now.
+        switch ([bluetoothManager state]) {
+            case kNotInitialized:
+                //TODO
+                break;
+               /* kInitializing,
+                kReadyToScan,
+                kResettingBecauseOfSystemReset,
+                kFatalUnauthorized,
+                kFatalUnsupported*/
+            default:
+                break;
+        }
+    }
+    
+	[devicesTable reloadData];
 }
-
-- (void) discoveryStatePoweredOff
-{
-	NSLog(@"INFO: CBCentralManager has powered off!");
-}
-
 
 @end
 

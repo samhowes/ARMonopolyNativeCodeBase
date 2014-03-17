@@ -7,14 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LeDiscovery.h"
+#import "ARMBluetoothManager.h"
 #import "ARMPlayerInfo.h"
 
-@interface ARMBluetoothViewController : UIViewController
+@interface ARMBluetoothViewController : UIViewController <ARMBluetoothManagerDelegate>
 
-@property (retain, nonatomic) LeDiscovery *bleDelegate;
-
-- (void)initBluetooth;
-- (void)destroyBluetooth;
+- (void)bluetoothManagerDidRefreshWithError:(NSError *)error;
 
 @end

@@ -39,7 +39,7 @@
 		A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */; };
 		A5C5BA7118C4E99B00435B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA5F18C4E99B00435B10 /* Main.storyboard */; };
 		A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6118C4E99B00435B10 /* installPlugin.sh */; };
-		A5C5BA7318C4E99B00435B10 /* LeDiscovery.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6318C4E99B00435B10 /* LeDiscovery.m */; };
+		A5C5BA7318C4E99B00435B10 /* ARMBluetoothManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */; };
 		A5C5BA7418C4E99B00435B10 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6418C4E99B00435B10 /* LOGO.png */; };
 		A5C5BA7518C4E99B00435B10 /* Notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6518C4E99B00435B10 /* Notes.txt */; };
 		A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */; };
@@ -115,8 +115,8 @@
 		A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMSettingsViewController.m; sourceTree = "<group>"; };
 		A5C5BA6018C4E99B00435B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Main.storyboard; sourceTree = "<group>"; };
 		A5C5BA6118C4E99B00435B10 /* installPlugin.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = installPlugin.sh; sourceTree = "<group>"; };
-		A5C5BA6218C4E99B00435B10 /* LeDiscovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeDiscovery.h; sourceTree = "<group>"; };
-		A5C5BA6318C4E99B00435B10 /* LeDiscovery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeDiscovery.m; sourceTree = "<group>"; };
+		A5C5BA6218C4E99B00435B10 /* ARMBluetoothManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMBluetoothManager.h; sourceTree = "<group>"; };
+		A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMBluetoothManager.m; sourceTree = "<group>"; };
 		A5C5BA6418C4E99B00435B10 /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOGO.png; sourceTree = "<group>"; };
 		A5C5BA6518C4E99B00435B10 /* Notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Notes.txt; sourceTree = "<group>"; };
 		A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestAppDelegate.h; sourceTree = "<group>"; };
@@ -255,7 +255,6 @@
 				A5C5BA7918C4EA1500435B10 /* DeployOnly */,
 				A5C5BA7A18C4EA3300435B10 /* Settings */,
 				A5C5BA7B18C4EA3D00435B10 /* Model */,
-				A5C5BA7C18C4EA4C00435B10 /* Bluetooth */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -287,6 +286,7 @@
 		A5C5BA7B18C4EA3D00435B10 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A5C5BA7C18C4EA4C00435B10 /* Bluetooth */,
 				A5C5BA5818C4E99B00435B10 /* ARMPlayerInfo.h */,
 				A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */,
 				A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */,
@@ -304,8 +304,8 @@
 		A5C5BA7C18C4EA4C00435B10 /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
-				A5C5BA6218C4E99B00435B10 /* LeDiscovery.h */,
-				A5C5BA6318C4E99B00435B10 /* LeDiscovery.m */,
+				A5C5BA6218C4E99B00435B10 /* ARMBluetoothManager.h */,
+				A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */,
 			);
 			name = Bluetooth;
 			sourceTree = "<group>";
@@ -433,7 +433,7 @@
 				A5C5BA6B18C4E99B00435B10 /* ARMBluetoothViewController.m in Sources */,
 				A503B22A18D211BC000D7595 /* ARMGameServerCommunicator.m in Sources */,
 				A52F6FAD18D1489500799EA4 /* ARMNetworkPlayer.m in Sources */,
-				A5C5BA7318C4E99B00435B10 /* LeDiscovery.m in Sources */,
+				A5C5BA7318C4E99B00435B10 /* ARMBluetoothManager.m in Sources */,
 				A5C5BA6E18C4E99B00435B10 /* ARMPlayerInfo.m in Sources */,
 				A5C5BA6D18C4E99B00435B10 /* ARMNetworkViewController.m in Sources */,
 				A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */,
