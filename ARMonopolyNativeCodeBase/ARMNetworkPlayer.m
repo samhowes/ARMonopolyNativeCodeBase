@@ -8,20 +8,23 @@
 
 #import "ARMNetworkPlayer.h"
 
+const NSString *kLocalFilenameFormatString = @"%@.png";
+
 @implementation ARMNetworkPlayer
 
 @synthesize playerName;
 @synthesize gameTileImageTargetID;
-@synthesize imageLocalURL;
-@synthesize imageNetworkURL;
+@synthesize imageLocalFileName;
+@synthesize imageNetworkRelativeURLString;
 
--(id) initWithName:(NSString *)name gameTileImageTargetID:(NSNumber *)gameTileImageTargetID imageNetworkURL:(NSURL *)imageNetworkURL
+-(id) initWithName:(NSString *)name gameTileImageTargetID:(NSString *)imageTargetID imageNetworkRelativeURLString:(NSString *)networkRelativeURLString
 {
     self = [super init];
     if (self) {
         self.playerName = name;
-        self.gameTileImageTargetID = gameTileImageTargetID;
-        self.imageNetworkURL = imageNetworkURL;
+        self.gameTileImageTargetID = imageTargetID;
+        self.imageNetworkRelativeURLString = networkRelativeURLString;
+        self.imageLocalFileName = [NSString stringWithFormat:[kLocalFilenameFormatString copy], gameTileImageTargetID];
     }
     return self;
 }

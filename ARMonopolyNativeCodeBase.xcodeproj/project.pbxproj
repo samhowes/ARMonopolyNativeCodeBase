@@ -14,6 +14,7 @@
 		A533D7C918C7E91200EB42A8 /* face3.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853018C7E221005EE662 /* face3.png */; };
 		A533D7CA18C7E91200EB42A8 /* face4.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853118C7E221005EE662 /* face4.png */; };
 		A533D7CB18C7E91200EB42A8 /* LOGO.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853218C7E221005EE662 /* LOGO.png */; };
+		A54E40B918D64B5D00D343C2 /* ARMException.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E40B818D64B5D00D343C2 /* ARMException.m */; };
 		A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */; };
 		A59F853318C7E221005EE662 /* face.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F852E18C7E221005EE662 /* face.png */; };
 		A59F853418C7E221005EE662 /* face2.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F852F18C7E221005EE662 /* face2.png */; };
@@ -42,6 +43,7 @@
 		A5C5BA7418C4E99B00435B10 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6418C4E99B00435B10 /* LOGO.png */; };
 		A5C5BA7518C4E99B00435B10 /* Notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6518C4E99B00435B10 /* Notes.txt */; };
 		A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */; };
+		A5F15B0918D3772F00271DD2 /* ARMGameSession.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F15B0818D3772F00271DD2 /* ARMGameSession.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +78,8 @@
 		A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMGameServerCommunicator.m; sourceTree = "<group>"; };
 		A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNetworkPlayer.h; sourceTree = "<group>"; };
 		A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNetworkPlayer.m; sourceTree = "<group>"; };
+		A54E40B718D64B5D00D343C2 /* ARMException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMException.h; sourceTree = "<group>"; };
+		A54E40B818D64B5D00D343C2 /* ARMException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMException.m; sourceTree = "<group>"; };
 		A59F852E18C7E221005EE662 /* face.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face.png; sourceTree = "<group>"; };
 		A59F852F18C7E221005EE662 /* face2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face2.png; sourceTree = "<group>"; };
 		A59F853018C7E221005EE662 /* face3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face3.png; sourceTree = "<group>"; };
@@ -117,6 +121,8 @@
 		A5C5BA6518C4E99B00435B10 /* Notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Notes.txt; sourceTree = "<group>"; };
 		A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestAppDelegate.h; sourceTree = "<group>"; };
 		A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestAppDelegate.m; sourceTree = "<group>"; };
+		A5F15B0718D3772F00271DD2 /* ARMGameSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMGameSession.h; sourceTree = "<group>"; };
+		A5F15B0818D3772F00271DD2 /* ARMGameSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMGameSession.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,6 +293,10 @@
 				A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */,
 				A503B22818D211BB000D7595 /* ARMGameServerCommunicator.h */,
 				A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */,
+				A5F15B0718D3772F00271DD2 /* ARMGameSession.h */,
+				A5F15B0818D3772F00271DD2 /* ARMGameSession.m */,
+				A54E40B718D64B5D00D343C2 /* ARMException.h */,
+				A54E40B818D64B5D00D343C2 /* ARMException.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -418,6 +428,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5C5BA2E18C4E8E000435B10 /* main.m in Sources */,
+				A5F15B0918D3772F00271DD2 /* ARMGameSession.m in Sources */,
+				A54E40B918D64B5D00D343C2 /* ARMException.m in Sources */,
 				A5C5BA6B18C4E99B00435B10 /* ARMBluetoothViewController.m in Sources */,
 				A503B22A18D211BC000D7595 /* ARMGameServerCommunicator.m in Sources */,
 				A52F6FAD18D1489500799EA4 /* ARMNetworkPlayer.m in Sources */,

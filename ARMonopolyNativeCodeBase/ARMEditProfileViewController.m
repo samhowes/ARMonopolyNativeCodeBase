@@ -48,6 +48,10 @@
     {
         userDisplayImageView.image = [userData playerDisplayImage];
     }
+    else
+    {
+        [userData setPlayerDisplayImage:userDisplayImageView.image];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -138,7 +142,8 @@
 			imageToSave = originalImage;
 		}
 		
-		// Save the new image to the camera roll
+        // Save the new image (original or edited) to the Camera Roll
+        UIImageWriteToSavedPhotosAlbum (imageToSave, nil, nil , nil);
 		userDisplayImageView.image = imageToSave;
 		[[ARMPlayerInfo sharedInstance] setPlayerDisplayImage:imageToSave];
 	}

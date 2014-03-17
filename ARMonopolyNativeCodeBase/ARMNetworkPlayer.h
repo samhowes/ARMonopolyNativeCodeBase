@@ -8,14 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+extern const NSString *kLocalFilenameFormatString;
+
 @interface ARMNetworkPlayer : NSObject
 
--(id) initWithName:(NSString *)name gameTileImageTargetID:(NSNumber *)gameTileImageTargetID imageNetworkURL:(NSURL *)imageNetworkURL;
-
+-(id) initWithName:(NSString *)name gameTileImageTargetID:(NSString *)gameTileImageTargetID imageNetworkRelativeURLString:(NSString *)networkRelativeURLString;
 @property NSString *playerName;
-@property NSNumber *gameTileImageTargetID;
+@property NSString *gameTileImageTargetID;
 
-@property NSURL *imageNetworkURL;
-@property NSURL *imageLocalURL;
+@property NSString *imageNetworkRelativeURLString;
+@property NSString *imageLocalFileName;
 
 @end

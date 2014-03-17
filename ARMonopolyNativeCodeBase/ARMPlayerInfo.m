@@ -17,7 +17,6 @@
 @synthesize clientID;
 @synthesize sessionID;
 @synthesize playersInSessionArray;
-@synthesize lastConnectionStatus;
 
 /****************************************************************************/
 /*								Class Methods                               */
@@ -85,11 +84,17 @@
     return NO;
 }
 
+- (void)applicationDidLeaveGameSession
+{
+    sessionID = nil;
+    playersInSessionArray = nil;
+}
+
 /************************ Coding Methods ***********************************/
 - (NSArray *)keysForEncoding;
 {
 	return [NSArray arrayWithObjects:@"playerDisplayName",
-			@"playerDisplayImage", @"gameTileBluetoothID", nil];
+			@"playerDisplayImage", @"gameTileImageTargetID", nil];
 }
 
 - (BOOL)saveInstanceToArchive

@@ -18,14 +18,16 @@ TODO:
   √ Post username and device ID
     √ Receive and Set the client-id cookie
     √ Receive the image URL location
-  • PUT the image to the URL
+  √ PUT the image to the URL
     √ Generate the PUT request
-    - PUT the actual image to the URL
+    √ PUT the actual image to the URL
   √ GET Available game sessions
-  - Join a session
-    - Receive users in the session
-  - Create new session
-  - Leave session
+  √ Join a session
+    √ Receive users in the session
+    √ Download Users URLS
+  √ Create new session
+  √ Leave session
+  - Preserve state on navigation
  
 
 Bugs:

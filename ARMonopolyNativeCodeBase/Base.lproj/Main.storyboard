@@ -309,7 +309,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Network" id="2xv-Cs-6k4">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Hxd-6w-2xB"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Hxd-6w-2xB">
+                            <connections>
+                                <action selector="userDidPressBarButtonItem:" destination="kZw-j4-LtY" id="MKq-5H-c4F"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="gameSessionsTableView" destination="YeC-RW-kIl" id="3Dh-1f-Ngo"/>

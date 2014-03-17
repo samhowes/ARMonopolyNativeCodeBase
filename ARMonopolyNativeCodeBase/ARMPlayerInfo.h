@@ -21,6 +21,8 @@ typedef enum GameServerConnectionStatus GameServerConnectionStatus;
 /* If we have adequate data for use with the game server */
 - (BOOL)isReadyForLogin;
 
+- (void)applicationDidLeaveGameSession;
+
 // Local Player info
 @property NSString *playerDisplayName;
 
@@ -29,7 +31,6 @@ typedef enum GameServerConnectionStatus GameServerConnectionStatus;
 @property NSString *gameTileImageTargetID;
 
 // Networking Properties
-@property GameServerConnectionStatus lastConnectionStatus;
 @property NSString *sessionID;
 @property NSString *sessionName;
 @property NSString *clientID;
