@@ -3,7 +3,6 @@ Notes:
  - By adding the unity subview to ARMViewController in ARMAppController:createViewHierarchyImpl, I don't have to have Test/ARMViewcontroller classes, and can just have one production class.
 
 Tasks:
- R Continue Networking
  R Test Bluetooth
  R Copy files from bundle folder to documents at launch
 
@@ -36,6 +35,7 @@ Bugs:
 
 
 DONE:
+Implement Networking Completely
 Integrate Networking/Create a networking implementation
 Update UserData
 Dynamically form The current players in the main screen
