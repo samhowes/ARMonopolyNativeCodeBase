@@ -20,7 +20,7 @@
 //--------------------------- URL/HTTP Constants ---------------------------//
 const NSString *ARMGameServerErrorDomain =                      @"ARMGameServerErrorDomain";
 
-const NSString *ARMGameServerURLString =                        @"http://155.41.123.15:3000";
+const NSString *ARMGameServerURLString =                        @"http://155.41.10.55:3000";
 const NSString *kGSHTTPUserAgentHeaderString =                  @"ARMonopoy iOS";
 const NSString *kGSHTTPAcceptContentHeaderString =              @"application/json";
 const NSString *kGSHTTPClientCookieName =                       @"clientID";
@@ -67,13 +67,6 @@ const NSString *kGSPlayerImageURLReplyKey =                     @"imageURL";
 
 #pragma mark - C Helper/Inline functions
 
-void dispatchCompletionHandler(CompletionHandlerType completionHandler, NSError *error)
-{
-    if (completionHandler) {
-        dispatch_async(dispatch_get_main_queue(), ^{completionHandler(error);});
-    }
-}
-
 void throwError(NSError *error) {
     @throw [ARMException exceptionWithError:error];
 }
@@ -96,6 +89,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 {
     ARMPlayerInfo *userData;
     NSUInteger loginTaskIdentifier;
+    BOOL shouldSkipCompletionHandler;
 }
 
 @property (strong, nonatomic) NSURLSession *mainURLSession;
@@ -129,6 +123,8 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     self = [super init];
     if (self) {
         // custom initialization
+        shouldSkipCompletionHandler = NO;
+        
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
         
         mainURLSessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -145,9 +141,14 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     return self;
 }
 
-- (void)haltTasksAndPreserveState
+- (void)finishTasksWithoutCompletionHandlerAndPreserveState
 {
-    //TODO
+    shouldSkipCompletionHandler = YES;
+}
+
+- (void)continueTasksWithCompletionHandler
+{
+    shouldSkipCompletionHandler = NO;
 }
 
 #pragma mark - Networking Methods
@@ -493,7 +494,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     // Default: handle local errors
     [self changeConnectionStatusInError];
-    if (error) {dispatchCompletionHandler(completionHandler, error); return;}
+    if (error) {[self dispatchCompletionHandler:completionHandler withError:error]; return;}
     
     // Default: get JSONObject and httpResponse
     NSDictionary *jsonObject;
@@ -532,7 +533,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     // Default: call completion handler
     
     // Allow the caller to complete execution
-    if (completionHandler) dispatchCompletionHandler(completionHandler, error);
+    if (completionHandler) [self dispatchCompletionHandler:completionHandler withError:error];
 }
 
 - (void)handleGameServerResponseWithImageProcessor:(ARMImageProcessorType)imageProcessor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler imageData:(NSData *)imageData response:(NSURLResponse *)response error:(NSError *)error
@@ -540,7 +541,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     // Default: handle local errors
     [self changeConnectionStatusInError];
-    if (error) {dispatchCompletionHandler(completionHandler, error); return;}
+    if (error) {[self dispatchCompletionHandler:completionHandler withError:error]; return;}
     
     // Default: get JSONObject and httpResponse
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
@@ -573,7 +574,14 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     // Default: call completion handler
     
     // Allow the caller to complete execution
-    if (completionHandler) dispatchCompletionHandler(completionHandler, error);
+    if (completionHandler) [self dispatchCompletionHandler:completionHandler withError:error];
+}
+
+- (void)dispatchCompletionHandler:(CompletionHandlerType)completionHandler withError:(NSError *)error
+{
+    if (!shouldSkipCompletionHandler && completionHandler) {
+        dispatch_async(dispatch_get_main_queue(), ^{completionHandler(error);});
+    }
 }
 
 - (NSError *)handleGameServerErrorWithJSONObject:(NSDictionary *)jsonObject

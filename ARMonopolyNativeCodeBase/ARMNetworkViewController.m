@@ -16,8 +16,6 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
 
 @interface ARMNetworkViewController ()
 
-@property (retain, nonatomic) IBOutlet UIBarButtonItem *rightNavigationBarButtonItem;
-
 @property (strong, nonatomic) IBOutlet UITableView *gameSessionsTableView;
 
 @end
@@ -25,7 +23,6 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
 
 @implementation ARMNetworkViewController
 
-@synthesize rightNavigationBarButtonItem;
 @synthesize gameSessionsTableView;
 
 - (void)viewDidLoad
@@ -33,64 +30,7 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     [super viewDidLoad];
     [gameSessionsTableView setDataSource:[ARMGameServerCommunicator sharedInstance]];
     [gameSessionsTableView reloadData];
-    
-    // Populate static data for testing
-    [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:     @"Sam"];
-    [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:   @"12"];
-    
-    if (![[ARMPlayerInfo sharedInstance] isReadyForLogin])
-    {
-        [self showAlertWithTitle:@"Configuration Error"
-                         message:@"Complete Steps 1 and 2 before connecting to the Game Server"
-               cancelButtonTitle:@"OK"];
-        return;
-    }
-
-    
-    [[ARMGameServerCommunicator sharedInstance] loginWithCompletionHandler:^(NSError *error){
-        if (error) [self handleNetworkingError:error];
-        
-        // If there wasn't an error in Login step 1, continue to Login step 2
-        [[ARMGameServerCommunicator sharedInstance] putProfileImageToServerWithCompletionHandler:^(NSError *error) {
-            if (error) [self handleNetworkingError:error];
-            
-            [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
-                if (error) [self handleNetworkingError:error];
-                
-                [gameSessionsTableView reloadData];
-            }];
-        }];
-    }];
-    
-#pragma mark BOOKMARK
-/*
-#pragma mark TODO preserve state
-    switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
-    {
-        case kNotInitialized:
-        case kConnectingToServer:
-            [self connectToGameServer];
-            break;
-            
-        case kSendingProfile:
-            [self connectToGameServer];     // TODO add ARMGameServerDelegate Class with more sophisticated methods
-            
-        case kConnectedToServer:
-        case kJoiningGameSession:
-        case kRetrievingGameSessions:
-            [self getSessionsFromGameServer];
-            break;
-        
-        case kInGameSession:
-            [self getCurrentPlayersInGameSession];
-            break;
-            
-        case kFailedToConnectToServer:
-        default:
-            [self connectToGameServer];
-            break;
-    } */
-
+    [[ARMGameServerCommunicator sharedInstance] continueTasksWithCompletionHandler];
 }
 
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle
@@ -108,8 +48,87 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [[ARMGameServerCommunicator sharedInstance] haltTasksAndPreserveState];
+    [[ARMGameServerCommunicator sharedInstance] finishTasksWithoutCompletionHandlerAndPreserveState];
     [super viewWillDisappear:animated];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[ARMGameServerCommunicator sharedInstance] continueTasksWithCompletionHandler];
+    // Populate static data for testing
+    [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:     @"Sam"];
+    [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:   @"12"];
+    
+    if (![[ARMPlayerInfo sharedInstance] isReadyForLogin])
+    {
+        [self showAlertWithTitle:@"Configuration Error"
+                         message:@"Complete Steps 1 and 2 before connecting to the Game Server"
+               cancelButtonTitle:@"OK"];
+        return;
+    }
+    
+    switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
+    {
+            // cases where we want to retrieve active game sessions
+        case kLoggedIn:
+        case kRetrievingGameSessions:
+        case kReadyForSelection:
+        case kJoiningGameSession:
+        case kCreatingGameSession:
+        {
+            [self hideRightNavigationBarButtonItem];
+            [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
+                [gameSessionsTableView reloadData];
+                [self showLeaveGameButtonWithBool:NO];
+                if (error) [self handleNetworkingError:error];
+                [self showLeaveGameButtonWithBool:NO];
+            }];
+        }
+            break;
+            // Cases where we want to get the current game session
+        case kInGameSession:
+        case kLeavingGameSession:
+        {
+            [[ARMGameServerCommunicator sharedInstance] getCurrentPlayersInSessionWithCompletionHandler:^(NSError *error)
+             {
+                 [gameSessionsTableView reloadData];
+                 [self showLeaveGameButtonWithBool:YES];
+                 if (error) {[self handleNetworkingError:error withTitle:kImageDownloadingErrorAlertTitle]; return;}
+                 
+                 [[ARMGameServerCommunicator sharedInstance] downloadPlayerImagesWithCompletionHandler:^(NSError *error)
+                  {
+                      [gameSessionsTableView reloadData];
+                      if (error) [self handleNetworkingError:error withTitle:kImageDownloadingErrorAlertTitle];
+                  }];
+             }];
+        }
+            break;
+            // Cases where we want to login to the server
+        case kFailedToConnectToServer:
+        case kNotInitialized:
+        case kLoggingIn:
+        case kSendingImage:
+        default:
+        {
+            [[ARMGameServerCommunicator sharedInstance] loginWithCompletionHandler:^(NSError *error){
+                if (error) [self handleNetworkingError:error];
+                
+                // If there wasn't an error in Login step 1, continue to Login step 2
+                [[ARMGameServerCommunicator sharedInstance] putProfileImageToServerWithCompletionHandler:^(NSError *error) {
+                    if (error) [self handleNetworkingError:error];
+                    
+                    [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
+                        [gameSessionsTableView reloadData];
+                        if (error) [self handleNetworkingError:error];
+                        [self showLeaveGameButtonWithBool:NO];
+                        
+                    }];
+                }];
+            }];
+        }
+            break;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -145,8 +164,8 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
         [spinner stopAnimating];
         if (error) {[self handleNetworkingError:error]; return;};
         
-        [[self navigationItem] setRightBarButtonItem:
-                [[UIBarButtonItem alloc] initWithTitle:[kBarButtonItemLeaveGameTitle copy] style:UIBarButtonItemStylePlain target:self action:@selector(userDidPressBarButtonItem:)] animated:YES];
+        [self showLeaveGameButtonWithBool:YES];
+        
         [gameSessionsTableView reloadData];
         [[ARMGameServerCommunicator sharedInstance] downloadPlayerImagesWithCompletionHandler:^(NSError *error)
         {
@@ -196,6 +215,27 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
  //   }];
 }
 
+- (void)showLeaveGameButtonWithBool:(BOOL)showLeaveGameButton
+{
+    if (showLeaveGameButton)
+    {
+        [[self navigationItem] setRightBarButtonItem:
+         [[UIBarButtonItem alloc] initWithTitle:[kBarButtonItemLeaveGameTitle copy] style:UIBarButtonItemStylePlain target:self action:@selector(userDidPressBarButtonItem:)] animated:YES];
+    } else {
+        [[self navigationItem] setRightBarButtonItem:[[UIBarButtonItem alloc]
+                                                      initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                      target:self
+                                                      action:@selector(userDidPressBarButtonItem:)]
+                                            animated:YES];
+    }
+    
+}
+
+- (void)hideRightNavigationBarButtonItem
+{
+    [[self navigationItem] setRightBarButtonItem:nil animated:YES];
+}
+
 - (IBAction)userDidPressBarButtonItem:(id)sender
 {
     
@@ -206,11 +246,7 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
         [[ARMGameServerCommunicator sharedInstance] leaveSessionWithCompletionHandler:^(NSError *error) {
             [gameSessionsTableView reloadData];
             if (error) {[self handleNetworkingError:error]; [gameSessionsTableView reloadData]; return;};
-            [[self navigationItem] setRightBarButtonItem:[[UIBarButtonItem alloc]
-                                                          initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                          target:self
-                                                          action:@selector(userDidPressBarButtonItem:)]
-                                                animated:YES];
+            [self showLeaveGameButtonWithBool:NO];
             
             [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
                 [gameSessionsTableView reloadData];
@@ -225,7 +261,7 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
         [[ARMGameServerCommunicator sharedInstance] createSessionWithName:@"SAM" completionHandler:^(NSError *error) {
             [gameSessionsTableView reloadData];
             if (error) {[self handleNetworkingError:error]; [gameSessionsTableView reloadData]; return;};
-            [[self navigationItem] setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle:[kBarButtonItemLeaveGameTitle copy] style:UIBarButtonItemStylePlain target:self action:@selector(userDidPressBarButtonItem:)] animated:YES];
+            [self showLeaveGameButtonWithBool:YES];
             
         }];
     }

@@ -84,7 +84,9 @@ typedef void (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 
 + (id)sharedInstance;
 
-- (void)haltTasksAndPreserveState;
+- (void)finishTasksWithoutCompletionHandlerAndPreserveState;
+
+- (void)continueTasksWithCompletionHandler;
 
 - (void)loginWithCompletionHandler:(CompletionHandlerType)completionHandler;
 

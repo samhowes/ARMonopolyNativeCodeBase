@@ -308,16 +308,9 @@
                             <outlet property="delegate" destination="kZw-j4-LtY" id="hCX-FF-Ltw"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Network" id="2xv-Cs-6k4">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Hxd-6w-2xB">
-                            <connections>
-                                <action selector="userDidPressBarButtonItem:" destination="kZw-j4-LtY" id="MKq-5H-c4F"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Network" id="2xv-Cs-6k4"/>
                     <connections>
                         <outlet property="gameSessionsTableView" destination="YeC-RW-kIl" id="3Dh-1f-Ngo"/>
-                        <outlet property="rightNavigationBarButtonItem" destination="Hxd-6w-2xB" id="cq6-hR-fmS"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LOW-gT-AN7" userLabel="First Responder" sceneMemberID="firstResponder"/>
