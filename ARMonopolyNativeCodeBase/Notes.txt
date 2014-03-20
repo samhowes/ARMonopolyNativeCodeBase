@@ -14,20 +14,30 @@ Tasks:
 Tests for Bluetooth
  √ Properly initialize and handle user notification for turning on bluetooth.
  √ Properly scan and detect devices running the GameTile Configuration Service
-    - Scanning and detecting a device works, but the iPad doesn't want to show my GTCS service as running.
- - Connect to peripheral
+    √ Scanning and detecting a device works, but the iPad doesn't want to show my GTCS service as running.
+ √ Connect to peripheral
   - Do I stop scanning here? I think for my purposes, yes.
- - Disconnect from peripheral
-   - Scan for tiles again
- - Scan peripheral for services
-  - what if I cancel here?
- - Scan service for characteristics
-  - what if i cancel here?
- - Read GTCS ImageTargetID
-  - what if I cancel here?
- - Write GTCS User Display String
-  - what if I cancel here?
+ √ Disconnect from peripheral
+   √ Scan for tiles again
+ √ Scan peripheral for services
+  √ what if I cancel here?
+ √ Scan service for characteristics
+  √ what if i cancel here?
+ √ Read GTCS ImageTargetID
+  √ what if I cancel here?
+ √ Write GTCS User Display String
+  √ what if I cancel here?
  
+TODO: check properties of the game tile for read/write
+
+What do I display after the user has connected to a GameTile?
+ - Classical: display a checkmark in the row that the user is connected to 
+    - Issue: I automatically disconnect from the game tile, should I not do this?
+    - I could disconnect when they leave the view controller, but when they come back they will think they aren't configured properly
+    - I could disconnect but keep the entry in the table.
+ - Display nothing. Bad.
+ - I could display a "You completed this step with peripheral "iPad""
+    - Swipe down to connect to another GameTile
 
 Bugs:
  - Changing the orientation fails

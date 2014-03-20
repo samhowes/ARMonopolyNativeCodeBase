@@ -73,7 +73,11 @@
 /****************************************************************************/
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (!readyToConnectToBluetooth)
+    if ([[ARMPlayerInfo sharedInstance] gameTileName])
+    {
+        return @"Your GameTile";
+    }
+    else if (!readyToConnectToBluetooth)
     {
         return @"Not ready for Bluetooth";
     }
@@ -81,7 +85,7 @@
     {
         return @"System Bluetooth not initialized";
     }
-    else // TODO fill in all states
+    else
     {
         switch ([bluetoothManager state])
         {
@@ -132,7 +136,11 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-	if (!readyToConnectToBluetooth)
+	if ([[ARMPlayerInfo sharedInstance] gameTileName])
+    {
+        return @"Pull down to connect to another GameTile";
+    }
+    else if (!readyToConnectToBluetooth)
     {
         return @"Customize your profile first";
     }
@@ -183,7 +191,12 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	if (!readyToConnectToBluetooth)
+	
+    if ([[ARMPlayerInfo sharedInstance] gameTileName])
+    {
+        return 1;
+    }
+    else if (!readyToConnectToBluetooth)
     {
         return 0;
     }
@@ -227,7 +240,12 @@
     // use bleDelegate connectionState in a switch statemet
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
 	
-    if ([[bluetoothManager discoveredGameTileNamesArray] count] == 0)
+    if ([[ARMPlayerInfo sharedInstance] gameTileName])
+    {
+        [cell.textLabel setText:[[ARMPlayerInfo sharedInstance] gameTileName]];
+        [cell setUserInteractionEnabled:NO];
+    }
+    else if ([[bluetoothManager discoveredGameTileNamesArray] count] == 0)
     {
         [cell.textLabel setText:@"Scanning for GameTiles..."];
         [cell setUserInteractionEnabled:NO];
@@ -279,6 +297,7 @@
     [tableView reloadData];
 }
 
+#pragma mark TODO Implement swipe down, or editing of connected bluetooth item
 
 #pragma mark - LeDiscoveryDelegate
 /****************************************************************************/
@@ -320,6 +339,11 @@
                     
                 case kConnectedPeripheralIsNotAGameTileNotificationErrorCode:
                     errorString = @"Oops. This isn't the GameTile you're looking for.";
+                    break;
+                    
+                case kReconnectionLimitExceededNotificationErrorCode:
+                case kDataAttemptLimitExceededNotificationErrorCode:
+                    errorString = @"An error occured communicating with this GameTile Check that it is functioning and try again.";
                     break;
                     
                 default:
@@ -376,8 +400,12 @@
                 // Also, we will reload the table data below
                 break;
                 
+            // SUCCESS!
             case kCompletedExchangingDataWithGameTile:
                 [selectedCellActivityIndicatorView stopAnimating];
+                
+                [[ARMPlayerInfo sharedInstance] setGameTileName:[bluetoothManager getNameOfConnectedGameTile]];
+                
                 [selectedTableViewCell setAccessoryView:nil];
                 [[[UIAlertView alloc] initWithTitle:@"GameTile Ready for Gameplay"
                                             message:@"You have successfully connected to the selected GameTile and it is ready to play with!\nYou may proceed to Settings Step 3."

@@ -60,7 +60,6 @@ typedef NSInteger ARMGameTileIDType;
 @protocol ARMBluetoothManagerDelegate <NSObject>
 
 - (void)bluetoothManagerDidRefreshWithError:(NSError *)error;
-- (void)bluetoothManagerDidDiscoverGameTileWithName:(NSString *)gameTilename;
 
 @end
 
@@ -89,6 +88,8 @@ typedef NSInteger ARMGameTileIDType;
 - (void)disconnectFromGameTile;
 
 - (NSError *)exchangeDataWithConnectedGameTile;
+
+- (NSString *)getNameOfConnectedGameTile;
 
 - (void)recoverFromError:(NSError *)error;
 

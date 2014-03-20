@@ -15,8 +15,8 @@
 const NSString *ARMBluetoothManagerErrorDomain = @"ARMBluetoothManagerErrorDomain";
 
 const NSString * kGameTileConfigurationServiceUUIDString 		= @"1123";
-const NSString * kGameTileDisplayStringCharacteristicUUIDString = @"1124";
-const NSString * kGameTileImageTargetIDCharacteristicUUIDString  = @"1125";
+const NSString * kGameTileDisplayStringCharacteristicUUIDString = @"1125";
+const NSString * kGameTileImageTargetIDCharacteristicUUIDString = @"1124";
 
 const NSInteger kMaximumNumberOfConnectionAttempts =            4;
 const NSInteger kMaximumNumberOfWriteAttempts =                 4;
@@ -38,12 +38,12 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     NSMutableArray      *discoveredGameTilePeripheralsArray;
     NSMutableArray      *discoveredInvalidPeripheralsArray;
     
-    CBPeripheral        *connectedGameTile;
-    
     CBService           *gameTileConfigurationService;
     
     CBCharacteristic    *gameTileDisplayStringCharacteristic;
     CBCharacteristic    *gameTileImageTargetIDCharacteristic;
+    
+    CBPeripheral        *connectedGameTile;
     
     NSString            *valueStringReadFromImageTargetIDCharacteristic;
     
@@ -58,6 +58,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     
     BOOL displayStringHasBeenWritenToGameTile;
 }
+
 
 @property (readwrite) BluetoothManagerState state;
 @property (readwrite) NSString *connectedGameTileNameString;
@@ -170,6 +171,9 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 	}
 	state = kScanningForGameTiles;
     IDThatWasChosenToConnectTo = -1;
+    [discoveredGameTilePeripheralsArray removeAllObjects];
+    [discoveredGameTileNamesArray       removeAllObjects];
+    
 	NSArray *serviceUUIDToScanForArray = [NSArray new];//[NSArray arrayWithObject:[CBUUID UUIDWithString:kGameTileConfigurationServiceUUIDString]];
     // comment on these options
 	//NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:CBCentralManagerScanOptionAllowDuplicatesKey];
@@ -224,16 +228,30 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     return nil;
 }
 
-- (void)disconnectFromGameTile
+- (NSString *)getNameOfConnectedGameTile
 {
-    if ([connectedGameTile state] != CBPeripheralStateDisconnected)
+    if (connectedGameTile)
     {
-        [centralManager cancelPeripheralConnection:connectedGameTile];
-        state = kDisconnectingFromGameTile;
+        return [connectedGameTile name];
     }
     else
     {
-        state = kReadyToScanForGameTiles;
+        return nil;
+    }
+}
+
+- (void)disconnectFromGameTile
+{
+    NSLog(@"Initiating disconnect from GameTile");
+    if ([connectedGameTile state] != CBPeripheralStateDisconnected)
+    {
+        state = kDisconnectingFromGameTile;
+        [centralManager cancelPeripheralConnection:connectedGameTile];
+    }
+    else
+    {
+        connectedGameTile = nil;
+        state = kScanningForGameTiles;
     }
     
     return;
@@ -241,6 +259,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (void)recoverFromError:(NSError *)error
 {
+    NSLog(@"Attempting to recover from error in state '%d'", state);
     numberOfAttemptsToRecoverFromError++;
     if (numberOfAttemptsToRecoverFromError >= kMaximumNumberOfErrorRecoveryAttempts)
     {
@@ -267,6 +286,12 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
                 discoveredGameTileNamesArray = [NSMutableArray new];
                 for (CBPeripheral *peripheral in discoveredGameTilePeripheralsArray)
                 {
+                    NSString *peripheralName = [peripheral name];
+                    if (!peripheralName)
+                    {
+                        peripheralName = @"Unknown";
+                    }
+                    
                     [discoveredGameTileNamesArray addObject:(NSString *)[peripheral name]];
                 }
                 state = kScanningForGameTiles;
@@ -437,11 +462,13 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (void)discoverGameTileServices
 {
+    NSLog(@"Attempting to discover services for GameTile with name: '%@'", [connectedGameTile name]);
     [connectedGameTile discoverServices:[NSArray arrayWithObject:[CBUUID UUIDWithString:[kGameTileConfigurationServiceUUIDString copy]]]];
 }
 
 - (void)discoverGameTileCharacteristics
 {
+    NSLog(@"Attempting to discover characteristics for GameTile with name: '%@'", [connectedGameTile name]);
     [connectedGameTile discoverCharacteristics:
      [NSArray arrayWithObjects: [CBUUID UUIDWithString:[kGameTileDisplayStringCharacteristicUUIDString copy]],
       [CBUUID UUIDWithString:[kGameTileImageTargetIDCharacteristicUUIDString copy]],
@@ -451,8 +478,10 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (void)handleInvalidPeripheral
 {
-    [discoveredInvalidPeripheralsArray addObject:connectedGameTile];
-    [discoveredGameTileNamesArray removeObjectAtIndex:IDThatWasChosenToConnectTo];
+    NSLog(@"Handling Invalid peripheral with name: '%@'", [connectedGameTile name]);
+    [discoveredInvalidPeripheralsArray  addObject:connectedGameTile];
+    [discoveredGameTilePeripheralsArray removeObjectAtIndex:IDThatWasChosenToConnectTo];
+    [discoveredGameTileNamesArray       removeObjectAtIndex:IDThatWasChosenToConnectTo];
     if ([connectedGameTile state] != CBPeripheralStateDisconnected)
     {
         [centralManager cancelPeripheralConnection:connectedGameTile];
@@ -473,7 +502,8 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (void) centralManagerDidUpdateState:(CBCentralManager *)central // move this method up higher for progressive reading
 {
-	switch ([centralManager state]) {
+	NSLog(@"Central manager updated its state to: %d", [central state]);
+    switch ([centralManager state]) {
 		case CBCentralManagerStatePoweredOff:
 			if (state == kNotInitialized || state == kInitializing || state == kReadyToScanForGameTiles)
             {
@@ -511,10 +541,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 		case CBCentralManagerStatePoweredOn:
             state = kReadyToScanForGameTiles;
             
-            // TODO manage internal data structures
-            
             // Retrieve available devices without scanning
-			
             // we're not going to bother implementing saved devices
             [centralManager retrieveConnectedPeripheralsWithServices:
              [NSArray arrayWithObject:[CBUUID UUIDWithString:[kGameTileConfigurationServiceUUIDString copy]]]];
@@ -546,10 +573,14 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     if (![discoveredGameTilePeripheralsArray containsObject:peripheral])
     {
         // check the allow duplicates option
-        
-        NSLog(@"Peripheral with name %@ found", [peripheral name]);
+        NSString *peripheralName = [advertisementData objectForKey:CBAdvertisementDataLocalNameKey];
+        if (!peripheralName)
+        {
+            peripheralName = @"Unknown";
+        }
+        NSLog(@"Peripheral with name %@ found", peripheralName);
         [discoveredGameTilePeripheralsArray addObject:peripheral];
-        [discoveredGameTileNamesArray addObject:[peripheral name]];    // add error reporting
+        [discoveredGameTileNamesArray       addObject:peripheralName];
         [self notifyDelegateWithError:nil];
     }
 }
@@ -579,6 +610,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
+    NSLog(@"Disconnecting from peripheral with name: '%@'", [peripheral name]);
     // conectionstate management
     if (peripheral != connectedGameTile)
     {
@@ -592,13 +624,20 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
         {
             case CBErrorConnectionTimeout:
             case CBErrorPeripheralDisconnected: // the peripheral disconnected us, lets try to reconnect
-                [centralManager connectPeripheral:connectedGameTile options:nil];
-                state = kConnectingToGameTile;
-                numberOfConnectionAttempts++;
+                NSLog(@"Peripheral disconnected or timed out, trying to connect again.");
+                
                 if (numberOfConnectionAttempts > kMaximumNumberOfConnectionAttempts)
                 {
                     [self notifyDelegateWithError:ARMErrorWithCode(kReconnectionLimitExceededNotificationErrorCode)];
+                    connectedGameTile = nil;
+                    state = kScanningForGameTiles;
+                    return;
                 }
+                
+                [centralManager connectPeripheral:connectedGameTile options:nil];
+                state = kConnectingToGameTile;
+                numberOfConnectionAttempts++;
+                return;
                 break;
                 
             default:
@@ -608,6 +647,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
         }
         
     }
+    // we fell through the Conditionals, back up and try again
     gameTileConfigurationService = nil;
     gameTileDisplayStringCharacteristic = nil;
     gameTileImageTargetIDCharacteristic = nil;
@@ -625,6 +665,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (void) peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *) error
 {
+    NSLog(@"Discovered services for peripheral with name: '%@'", [peripheral name]);
     // check if I canceled the connection and if it is the right peripheral
     if (!connectedGameTile)
     {
@@ -676,6 +717,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 - (void) peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service
 			  error:(NSError *)error
 {
+    NSLog(@"Discovered characteristics for peripheral with name: '%@'", [peripheral name]);
 	NSArray *discoveredCharacteristics = [service characteristics];
 	
 	if (!connectedGameTile)
@@ -747,9 +789,9 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 //------------------Characteristic Read/Write------------------------------//
 - (void) peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
-    if (connectedGameTile == nil)
+    if (connectedGameTile == nil || state == kDisconnectingFromGameTile)
     {
-        NSLog(@"Received peripheral write message when connectedGameTile is nil");
+        NSLog(@"Received peripheral write message when connectedGameTile is nil or we are disconnecting from the game tile");
         return;
     }
     else if (peripheral != connectedGameTile)
@@ -759,7 +801,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     }
     else if (error)
     {
-		NSLog(@"Error writing value to characteristic: %@\n, retrying...", [error localizedDescription]);
+		NSLog(@"Error writing value to characteristic: '%@', retrying...", [error localizedDescription]);
 
         // figure out what to do with the state
         //TODO
@@ -770,6 +812,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
         }
         else
         {
+            [self disconnectFromGameTile];
             [self notifyDelegateWithError:ARMErrorWithCode(kDataAttemptLimitExceededNotificationErrorCode)];
         }
         
@@ -777,6 +820,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 	}
     
     displayStringHasBeenWritenToGameTile = YES;
+    NSLog(@"Successfully wrote User Display String to the GameTile");
     if (valueStringReadFromImageTargetIDCharacteristic)
     {
         state = kCompletedExchangingDataWithGameTile;
@@ -790,9 +834,9 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 {
     //update connectionstatus
     //update delegate
-	if (connectedGameTile == nil)
+	if (connectedGameTile == nil || state == kDisconnectingFromGameTile)
     {
-        NSLog(@"Received peripheral read message when connectedGameTile is nil");
+        NSLog(@"Received peripheral read message when connectedGameTile is nil or we are disconnecting from the game tile");
         return;
     }
     else if (peripheral != connectedGameTile)
@@ -802,8 +846,13 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     }
     else if (error)
     {
-		NSLog(@"Error reading value from characteristic: %@\n, retrying", [error localizedDescription]);
-        [self notifyDelegateWithError:error];
+       if ([[error domain] isEqualToString:CBATTErrorDomain] && [error code] == CBATTErrorReadNotPermitted)
+        {
+            [self notifyDelegateWithError:ARMErrorWithCode(kConnectedPeripheralIsNotAGameTileNotificationErrorCode)];
+            return;
+        }
+		NSLog(@"Error reading value from characteristic: '%@', retrying", [error localizedDescription]);
+        
         // figure out what to do with the state
         //TODO
         if (numberOfReadAttempts < kMaximumNumberOfReadAttempts)
@@ -813,6 +862,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
         }
         else
         {
+            [self disconnectFromGameTile];
             [self notifyDelegateWithError:ARMErrorWithCode(kDataAttemptLimitExceededNotificationErrorCode)];
         }
         return;
@@ -820,10 +870,13 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
     
 	valueStringReadFromImageTargetIDCharacteristic = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]; //Endinaness warning!!!
+    NSLog(@"Successfully read the string '%@' from the GameTile!", valueStringReadFromImageTargetIDCharacteristic);
+    
+    [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:valueStringReadFromImageTargetIDCharacteristic];
     if (displayStringHasBeenWritenToGameTile)
     {
-        [self notifyDelegateWithError:nil];
         state = kCompletedExchangingDataWithGameTile;
+        [self notifyDelegateWithError:nil];
     }
 }
 
