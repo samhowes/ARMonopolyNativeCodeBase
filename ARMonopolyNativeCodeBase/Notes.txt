@@ -11,22 +11,22 @@ Tasks:
  F Re-launch screen
  F Add user hints about finding a game tile
 
-Networking Notes:
- 
-TODO:
-  √ Post username and device ID
-    √ Receive and Set the client-id cookie
-    √ Receive the image URL location
-  √ PUT the image to the URL
-    √ Generate the PUT request
-    √ PUT the actual image to the URL
-  √ GET Available game sessions
-  √ Join a session
-    √ Receive users in the session
-    √ Download Users URLS
-  √ Create new session
-  √ Leave session
-  - Preserve state on navigation
+Tests for Bluetooth
+ √ Properly initialize and handle user notification for turning on bluetooth.
+ √ Properly scan and detect devices running the GameTile Configuration Service
+    - Scanning and detecting a device works, but the iPad doesn't want to show my GTCS service as running.
+ - Connect to peripheral
+  - Do I stop scanning here? I think for my purposes, yes.
+ - Disconnect from peripheral
+   - Scan for tiles again
+ - Scan peripheral for services
+  - what if I cancel here?
+ - Scan service for characteristics
+  - what if i cancel here?
+ - Read GTCS ImageTargetID
+  - what if I cancel here?
+ - Write GTCS User Display String
+  - what if I cancel here?
  
 
 Bugs:

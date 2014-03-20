@@ -74,9 +74,20 @@
 	return self;
 }
 
+- (BOOL)isReadyToConnectToGameTile
+{
+    if (playerDisplayName)
+    {
+        return YES;
+    }
+    
+    return NO;
+}
+
 - (BOOL)isReadyForLogin
 {
-    if (playerDisplayName && playerDisplayImage && gameTileImageTargetID)
+    if ([self isReadyToConnectToGameTile] &&
+        playerDisplayName && playerDisplayImage && gameTileImageTargetID)
     {
         return YES;
     }

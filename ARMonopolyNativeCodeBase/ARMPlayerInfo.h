@@ -18,6 +18,7 @@ typedef enum GameServerConnectionStatus GameServerConnectionStatus;
 /* Save the user data to a persistent archive on disk */
 - (BOOL)saveInstanceToArchive;
 
+- (BOOL)isReadyToConnectToGameTile;
 /* If we have adequate data for use with the game server */
 - (BOOL)isReadyForLogin;
 

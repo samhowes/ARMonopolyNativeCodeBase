@@ -5,33 +5,63 @@
 //  Created by Samuel Howes on 1/24/14.
 //  Copyright (c) 2014 Samuel Howes. All rights reserved.
 //
-
+#import <CoreBluetooth/CBAdvertisementData.h>
+#import <CoreBluetooth/CBUUID.h>
 #import "ARMBluetoothManager.h"
+#import "ARMPlayerInfo.h"
 
 //----------------------Bluetooth Constants-------------------------------//
 
 const NSString *ARMBluetoothManagerErrorDomain = @"ARMBluetoothManagerErrorDomain";
 
-NSString *const kGameTileConfigurationServiceUUIDString 		= @"DEADF154-0000-0000-0000-0000DEADF154";
-NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
+const NSString * kGameTileConfigurationServiceUUIDString 		= @"1123";
+const NSString * kGameTileDisplayStringCharacteristicUUIDString = @"1124";
+const NSString * kGameTileImageTargetIDCharacteristicUUIDString  = @"1125";
 
+const NSInteger kMaximumNumberOfConnectionAttempts =            4;
+const NSInteger kMaximumNumberOfWriteAttempts =                 4;
+const NSInteger kMaximumNumberOfReadAttempts =                  4;
+const NSInteger kMaximumNumberOfAttributeDiscoveryAttempts =    4;
+
+const NSInteger kMaximumNumberOfErrorRecoveryAttempts =         10;
+
+
+NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
+{
+    return [NSError errorWithDomain:[ARMBluetoothManagerErrorDomain copy] code:code userInfo:nil];
+}
 
 @interface ARMBluetoothManager () <CBCentralManagerDelegate, CBPeripheralDelegate> {
 	
     CBCentralManager 	*centralManager;
-	NSString			*uuidStringToScanWith;
-	
-	CBService			*tileConfigurationService;
-	CBCharacteristic	*tileDisplayStringCharacteristic;
-	
-	CBUUID				*tileConfigurationServiceUUID;
-	CBUUID				*tileDisplayStringUUID;
-	
-	NSString			*stringToWriteToTile;
-	
+    
+    NSMutableArray      *discoveredGameTilePeripheralsArray;
+    NSMutableArray      *discoveredInvalidPeripheralsArray;
+    
+    CBPeripheral        *connectedGameTile;
+    
+    CBService           *gameTileConfigurationService;
+    
+    CBCharacteristic    *gameTileDisplayStringCharacteristic;
+    CBCharacteristic    *gameTileImageTargetIDCharacteristic;
+    
+    NSString            *valueStringReadFromImageTargetIDCharacteristic;
+    
+    ARMGameTileIDType   IDThatWasChosenToConnectTo;
+    
+    NSInteger           numberOfConnectionAttempts;
+    NSInteger           numberOfWriteAttempts;
+    NSInteger           numberOfReadAttempts;
+    NSInteger           numberOfAttributeDiscoveryAttempts;
+    
+    NSInteger           numberOfAttemptsToRecoverFromError;
+    
+    BOOL displayStringHasBeenWritenToGameTile;
 }
 
 @property (readwrite) BluetoothManagerState state;
+@property (readwrite) NSString *connectedGameTileNameString;
+@property (readwrite) NSMutableArray *discoveredGameTileNamesArray;
 
 @end
 
@@ -40,13 +70,15 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
 
 @synthesize delegate;
 @synthesize state;
+@synthesize connectedGameTileNameString;
+@synthesize discoveredGameTileNamesArray;
 
 #pragma mark - Public Actions
 /****************************************************************************/
 /*									Lifecycle								*/
 /****************************************************************************/
 
-+ (id) sharedInstance
++ (id)sharedInstance
 {
 	static ARMBluetoothManager *this = nil;		// Get a permanent pointer to our main instance
 
@@ -55,15 +87,6 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
 	}
 	
 	return this;
-}
-
-- (void)finishTasksWithoutDelegateAndPreserveState
-{
-	//if (centralManager) [centralManager stopScan];
-	
-    //TODO
-    delegate = nil;
-    // do something better with the central manager
 }
 
 - (id)init
@@ -78,6 +101,10 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
 - (void)startBluetooth
 {
     // Get the System BT Manager kicked off with the main queue
+    if (state == kFatalUnrecoverable)
+    {
+        return;
+    }
     if (!centralManager)
     {
         state = kInitializing;
@@ -85,12 +112,39 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
     }
     else
     {
-        if ([centralManager state] == CBCentralManagerStatePoweredOff)
-        {
-            state = kWaitingForBluetoothToBeEnabled;
-            [self notifyDelegateWithError:[NSError errorWithDomain:[ARMBluetoothManagerErrorDomain copy] code:kBluetoothPoweredOffWhenResumingErrorCode userInfo:nil]];
-        }
+        state = kInitializing;
+        [self centralManagerDidUpdateState:centralManager];
     }
+}
+
+- (void)finishTasksWithoutDelegateAndPreserveState
+{
+    //TODO
+    delegate = nil;
+    [centralManager stopScan];
+    switch (state)
+    {
+        case kFatalUnauthorized: break;
+        case kFatalUnsupported: break;
+        case kNotInitialized: break;
+        case kInitializing: break;
+        case kWaitingForBluetoothToBeEnabled: break;
+        case kReadyToScanForGameTiles: break;
+            
+        case kResettingBecauseOfSystemReset:
+            state = kNotInitialized;
+            break;
+            
+        case kScanningForGameTiles:
+            if (centralManager) [centralManager stopScan];
+            state = kReadyToScanForGameTiles;
+            break;
+            
+        default:
+            state = kNotInitialized;
+            break;
+    }
+    // do something better with the central manager
 }
 
 - (void)notifyDelegateWithError:(NSError *)error
@@ -102,6 +156,316 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
 }
 
 
+#pragma mark Discovery
+/****************************************************************************/
+/*                          Public Methods                                  */
+/****************************************************************************/
+
+- (NSError *)scanForGameTiles
+{
+	if (state != kReadyToScanForGameTiles || [centralManager state] != CBCentralManagerStatePoweredOn)
+    {
+        // Only start scanning if the bluetooth is actually on
+		return ARMErrorWithCode(kUnableToScanForGameTilesErrorCode);
+	}
+	state = kScanningForGameTiles;
+    IDThatWasChosenToConnectTo = -1;
+	NSArray *serviceUUIDToScanForArray = [NSArray new];//[NSArray arrayWithObject:[CBUUID UUIDWithString:kGameTileConfigurationServiceUUIDString]];
+    // comment on these options
+	//NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:CBCentralManagerScanOptionAllowDuplicatesKey];
+    
+	[centralManager scanForPeripheralsWithServices:serviceUUIDToScanForArray options:nil];
+    // there must be a couple more checks i need here....
+    return nil;
+}
+
+- (NSError *)connectToGameTileWithID:(ARMGameTileIDType)gameTileID
+{
+    if (state != kScanningForGameTiles)
+    {
+        return ARMErrorWithCode(kNotReadyToConnectToGameTileErrorCode);
+    }
+    else if (connectedGameTile)
+    {
+        // if we're already connected to a game tile, don't connect to another one
+        return ARMErrorWithCode(kAlreadyConnectedToGameTileErrorCode);
+    }
+    CBPeripheral *gameTileToConnectTo = [discoveredGameTilePeripheralsArray objectAtIndex:gameTileID];
+	if (!gameTileToConnectTo)
+    {
+        return ARMErrorWithCode(kInvalidGameTileIDErrorCode);
+    }
+    
+    IDThatWasChosenToConnectTo = gameTileID;
+    valueStringReadFromImageTargetIDCharacteristic = nil;
+    displayStringHasBeenWritenToGameTile = NO;
+    numberOfConnectionAttempts = 0;
+    
+    [centralManager connectPeripheral:gameTileToConnectTo options:nil];
+    state = kConnectingToGameTile; // only change state after we know there are no errors
+    
+    return nil;
+}
+
+- (NSError *)exchangeDataWithConnectedGameTile
+{
+    if (state != kReadyToExchangeDataWithGameTile || !connectedGameTile
+        || !gameTileImageTargetIDCharacteristic || !gameTileDisplayStringCharacteristic)
+    {
+        return ARMErrorWithCode(kNotReadyToExchangeDataErrorCode);
+    }
+    
+    
+    state = kExchangingDataWithGameTile;
+    numberOfWriteAttempts++;
+    numberOfReadAttempts++;
+    [connectedGameTile writeValue:[[[ARMPlayerInfo sharedInstance] playerDisplayName] dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:gameTileDisplayStringCharacteristic type:CBCharacteristicWriteWithResponse];
+    [connectedGameTile readValueForCharacteristic:gameTileImageTargetIDCharacteristic];
+    return nil;
+}
+
+- (void)disconnectFromGameTile
+{
+    if ([connectedGameTile state] != CBPeripheralStateDisconnected)
+    {
+        [centralManager cancelPeripheralConnection:connectedGameTile];
+        state = kDisconnectingFromGameTile;
+    }
+    else
+    {
+        state = kReadyToScanForGameTiles;
+    }
+    
+    return;
+}
+
+- (void)recoverFromError:(NSError *)error
+{
+    numberOfAttemptsToRecoverFromError++;
+    if (numberOfAttemptsToRecoverFromError >= kMaximumNumberOfErrorRecoveryAttempts)
+    {
+        [self notifyDelegateWithError:ARMErrorWithCode(kFatalErrorStateNotificationErrorCode)];
+        state = kFatalUnrecoverable;
+        centralManager = nil;
+        return;
+    }
+    
+    if ([[error domain] isEqualToString:[ARMBluetoothManagerErrorDomain copy]])
+    {
+        // reset our variables to a valid state so this error doesn't happen again
+        switch ([error code])
+        {
+            case kUnableToScanForGameTilesErrorCode:
+                // lets reinitialize with our standard method
+                state = kInitializing;
+                [self centralManagerDidUpdateState:centralManager];
+                return;
+                break;
+                
+            case kInvalidGameTileIDErrorCode:
+                // We'll synchronize our arrays here and that will solve the problem
+                discoveredGameTileNamesArray = [NSMutableArray new];
+                for (CBPeripheral *peripheral in discoveredGameTilePeripheralsArray)
+                {
+                    [discoveredGameTileNamesArray addObject:(NSString *)[peripheral name]];
+                }
+                state = kScanningForGameTiles;
+                return;
+                break;
+                
+            case kNotReadyToExchangeDataErrorCode:
+                // Try to rediscover the services of the game tile
+                numberOfAttributeDiscoveryAttempts++;
+                state = kDiscoveringGameTileAttributes;
+                [self discoverGameTileServices];
+                return;
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    // We fell through the above statement, recover based on internal state
+    if ([centralManager state] != CBCentralManagerStatePoweredOn)
+    {
+        // assume that our state variable is invalid
+        switch ([centralManager state])
+        {
+            case CBCentralManagerStatePoweredOff:
+                state = kWaitingForBluetoothToBeEnabled;
+                    
+                [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothPoweredOffNotificationErrorCode)];
+                // TODO manage my data structures here
+                break;
+                
+            case CBCentralManagerStateUnauthorized:
+                /* Tell user the app is not allowed and cleanup */
+                state = kFatalUnauthorized;
+                [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothUnauthorizedNotificationErrorCode)];
+                // clean some things up if necessary
+                //TODO
+                break;
+                
+            case CBCentralManagerStateUnsupported:  //cleanup
+                state = kFatalUnsupported;
+                [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothUnsupportedNotificationErrorCode)];
+                break;
+                
+            case CBCentralManagerStateUnknown: // cleanup
+                /* Not sure what to do, lets just wait until something else happens */
+                state = kInitializing;
+                
+                [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothUnknownStateNotificationErrorCode)];
+                break;
+                
+            case CBCentralManagerStateResetting:
+                state = kResettingBecauseOfSystemReset;
+                [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothResettingNotificationErrorCode)];
+                // TODO: Manage internal data structures
+                break;
+        }
+    }
+    else
+    {
+        // we've narrowed it down to a state with a valid Central Manager
+        // at a minimum, we are in the ReadyToScanForGameTiles state
+        // assume that the state variable is invalid and reset it to a valid
+        // value and execute the right action to get us back on track.
+        
+        switch (state)
+        {
+            // This is okay, start trying to exchange data again
+            case kCompletedExchangingDataWithGameTile:
+            case kExchangingDataWithGameTile:
+            {
+                switch ([connectedGameTile state])
+                {
+                    case CBPeripheralStateConnected:
+                        // lets rediscover our attributes
+                        state = kDiscoveringGameTileAttributes;
+                        [self discoverGameTileServices];
+                        break;
+                    
+                    case CBPeripheralStateConnecting:
+                        state = kConnectingToGameTile;
+                        break;
+                        
+                    case CBPeripheralStateDisconnected:
+                        if (numberOfConnectionAttempts < kMaximumNumberOfConnectionAttempts)
+                        {
+                            // try another connection
+                            numberOfConnectionAttempts++;
+                            [centralManager connectPeripheral:connectedGameTile options:nil];
+                        }
+                        else
+                        {
+                            // the view controller will take it from here
+                            state = kReadyToScanForGameTiles;
+                            connectedGameTile = nil;
+                            [self notifyDelegateWithError:ARMErrorWithCode(kReconnectionLimitExceededNotificationErrorCode)];
+                        }
+                        return; // we don't need any more error handling from here
+                        break;
+                        
+                    default:
+                        connectedGameTile = nil;
+                        break;
+                }
+            }
+                break;
+            
+            // Not that bad, lets try to discover our peripheral's attributes again
+            case kDiscoveringGameTileAttributes:
+            case kReadyToExchangeDataWithGameTile:
+                if (numberOfAttributeDiscoveryAttempts < kMaximumNumberOfAttributeDiscoveryAttempts)
+                {
+                    state = kDiscoveringGameTileAttributes;
+                    numberOfAttributeDiscoveryAttempts++;
+                    [self discoverGameTileServices];
+                }
+                else
+                {
+                    // We've exceeded our discovery attempts, it looks like we don't actually want this gametile
+                    [self handleInvalidPeripheral];
+                    return;
+                }
+                break;
+             
+            // Make sure we have canceled the connection and scan for game tiles again later
+            case kConnectedToUnknownPeripheral:
+                [self handleInvalidPeripheral];
+                return;
+                break;
+                
+            // We know that the central manager is on, so we can scan for tiles
+            // Set the state accordingly, and tell our delegate that we are valid
+            case kNotInitialized:
+            case kInitializing:
+            case kWaitingForBluetoothToBeEnabled:
+            case kResettingBecauseOfSystemReset:
+            case kFatalUnauthorized:
+            case kFatalUnsupported:
+                
+            // Assume our connection failed and we have to scan for game tiles again
+            case kConnectingToGameTile:
+            case kDisconnectingFromGameTile:
+                
+            case kScanningForGameTiles:
+            case kReadyToScanForGameTiles:
+            default:
+                connectedGameTile = nil;
+                discoveredGameTileNamesArray = nil;
+                discoveredGameTilePeripheralsArray = nil;
+                discoveredInvalidPeripheralsArray = nil;
+                gameTileConfigurationService = nil;
+                gameTileDisplayStringCharacteristic = nil;
+                gameTileImageTargetIDCharacteristic = nil;
+                valueStringReadFromImageTargetIDCharacteristic = nil;
+                
+                numberOfReadAttempts = 0;
+                numberOfWriteAttempts = 0;
+                numberOfConnectionAttempts = 0;
+                
+                state = kReadyToScanForGameTiles;
+                [self notifyDelegateWithError:nil];
+                break;
+        }
+    }
+
+}
+
+- (void)discoverGameTileServices
+{
+    [connectedGameTile discoverServices:[NSArray arrayWithObject:[CBUUID UUIDWithString:[kGameTileConfigurationServiceUUIDString copy]]]];
+}
+
+- (void)discoverGameTileCharacteristics
+{
+    [connectedGameTile discoverCharacteristics:
+     [NSArray arrayWithObjects: [CBUUID UUIDWithString:[kGameTileDisplayStringCharacteristicUUIDString copy]],
+      [CBUUID UUIDWithString:[kGameTileImageTargetIDCharacteristicUUIDString copy]],
+      nil]
+                                    forService:gameTileConfigurationService];
+}
+
+- (void)handleInvalidPeripheral
+{
+    [discoveredInvalidPeripheralsArray addObject:connectedGameTile];
+    [discoveredGameTileNamesArray removeObjectAtIndex:IDThatWasChosenToConnectTo];
+    if ([connectedGameTile state] != CBPeripheralStateDisconnected)
+    {
+        [centralManager cancelPeripheralConnection:connectedGameTile];
+        state = kDisconnectingFromGameTile;
+    }
+    else
+    {
+        state = kReadyToScanForGameTiles;
+        connectedGameTile = nil;
+    }
+    [self notifyDelegateWithError:ARMErrorWithCode(kConnectedPeripheralIsNotAGameTileNotificationErrorCode)];
+}
+
 #pragma mark - CBManagerDelegate
 /****************************************************************************/
 /*						CBManager Delagate methods							*/
@@ -111,11 +475,11 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
 {
 	switch ([centralManager state]) {
 		case CBCentralManagerStatePoweredOff:
-			if (state == kNotInitialized || state == kInitializing || state == kReadyToScan)
+			if (state == kNotInitialized || state == kInitializing || state == kReadyToScanForGameTiles)
             {
                 state = kWaitingForBluetoothToBeEnabled;
                 
-                [self notifyDelegateWithError:[NSError errorWithDomain:[ARMBluetoothManagerErrorDomain copy] code:kBluetoothPoweredOffErrorCode userInfo:nil]];
+                [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothPoweredOffNotificationErrorCode)];
             }
             // TODO manage my data structures here
             
@@ -126,26 +490,26 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
 		case CBCentralManagerStateUnauthorized: //cleanup
 			/* Tell user the app is not allowed and cleanup */
             state = kFatalUnauthorized;
-            [self notifyDelegateWithError:[NSError errorWithDomain:[ARMBluetoothManagerErrorDomain copy] code:kBluetoothUnauthorizedErrorCode userInfo:nil]];
+            [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothUnauthorizedNotificationErrorCode)];
             // clean some things up if necessary
             //TODO
             break;
-		
+            
         case CBCentralManagerStateUnsupported:  //cleanup
 			/*hopefully the framework will tell the user */
             state = kFatalUnsupported;
-			[self notifyDelegateWithError:[NSError errorWithDomain:[ARMBluetoothManagerErrorDomain copy] code:kBluetoothUnsupportedErrorCode userInfo:nil]];
+			[self notifyDelegateWithError:ARMErrorWithCode(kBluetoothUnsupportedNotificationErrorCode)];
             break;
 			
 		case CBCentralManagerStateUnknown: // cleanup
 			/* Not sure what to do, lets just wait until something else happens */
             //TODO Figure out what to set the state to and do here
 			
-            [self notifyDelegateWithError:[NSError errorWithDomain:[ARMBluetoothManagerErrorDomain copy] code:kBluetoothUnknownStateErrorCode userInfo:nil]];
+            [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothUnknownStateNotificationErrorCode)];
             break;
 			
 		case CBCentralManagerStatePoweredOn:
-            state = kReadyToScan;
+            state = kReadyToScanForGameTiles;
             
             // TODO manage internal data structures
             
@@ -153,7 +517,7 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
 			
             // we're not going to bother implementing saved devices
             [centralManager retrieveConnectedPeripheralsWithServices:
-             [NSArray arrayWithObject:[CBUUID UUIDWithString:kGameTileConfigurationServiceUUIDString]]];
+             [NSArray arrayWithObject:[CBUUID UUIDWithString:[kGameTileConfigurationServiceUUIDString copy]]]];
             
             [self notifyDelegateWithError:nil];
 			
@@ -161,249 +525,307 @@ NSString *const kGameTileDisplayStringCharacteristicUUIDString 	= @"4431";
 			
 		case CBCentralManagerStateResetting:
             state = kResettingBecauseOfSystemReset;
-            [self notifyDelegateWithError:[NSError errorWithDomain:[ARMBluetoothManagerErrorDomain copy] code:kBluetoothResettingErrorCode userInfo:nil]];
+            [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothResettingNotificationErrorCode)];
             // TODO: Manage internal data structures
 			break;
 	}
 }
 
-#pragma mark Discovery
-/****************************************************************************/
-/*								Discovery                                   */
-/****************************************************************************/
-/*
-- (void)scanForGameTiles
+- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral
+     advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
-	if ([centralManager state] != CBCentralManagerStatePoweredOn) {		// Only start scanning if the bluetooth is actually on
-        // change this statement to make sure that the view controller only calls this in the right order
-		return;
-	}
-	
-	NSArray *uuidArray = [NSArray arrayWithObjects:[CBUUID UUIDWithString:uuidStringToScanWith],nil];   //rename local variable
-    // comment on these options
-	NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:CBCentralManagerScanOptionAllowDuplicatesKey];
-	
-	[centralManager scanForPeripheralsWithServices:uuidArray options:options]; // there must be a couple more checks i need here....
+    if (!discoveredGameTilePeripheralsArray)
+    {
+        discoveredGameTilePeripheralsArray = [NSMutableArray new];
+    }
+    if (!discoveredGameTileNamesArray)
+    {
+        discoveredGameTileNamesArray = [NSMutableArray new];
+    }
+    
+    if (![discoveredGameTilePeripheralsArray containsObject:peripheral])
+    {
+        // check the allow duplicates option
+        
+        NSLog(@"Peripheral with name %@ found", [peripheral name]);
+        [discoveredGameTilePeripheralsArray addObject:peripheral];
+        [discoveredGameTileNamesArray addObject:[peripheral name]];    // add error reporting
+        [self notifyDelegateWithError:nil];
+    }
 }
 
-*/
-#pragma mark Connectivity
-/****************************************************************************/
-/*						Connection/Disconnection                            */
-/****************************************************************************/
-/*
-- (void) connectPeripheral:(CBPeripheral *)peripheral // WHen is this executed and by who? this should be an internal mapping after receiving an index path from tableview:didselectrowatindexpath:
-{
-	//receive instruction from viewcontroller
-	[centralManager connectPeripheral:peripheral options:nil];
-}
-
-- (void) disconnectPeripheral       // I need some state check here, as well as error reporting
-{
-    //connectionstatuscheck
-	tileDisplayStringCharacteristic = nil;
-	tileConfigurationService = nil;
-	//if (currentlyConnectedDevice)
-	//{
-//		[centralManager cancelPeripheralConnection:currentlyConnectedDevice];
-//	}
-    //connectionstatus update
-}
-
-*/
-#pragma mark Read/Write
-/****************************************************************************/
-/*								Read/Write		                            */
-/****************************************************************************/
-/*
-- (void) readStringFromPeripheral
-{
-	if (!tileDisplayStringCharacteristic){
-		NSLog(@"Error: Peripheral not yet connected!");
-		return;
-	}
-//	[currentlyConnectedDevice readValueForCharacteristic:tileDisplayStringCharacteristic];
-}
-
-- (void) writeStringToPeripheral:(NSString *)stringToWrite
-{
-	if (stringToWrite) {						// Make sure to store the string, because we might not be able to write it now
-		stringToWriteToTile = stringToWrite;
-		NSLog(@"String queued for delivery");
-	}
-	if (tileDisplayStringCharacteristic) {		// Make sure our peripheral is actually connected.
-//		[currentlyConnectedDevice writeValue:[stringToWriteToTile dataUsingEncoding:NSASCIIStringEncoding]
-//						   forCharacteristic:tileDisplayStringCharacteristic
-//										type:CBCharacteristicWriteWithResponse];
-	}
-}
-*/
-#pragma mark Discovery
-//----------------------Discovery Functions--------------------------------//
-/*- (void) centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral
-      advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
-{
-	if (![foundPeripherals containsObject:peripheral]) { // check the allow duplicates option
-        // check if the array is initialized
-		[foundPeripherals addObject:peripheral];
-		[discoveryDelegate discoveryDidRefresh];    // add error reporting
-	}
-}*/
 
 #pragma mark Connectivity
 //----------------------Connect/Disconnect--------------------------------//
-/*
-- (void) centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
+
+- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
-	NSLog(@"Peripheral Connected");
-    //update connection state
-    //check if it is the right peripheral
-	peripheral.delegate = self;
-	currentlyConnectedDevice = peripheral;
-    // update the view controller
+	NSLog(@"Peripheral with Name: %@ Connected", [peripheral name]);
+    
+	[peripheral setDelegate:self];
+	connectedGameTile = peripheral;
+    connectedGameTileNameString = [peripheral name];
+    state = kDiscoveringGameTileAttributes;
+    gameTileConfigurationService = nil;
+    gameTileDisplayStringCharacteristic = nil;
+    gameTileImageTargetIDCharacteristic = nil;
+    numberOfReadAttempts = 0;
+    numberOfWriteAttempts = 0;
+    
+    numberOfAttributeDiscoveryAttempts = 1;
+    [self discoverGameTileServices];
+    [self notifyDelegateWithError:nil];
 }
 
-- (void) centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral
-				  error:(NSError *)error
+- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
     // conectionstate management
-	if (peripheral != currentlyConnectedDevice) {
-		NSLog(@"Error disconnected peripheral is not the peripheral this app is managing!");
-		return;
-	}
-	if (error) {
-		NSLog(@"Error with disconnecting peripheral: %@", error);
-		return;
-	}
-	currentlyConnectedDevice = nil;
-    //update the view controller
-} */
+    if (peripheral != connectedGameTile)
+    {
+        NSLog(@"Error disconnected peripheral is not the peripheral this app is managing!");
+        // don't change state because I should still be disconnecting my peripheral
+        return;
+    }
+    else if (state != kDisconnectingFromGameTile && error)
+    {
+        switch ([error code])
+        {
+            case CBErrorConnectionTimeout:
+            case CBErrorPeripheralDisconnected: // the peripheral disconnected us, lets try to reconnect
+                [centralManager connectPeripheral:connectedGameTile options:nil];
+                state = kConnectingToGameTile;
+                numberOfConnectionAttempts++;
+                if (numberOfConnectionAttempts > kMaximumNumberOfConnectionAttempts)
+                {
+                    [self notifyDelegateWithError:ARMErrorWithCode(kReconnectionLimitExceededNotificationErrorCode)];
+                }
+                break;
+                
+            default:
+                [self notifyDelegateWithError:error];
+                return;
+                break;
+        }
+        
+    }
+    gameTileConfigurationService = nil;
+    gameTileDisplayStringCharacteristic = nil;
+    gameTileImageTargetIDCharacteristic = nil;
+    numberOfConnectionAttempts = 0;
+    connectedGameTile = nil;
+    state = kReadyToScanForGameTiles;
+    [self notifyDelegateWithError:nil]; // ... maybe I want to change this to a completion handler
+ }
 
 #pragma mark - CBPeripheralDelegate - Discovery
 /****************************************************************************/
 /*					CBPeripheral Delagate methods							*/
 /****************************************************************************/
 //----------------------Discovery Functions---------------------------------//
-/*
+
 - (void) peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *) error
 {
-	//connectionStatusUpdate
-    //report error to view controller
-    if (peripheral != currentlyConnectedDevice)
+    // check if I canceled the connection and if it is the right peripheral
+    if (!connectedGameTile)
+    {
+        return;
+    }
+    else if (peripheral != connectedGameTile)
 	{
-		NSLog(@"Wrong peripheral sent to this app:%@\n", peripheral.name);
+		NSLog(@"Wrong peripheral sent to this app:%@ ignoring.\n", peripheral.name);
 		return;
 	}
 	else if (error)
 	{
-		NSLog(@"Error: %@\n", error);
+		[self notifyDelegateWithError:error];
 		return;
 	}
 	
-	NSArray *services = nil;// name this better
-	NSArray *uuids = [NSArray arrayWithObjects:tileDisplayStringUUID, nil]; // semantically name this variable
+	NSArray *discoveredServices;
+	//NSArray *uuids = [NSArray arrayWithObjects:tileDisplayStringUUID, nil]; // semantically name this variable
 	
-	services = [peripheral services];
-	if (services || ![services count]) { // make this a better checking statement
-		NSLog(@"Peripheral does not have any services.");
-        //update connectionstatus
-        //update delegate
+	discoveredServices = [peripheral services];
+	if (!discoveredServices || [discoveredServices count] == 0) { // make this a better checking statement
+		NSLog(@"Peripheral is not a GameTile!");
+        [self handleInvalidPeripheral];
 		return;
 	}
 	
-	for (CBService *service in services)
+    CBUUID *gameTileConfigurationServiceCBUUID = [CBUUID UUIDWithString:[kGameTileConfigurationServiceUUIDString copy]];
+	for (CBService *service in discoveredServices)
 	{
 		NSLog(@"Service found with UUID %@", service.UUID);
 		
-		if ([service.UUID isEqual:tileDisplayStringUUID])
+		if ([[service UUID] isEqual:gameTileConfigurationServiceCBUUID])
 		{
-			tileConfigurationService = service;
-            //update connectionStatus
+			gameTileConfigurationService = service;
+            
 			break;
 		}
 	}
 	
-	if (!tileConfigurationService) {
-		NSLog(@"Error: Tile Configuration service not found! Was the correct device connected?");
-        //update the delegate
+	if (!gameTileConfigurationService) {
+        [self handleInvalidPeripheral];
 		return;
 	}
-	
-    // should this be done by the delegate?
-	[currentlyConnectedDevice discoverCharacteristics:uuids forService:tileConfigurationService];
+    
+	[self discoverGameTileCharacteristics];
 }
+
 
 - (void) peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service
 			  error:(NSError *)error
 {
-	NSArray *characteristics = [service characteristics];//rename
+	NSArray *discoveredCharacteristics = [service characteristics];
 	
-    //updateConnectionStatus
-    //notify delegate of errors
-	if (peripheral != currentlyConnectedDevice)
+	if (!connectedGameTile)
+    {
+        return;
+    }
+    else if (peripheral != connectedGameTile)
 	{
 		NSLog(@"Wrong peripheral sent to this app:%@\n", peripheral.name);
 		return;
 	}
-	else if (service != tileConfigurationService)
+	else if (service != gameTileConfigurationService)
 	{
 		NSLog(@"Wrong service reporting to this peripheral: %@\n", service.UUID);
 		return;
 	}
 	else if (error)
 	{
-		NSLog(@"Error: %@\n", error);
+        switch ([error code])
+        {
+            case CBErrorInvalidParameters:
+                [self handleInvalidPeripheral];
+                return;
+                break;
+        }
+		[self notifyDelegateWithError:error]; // we fell through
 		return;
 	}
+    else if
+    (!discoveredCharacteristics || [discoveredCharacteristics count] == 0)
+    {
+        [self handleInvalidPeripheral];
+    }
 	
+    CBUUID *gameTileDisplayStringCBUUID = [CBUUID UUIDWithString:[kGameTileDisplayStringCharacteristicUUIDString copy]];
+    CBUUID *gameTileImageTargetIDCBUUID = [CBUUID UUIDWithString:[kGameTileImageTargetIDCharacteristicUUIDString copy]];
+    
 	// Find the characteristic to set the display of the tile
-	for (CBCharacteristic *characteristic in characteristics) {
-		if ([[characteristic UUID] isEqual:tileDisplayStringUUID])
+    for (CBCharacteristic *characteristic in discoveredCharacteristics) {
+		if ([[characteristic UUID] isEqual:gameTileDisplayStringCBUUID])
 		{
-			tileDisplayStringCharacteristic = characteristic;
-			break;
+			gameTileDisplayStringCharacteristic = characteristic;
 		}
+        else if ([[characteristic UUID] isEqual:gameTileImageTargetIDCBUUID])
+        {
+            gameTileImageTargetIDCharacteristic = characteristic;
+        }
+        
+        if (gameTileDisplayStringCharacteristic && gameTileImageTargetIDCharacteristic)
+        {
+            break;
+        }
 	}
-	if (tileDisplayStringCharacteristic == nil) {
-		NSLog(@"Error: tileDisplayStringCharacteristic not found!");
-        //update delegate
-        //update connectionstatus
-		return;
+	if (!gameTileDisplayStringCharacteristic || !gameTileImageTargetIDCharacteristic)
+    {
+        [self handleInvalidPeripheral];
+        return;
 	}
+    else
+    {
+        state = kReadyToExchangeDataWithGameTile;
+        [self notifyDelegateWithError:nil];
+    }
 	
-    //do this later with the delegate
-	if (stringToWriteToTile) {					// If our string is ready to write, then write it.
-		[self writeStringToPeripheral:nil];		// We don't pass a string, because it is already stored.
-	} else {
-		[currentlyConnectedDevice readValueForCharacteristic:tileDisplayStringCharacteristic];	
-	}
-	
-} */
+}
+
 
 #pragma mark Characteristics
 //------------------Characteristic Read/Write------------------------------//
-/*
-- (void) peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
-			  error:(NSError *)error
+- (void) peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
-	//update connectionStatus
-    //update delegate with error
-    if (error) {
-		NSLog(@"Error writing value to characteristic: %@\n", [error localizedDescription]);
+    if (connectedGameTile == nil)
+    {
+        NSLog(@"Received peripheral write message when connectedGameTile is nil");
+        return;
+    }
+    else if (peripheral != connectedGameTile)
+    {
+        NSLog(@"Received peripheral write message for unknown peripheral with name %@", [peripheral name]);
+        return;
+    }
+    else if (error)
+    {
+		NSLog(@"Error writing value to characteristic: %@\n, retrying...", [error localizedDescription]);
+
+        // figure out what to do with the state
+        //TODO
+        if (numberOfWriteAttempts < kMaximumNumberOfWriteAttempts)
+        {
+            numberOfWriteAttempts++;
+            [connectedGameTile writeValue:[[[ARMPlayerInfo sharedInstance] playerDisplayName] dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:gameTileDisplayStringCharacteristic type:CBCharacteristicWriteWithResponse];
+        }
+        else
+        {
+            [self notifyDelegateWithError:ARMErrorWithCode(kDataAttemptLimitExceededNotificationErrorCode)];
+        }
+        
+        return;
 	}
+    
+    displayStringHasBeenWritenToGameTile = YES;
+    if (valueStringReadFromImageTargetIDCharacteristic)
+    {
+        state = kCompletedExchangingDataWithGameTile;
+        [self notifyDelegateWithError:nil];
+    }
 }
+
 
 - (void) peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
 			  error:(NSError *)error
 {
     //update connectionstatus
     //update delegate
-	if (error) {
-		NSLog(@"Error updating value for characteristic: %@\n", [error localizedDescription]);
+	if (connectedGameTile == nil)
+    {
+        NSLog(@"Received peripheral read message when connectedGameTile is nil");
+        return;
+    }
+    else if (peripheral != connectedGameTile)
+    {
+        NSLog(@"Received peripheral read message for unknown peripheral with name %@", [peripheral name]);
+        return;
+    }
+    else if (error)
+    {
+		NSLog(@"Error reading value from characteristic: %@\n, retrying", [error localizedDescription]);
+        [self notifyDelegateWithError:error];
+        // figure out what to do with the state
+        //TODO
+        if (numberOfReadAttempts < kMaximumNumberOfReadAttempts)
+        {
+            numberOfReadAttempts++;
+            [connectedGameTile readValueForCharacteristic:gameTileImageTargetIDCharacteristic];
+        }
+        else
+        {
+            [self notifyDelegateWithError:ARMErrorWithCode(kDataAttemptLimitExceededNotificationErrorCode)];
+        }
+        return;
 	}
-	stringReadFromPeripheral = [[NSString alloc] initWithData:characteristic.value encoding:NSASCIIStringEncoding]; //Endinaness warning!!!
-	[discoveryDelegate discoveryDidRefresh];
-} */
+
+    
+	valueStringReadFromImageTargetIDCharacteristic = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]; //Endinaness warning!!!
+    if (displayStringHasBeenWritenToGameTile)
+    {
+        [self notifyDelegateWithError:nil];
+        state = kCompletedExchangingDataWithGameTile;
+    }
+}
 
 
 @end

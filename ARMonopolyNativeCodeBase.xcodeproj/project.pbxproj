@@ -162,6 +162,21 @@
 			path = ARMonopolyNativeCodeBase/images;
 			sourceTree = "<group>";
 		};
+		A5BA84F318D7FEBE00F19C76 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */,
+				A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */,
+				A503B22818D211BB000D7595 /* ARMGameServerCommunicator.h */,
+				A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */,
+				A5F15B0718D3772F00271DD2 /* ARMGameSession.h */,
+				A5F15B0818D3772F00271DD2 /* ARMGameSession.m */,
+				A54E40B718D64B5D00D343C2 /* ARMException.h */,
+				A54E40B818D64B5D00D343C2 /* ARMException.m */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
 		A5C5BA1518C4E8E000435B10 = {
 			isa = PBXGroup;
 			children = (
@@ -286,28 +301,13 @@
 		A5C5BA7B18C4EA3D00435B10 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A5C5BA7C18C4EA4C00435B10 /* Bluetooth */,
-				A5C5BA5818C4E99B00435B10 /* ARMPlayerInfo.h */,
-				A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */,
-				A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */,
-				A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */,
-				A503B22818D211BB000D7595 /* ARMGameServerCommunicator.h */,
-				A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */,
-				A5F15B0718D3772F00271DD2 /* ARMGameSession.h */,
-				A5F15B0818D3772F00271DD2 /* ARMGameSession.m */,
-				A54E40B718D64B5D00D343C2 /* ARMException.h */,
-				A54E40B818D64B5D00D343C2 /* ARMException.m */,
-			);
-			name = Model;
-			sourceTree = "<group>";
-		};
-		A5C5BA7C18C4EA4C00435B10 /* Bluetooth */ = {
-			isa = PBXGroup;
-			children = (
 				A5C5BA6218C4E99B00435B10 /* ARMBluetoothManager.h */,
 				A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */,
+				A5C5BA5818C4E99B00435B10 /* ARMPlayerInfo.h */,
+				A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */,
+				A5BA84F318D7FEBE00F19C76 /* Network */,
 			);
-			name = Bluetooth;
+			name = Model;
 			sourceTree = "<group>";
 		};
 		A5F88A1218CE816600D8E263 /* iPad */ = {

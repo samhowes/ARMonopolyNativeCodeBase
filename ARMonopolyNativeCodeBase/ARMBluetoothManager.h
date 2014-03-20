@@ -11,26 +11,46 @@
 
 extern const NSString *ARMBluetoothManagerErrorDomain;
 
-typedef enum ARMBluetoothManagerErrorCode {
-    kBluetoothPoweredOffErrorCode = 1,
-    kBluetoothPoweredOffWhenResumingErrorCode,
-    kBluetoothUnauthorizedErrorCode,
-    kBluetoothUnsupportedErrorCode,
-    kBluetoothUnknownStateErrorCode,
-    kBluetoothResettingErrorCode
+typedef enum ARMBluetoothManagerErrorCode : NSInteger {
+    kBluetoothPoweredOffNotificationErrorCode = 1,              // Bluetooth is disabled
+    kBluetoothPoweredOffWhenResumingNotificationErrorCode,      // Messge to startBluetooth was received after initialization, but bluetooth is powered off
+    kBluetoothUnauthorizedNotificationErrorCode,                // User has not permitted BTLE access
+    kBluetoothUnsupportedNotificationErrorCode,                 // Non BTLE device
+    kBluetoothUnknownStateNotificationErrorCode,                // BT is in unknown state
+    kBluetoothResettingNotificationErrorCode,                   // BT is resetting for unknown reasons
+    kConnectedPeripheralIsNotAGameTileNotificationErrorCode,
+    kReconnectionLimitExceededNotificationErrorCode,
+    kDataAttemptLimitExceededNotificationErrorCode,
+    kFatalErrorStateNotificationErrorCode,
+    
+    kUnableToScanForGameTilesErrorCode,             // message to scan received when the CBCentral manager hasn't turned on
+    kInvalidGameTileIDErrorCode,                    // An incorrect game tile ID was sent to connect to
+    kNotReadyToConnectToGameTileErrorCode,          // returned when we are in the incorrect state for connecting to a game tile
+    kAlreadyConnectedToGameTileErrorCode,
+    kNotReadyToExchangeDataErrorCode
 } ARMBluetoothManagerErrorCode;
 
-typedef enum BluetoothManagerState {
+typedef enum BluetoothManagerState : NSInteger {
+    kFatalUnrecoverable,
     kNotInitialized,
     kInitializing,
     kWaitingForBluetoothToBeEnabled,
-    kReadyToScan,
+    kReadyToScanForGameTiles,
     kResettingBecauseOfSystemReset,
     kFatalUnauthorized,
-    kFatalUnsupported
+    kFatalUnsupported,
+    kScanningForGameTiles,
+    kConnectingToGameTile,
+    kDisconnectingFromGameTile,
+    kReadyToExchangeDataWithGameTile,
+    kExchangingDataWithGameTile,
+    kCompletedExchangingDataWithGameTile,
+    kDiscoveringGameTileAttributes,
+    kConnectedToUnknownPeripheral
+    
 } BluetoothManagerState;
 
-typedef NSInteger ARMGameTileID;
+typedef NSInteger ARMGameTileIDType;
 
 #pragma mark - UIProtocols
 /****************************************************************************/
@@ -39,7 +59,8 @@ typedef NSInteger ARMGameTileID;
 
 @protocol ARMBluetoothManagerDelegate <NSObject>
 
--(void) bluetoothManagerDidRefreshWithError:(NSError *)error;
+- (void)bluetoothManagerDidRefreshWithError:(NSError *)error;
+- (void)bluetoothManagerDidDiscoverGameTileWithName:(NSString *)gameTilename;
 
 @end
 
@@ -57,14 +78,19 @@ typedef NSInteger ARMGameTileID;
 - (void)finishTasksWithoutDelegateAndPreserveState;
 
 @property (readonly) BluetoothManagerState state;
+@property (readonly) NSString *connectedGameTileNameString;
+@property (readonly) NSMutableArray *discoveredGameTileNamesArray;
+
 @property (nonatomic, assign)id<ARMBluetoothManagerDelegate> delegate; // 2: Come up with a better name
 
-- (void)scanForGameTiles;
+- (NSError *)scanForGameTiles;
 
-- (void)connectToGameTileWithID:(ARMGameTileID)gameTileID;
+- (NSError *)connectToGameTileWithID:(ARMGameTileIDType)gameTileID;
 - (void)disconnectFromGameTile;
 
-- (void)getDataFromConnectedGameTile;
+- (NSError *)exchangeDataWithConnectedGameTile;
+
+- (void)recoverFromError:(NSError *)error;
 
  
 @end

@@ -261,6 +261,10 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="og7-B5-BiB" id="cEN-BX-NXF"/>
+                                    <outlet property="delegate" destination="og7-B5-BiB" id="42f-Em-0FO"/>
+                                </connections>
                             </tableView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="oVG-eO-pEE">
                                 <rect key="frame" x="150" y="20" width="20" height="20"/>
@@ -278,7 +282,7 @@
                     <navigationItem key="navigationItem" title="Bluetooth" id="UPl-QU-mHu"/>
                     <connections>
                         <outlet property="bluetoothActivitySpinner" destination="oVG-eO-pEE" id="x5O-lD-4gz"/>
-                        <outlet property="devicesTable" destination="9dd-ey-RTy" id="9re-mD-2qa"/>
+                        <outlet property="devicesTableView" destination="9dd-ey-RTy" id="Ly4-uM-mdZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hqN-Vz-5xP" userLabel="First Responder" sceneMemberID="firstResponder"/>
