@@ -99,6 +99,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 	return self;
 }
 
+#pragma mark TODO Resume State Properly
 - (void)startBluetooth
 {
     // Get the System BT Manager kicked off with the main queue
@@ -118,17 +119,23 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     }
 }
 
+#pragma mark TODO preserve state properly
 - (void)finishTasksWithoutDelegateAndPreserveState
 {
-    //TODO
     delegate = nil;
-    [centralManager stopScan];
+    if (centralManager)
+    {
+        [centralManager stopScan];
+    }
     switch (state)
     {
         case kFatalUnauthorized: break;
         case kFatalUnsupported: break;
         case kNotInitialized: break;
-        case kInitializing: break;
+        case kInitializing:
+            state = kNotInitialized;
+            break;
+            
         case kWaitingForBluetoothToBeEnabled: break;
         case kReadyToScanForGameTiles: break;
             
@@ -137,7 +144,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
             break;
             
         case kScanningForGameTiles:
-            if (centralManager) [centralManager stopScan];
+            
             state = kReadyToScanForGameTiles;
             break;
             
@@ -145,7 +152,6 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
             state = kNotInitialized;
             break;
     }
-    // do something better with the central manager
 }
 
 - (void)notifyDelegateWithError:(NSError *)error
