@@ -153,9 +153,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
     headerLabel.font = [UIFont systemFontOfSize:14];
     NSString *title = [self tableView:tableView titleForHeaderInSection:section];
     headerLabel.text =  [title uppercaseString];
-    NSLog(@"Title: %@", headerLabel.text);
     [headerLabel sizeToFit];
-  //  NSLog(@"%f", headerLabel.frame.size.width);
     
     UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[sectionHeaderView viewWithTag:kTableViewHeaderActivityIndicatorViewTag];
     if (!activityIndicator)
