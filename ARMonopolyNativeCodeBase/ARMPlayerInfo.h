@@ -28,7 +28,7 @@ extern const NSString *kImageFolderName;
 
 - (void)bluetoothDidConnectToGameTileWithName:(NSString *)name imageTargetID:(NSString *)imageTargetID;
 
-- (void)bluetoothDidDisconnectGameTile;
+- (void)bluetoothWillConnectToNewGameTile;
 
 // Local Player info
 @property NSString *playerDisplayName;

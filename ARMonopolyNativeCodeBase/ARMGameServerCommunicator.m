@@ -90,6 +90,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     ARMPlayerInfo *userData;
     NSUInteger loginTaskIdentifier;
     BOOL shouldSkipCompletionHandler;
+    NSMutableArray *networkImagePathStrings;
 }
 
 @property (strong, nonatomic) NSURLSession *mainURLSession;
@@ -374,6 +375,22 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     
 }
 
+- (void)purgeNetworkImagesFromFileSystem
+{
+    if (networkImagePathStrings)
+    {
+        NSError *error;
+        for (NSString *filePath in networkImagePathStrings)
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+            if (error)
+            {
+                NSLog(@"Error deleting network image files: %@", error);
+            }
+        }
+    }
+}
+
 - (void)createSessionWithName:(NSString *)newSessionName completionHandler:(CompletionHandlerType)completionHandler
 {
     connectionStatus = kCreatingGameSession;
@@ -428,8 +445,12 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (void)downloadPlayerImagesWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
-    NSMutableArray *downloadTasksArray = [NSMutableArray new];
     if ([[userData playersInSessionArray] count] == 0) return;
+    NSMutableArray *downloadTasksArray = [NSMutableArray new];
+    if (!networkImagePathStrings)
+    {
+        networkImagePathStrings = [NSMutableArray new];
+    }
     
     // Create a download task for each player
     for (ARMNetworkPlayer *player in [userData playersInSessionArray])
@@ -443,6 +464,10 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             NSString *documentsDirectory = [paths objectAtIndex:0];
             NSString *saveImagePath = [documentsDirectory stringByAppendingPathComponent:[player imageLocalFileName]];
+            
+            // Save the file path so we can delete it when we leave the game session
+            [networkImagePathStrings addObject:saveImagePath];
+
             NSData *imageData = UIImagePNGRepresentation(downloadedImage);
             [imageData writeToFile:saveImagePath atomically:NO];
         };

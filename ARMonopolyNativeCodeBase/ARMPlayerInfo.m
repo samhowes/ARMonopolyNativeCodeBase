@@ -120,7 +120,7 @@ const NSString *kImageFolderName = @"images";
 /*
  *  If we were connected to a game tile, make sure we remove the old image
  */
-/*- (void)bluetoothWillConnectToNewGameTile
+- (void)bluetoothWillConnectToNewGameTile
 {
     if (gameTileImageTargetID)
     {
@@ -129,7 +129,7 @@ const NSString *kImageFolderName = @"images";
     }
     gameTileName = nil;
     gameTileImageTargetID = nil;
-} */
+} 
 
 - (NSString *)pathToSaveUsersImage
 {

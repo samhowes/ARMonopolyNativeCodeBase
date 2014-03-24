@@ -387,7 +387,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
     NSLog(@"Refreshing");
     if ([[ARMPlayerInfo sharedInstance] gameTileName])
     {
-        [[ARMPlayerInfo sharedInstance] setGameTileName:nil];
+        [[ARMPlayerInfo sharedInstance] bluetoothWillConnectToNewGameTile];
         // TODO: properly disconnect from the gametile
     }
     [bluetoothActivitySpinner startAnimating];

@@ -20,9 +20,10 @@
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *destinationPath = [documentsDirectory stringByAppendingPathComponent:[kImageFolderName stringByAppendingPathComponent:[kDefaultImageFileName copy]]];
     
+    NSError *error;
     if (![[NSFileManager defaultManager] fileExistsAtPath:destinationPath isDirectory:NULL])
     {
-        NSError *error;
+        
         BOOL isDirectory;
         NSString* sourcePath = [myBundle pathForResource:[kDefaultImageFileName stringByDeletingPathExtension] ofType:[kDefaultImageFileName pathExtension]];
         NSLog(@"Copying bundle resources into Documets Directory: Source Path: %@\n Documents Path: %@ \n Folder Path: %@", sourcePath, documentsDirectory, destinationPath);
@@ -41,6 +42,24 @@
         if (!error && ![[NSFileManager defaultManager] copyItemAtPath:sourcePath toPath:destinationPath error:&error])
         {
            NSLog(@"Error while copying bundle resources: %@", error);
+        }
+    }
+    
+    // Delete Old images from the last game session if there are any
+    NSArray *filesInImageDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] error:&error];
+    if ([filesInImageDirectory count] >1)
+    {
+        NSLog(@"Removing old images from images Directory");
+        for (NSString *imagePath in filesInImageDirectory)
+        {
+            if (![imagePath isEqualToString:destinationPath])
+            {
+                [[NSFileManager defaultManager] removeItemAtPath:imagePath error:&error];
+                if (error)
+                {
+                    NSLog(@"Error removing old image files at launch: %@", error);
+                }
+            }
         }
     }
     
