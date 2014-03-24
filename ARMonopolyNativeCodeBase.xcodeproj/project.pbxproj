@@ -126,8 +126,8 @@
 		A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMBluetoothManager.m; sourceTree = "<group>"; };
 		A5C5BA6418C4E99B00435B10 /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOGO.png; sourceTree = "<group>"; };
 		A5C5BA6518C4E99B00435B10 /* Notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Notes.txt; sourceTree = "<group>"; };
-		A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestAppDelegate.h; sourceTree = "<group>"; };
-		A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestAppDelegate.m; sourceTree = "<group>"; };
+		A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestAppDelegate.h; path = TestOnly/TestAppDelegate.h; sourceTree = "<group>"; };
+		A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAppDelegate.m; path = TestOnly/TestAppDelegate.m; sourceTree = "<group>"; };
 		A5D4A5EF18DE8AA40026B008 /* take2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = take2.png; sourceTree = "<group>"; };
 		A5D4A5F118DE8C730026B008 /* Take3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Take3.png; sourceTree = "<group>"; };
 		A5D4A5F318DE8D7E0026B008 /* 66_66.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 66_66.png; sourceTree = "<group>"; };
@@ -280,22 +280,13 @@
 			children = (
 				A5C5BA5A18C4E99B00435B10 /* ARMPlayViewController.h */,
 				A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */,
-				A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */,
-				A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */,
-				A5C5BA7918C4EA1500435B10 /* DeployOnly */,
+				A5DA875318E0D57D00C53ACF /* TestOnly */,
+				A5C5BA5018C4E99B00435B10 /* ARMAppController.h */,
+				A5C5BA5118C4E99B00435B10 /* ARMAppController.m */,
 				A5C5BA7A18C4EA3300435B10 /* Settings */,
 				A5C5BA7B18C4EA3D00435B10 /* Model */,
 			);
 			name = Classes;
-			sourceTree = "<group>";
-		};
-		A5C5BA7918C4EA1500435B10 /* DeployOnly */ = {
-			isa = PBXGroup;
-			children = (
-				A5C5BA5018C4E99B00435B10 /* ARMAppController.h */,
-				A5C5BA5118C4E99B00435B10 /* ARMAppController.m */,
-			);
-			name = DeployOnly;
 			sourceTree = "<group>";
 		};
 		A5C5BA7A18C4EA3300435B10 /* Settings */ = {
@@ -323,6 +314,15 @@
 				A5BA84F318D7FEBE00F19C76 /* Network */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		A5DA875318E0D57D00C53ACF /* TestOnly */ = {
+			isa = PBXGroup;
+			children = (
+				A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */,
+				A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */,
+			);
+			name = TestOnly;
 			sourceTree = "<group>";
 		};
 		A5F88A1218CE816600D8E263 /* iPad */ = {
