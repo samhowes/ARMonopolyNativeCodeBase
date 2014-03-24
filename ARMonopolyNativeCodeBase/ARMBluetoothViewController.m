@@ -461,11 +461,12 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
         }
         else
         {
-            [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"BluetoothError: %@", [error localizedFailureReason]]
-                                        message:[error localizedDescription]
+            [[[UIAlertView alloc] initWithTitle:@"Bluetooth Error"
+                                        message:@"An unexpected error has occurred"
                                        delegate:nil
-                              cancelButtonTitle:@"OK"
+                              cancelButtonTitle:@"Come on, do better."
                               otherButtonTitles:nil] show];
+            NSLog(@"An unexpected error has occured in Bluetoth state %ld: %@", [bluetoothManager state], error);
             [bluetoothManager recoverFromError:error];
         }
     }
