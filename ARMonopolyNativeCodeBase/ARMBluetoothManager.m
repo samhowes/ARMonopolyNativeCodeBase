@@ -184,9 +184,8 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     [discoveredGameTilePeripheralsArray removeAllObjects];
     [discoveredGameTileNamesArray       removeAllObjects];
     
+    // TODO: alter this from testing to only search for the GameTile Service
 	NSArray *serviceUUIDToScanForArray = [NSArray new];//[NSArray arrayWithObject:[CBUUID UUIDWithString:kGameTileConfigurationServiceUUIDString]];
-    // comment on these options
-	//NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:CBCentralManagerScanOptionAllowDuplicatesKey];
     
 	[centralManager scanForPeripheralsWithServices:serviceUUIDToScanForArray options:nil];
     // there must be a couple more checks i need here....

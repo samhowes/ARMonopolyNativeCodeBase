@@ -688,7 +688,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     if ([[[response URL] absoluteURL] isEqual:[self URLWithRelativePathString:[kGSLoginEndpointURLString copy]]])
     {
         request = nil;
-    }
+    }           
     
     completionHandler(request);
 }

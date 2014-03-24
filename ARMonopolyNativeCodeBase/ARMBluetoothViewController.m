@@ -39,8 +39,6 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(refreshControlDidActivate:) forControlEvents:UIControlEventValueChanged];
     [devicesTableView setDataSource:self];
 	[devicesTableView reloadData];          //change
     
@@ -382,13 +380,29 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
     [tableView reloadData];
 }
 
+- (void)addRefreshControl
+{
+    if (!self.refreshControl)
+    {
+        self.refreshControl = [UIRefreshControl new];
+        [self.refreshControl addTarget:self action:@selector(refreshControlDidActivate:) forControlEvents:UIControlEventValueChanged];
+    }
+}
+
+- (void)removeRefreshControl
+{
+    if (self.refreshControl)
+    {
+        self.refreshControl = nil;
+    }
+}
+
 - (void)refreshControlDidActivate:(id)sender
 {
     NSLog(@"Refreshing");
     if ([[ARMPlayerInfo sharedInstance] gameTileName])
     {
         [[ARMPlayerInfo sharedInstance] bluetoothWillConnectToNewGameTile];
-        // TODO: properly disconnect from the gametile
     }
     [bluetoothActivitySpinner startAnimating];
     NSError *error = [bluetoothManager scanForGameTiles];
@@ -407,6 +421,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
 {
     if (error)
     {
+        [self removeRefreshControl];
         if ([[error domain] isEqualToString:[ARMBluetoothManagerErrorDomain copy]])
         {
             NSString *errorString;
@@ -452,6 +467,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
             }
             if (errorString)
             {
+                
                 [[[UIAlertView alloc] initWithTitle:@"Bluetooth Error"
                                             message:errorString
                                            delegate:nil
@@ -474,12 +490,14 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
     {
         switch ((BluetoothManagerState)[bluetoothManager state]) {
             case kNotInitialized:
-                // TODO: NOt sure what I should do when initializing
+                // TODO: Not sure what I should do when initializing
+                [self removeRefreshControl];
                 [bluetoothManager startBluetooth];
                 break;
                 
             case kReadyToScanForGameTiles:
             {
+                [self addRefreshControl];
                 if (![[ARMPlayerInfo sharedInstance] gameTileName])
                 {
                     error = [bluetoothManager scanForGameTiles];
@@ -494,6 +512,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
                 break;
             
             case kReadyToExchangeDataWithGameTile:
+                [self addRefreshControl];
                 error = [bluetoothManager exchangeDataWithConnectedGameTile];
                 if (error)
                 {
@@ -506,6 +525,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
                 
             // SUCCESS!
             case kCompletedExchangingDataWithGameTile:
+                [self addRefreshControl];
                 [selectedCellActivityIndicatorView stopAnimating];
                 selectedCellActivityIndicatorView = nil;
                 [[ARMPlayerInfo sharedInstance] setGameTileName:[bluetoothManager getNameOfConnectedGameTile]];
@@ -521,6 +541,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
                 break;
                 
             case kConnectedToUnknownPeripheral:
+                [self addRefreshControl];
                 [bluetoothManager recoverFromError:nil];
                 break;
                 
@@ -530,12 +551,16 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
             case kDisconnectingFromGameTile:
             case kDiscoveringGameTileAttributes:
             case kExchangingDataWithGameTile:
+                [self addRefreshControl];
+                break;
+                
             case kFatalUnauthorized:
             case kFatalUnsupported:
             case kInitializing:
             case kResettingBecauseOfSystemReset:
             case kWaitingForBluetoothToBeEnabled:
             default:
+                [self removeRefreshControl];
                 break;
         }
     }
