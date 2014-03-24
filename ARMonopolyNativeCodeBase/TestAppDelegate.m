@@ -11,8 +11,42 @@
 
 @implementation TestAppDelegate
 
+const NSString *kDefaultImageFileName = @"LOGO.png";
+const NSString *kImageFolderName = @"images";
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Check for the default images that Unity will use
+    NSBundle* myBundle = [NSBundle mainBundle];
+    
+    NSLog(@"Checking for application image resources in Documents directory");
+    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *destinationPath = [documentsDirectory stringByAppendingPathComponent:[kImageFolderName stringByAppendingPathComponent:[kDefaultImageFileName copy]]];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:destinationPath isDirectory:NULL])
+    {
+        NSError *error;
+        BOOL isDirectory;
+        NSString* sourcePath = [myBundle pathForResource:[kDefaultImageFileName stringByDeletingPathExtension] ofType:[kDefaultImageFileName pathExtension]];
+        NSLog(@"Copying bundle resources into Documets Directory: Source Path: %@\n Documents Path: %@ \n Folder Path: %@", sourcePath, documentsDirectory, destinationPath);
+        if (![[NSFileManager defaultManager] fileExistsAtPath:[destinationPath stringByDeletingLastPathComponent] isDirectory:&isDirectory])
+        {
+            if (![[NSFileManager defaultManager] createDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] withIntermediateDirectories:NO attributes:nil error:&error])
+            {
+                NSLog(@"Error while creating images directory: %@", error);
+            }
+        }
+        else if (!isDirectory)
+        {
+            NSLog(@"Error: image folder name '%@' is not a directory!", [kImageFolderName copy]);
+        }
+        
+        if (!error && ![[NSFileManager defaultManager] copyItemAtPath:sourcePath toPath:destinationPath error:&error])
+        {
+           NSLog(@"Error while copying bundle resources: %@", error);
+        }
+    }
+    
     // Initialize our User Data
     [ARMPlayerInfo sharedInstance];
     
