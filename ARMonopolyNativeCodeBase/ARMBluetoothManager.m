@@ -170,6 +170,10 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (NSError *)scanForGameTiles
 {
+    if (state == kScanningForGameTiles)
+    {
+        return nil;
+    }
 	if (state != kReadyToScanForGameTiles || [centralManager state] != CBCentralManagerStatePoweredOn)
     {
         // Only start scanning if the bluetooth is actually on
@@ -211,6 +215,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     displayStringHasBeenWritenToGameTile = NO;
     numberOfConnectionAttempts = 0;
     
+    [centralManager stopScan];
     [centralManager connectPeripheral:gameTileToConnectTo options:nil];
     state = kConnectingToGameTile; // only change state after we know there are no errors
     
@@ -257,7 +262,8 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     else
     {
         connectedGameTile = nil;
-        state = kScanningForGameTiles;
+        [centralManager stopScan];
+        state = kReadyToScanForGameTiles;
     }
     
     return;

@@ -14,8 +14,7 @@
 @synthesize playerDisplayImage;
 @synthesize gameTileImageTargetID;
 
-@synthesize clientID;
-@synthesize sessionID;
+@synthesize sessionName;
 @synthesize playersInSessionArray;
 
 /****************************************************************************/
@@ -97,7 +96,6 @@
 
 - (void)applicationDidLeaveGameSession
 {
-    sessionID = nil;
     playersInSessionArray = nil;
 }
 

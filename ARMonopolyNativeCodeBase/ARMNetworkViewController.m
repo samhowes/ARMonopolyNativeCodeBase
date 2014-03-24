@@ -30,6 +30,14 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     [super viewDidLoad];
     [gameSessionsTableView setDataSource:[ARMGameServerCommunicator sharedInstance]];
     [gameSessionsTableView reloadData];
+    
+    UIActivityIndicatorView *ac = [[UIActivityIndicatorView alloc]
+                                   initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [ac startAnimating];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, ac.frame.size.height)];
+    [view addSubview:ac]; // <-- Your UIActivityIndicatorView
+    self.tableView.tableHeaderView = view;
+    
     [[ARMGameServerCommunicator sharedInstance] continueTasksWithCompletionHandler];
 }
 

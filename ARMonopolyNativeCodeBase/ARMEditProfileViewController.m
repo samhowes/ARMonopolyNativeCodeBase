@@ -75,7 +75,8 @@
 }
 
 
-- (IBAction)cameraButtonWasPressed:(id)sender {
+- (IBAction)cameraButtonWasPressed:(id)sender
+{
 	UIActionSheet *chooseImageActionSheeet =
 	[[UIActionSheet alloc] initWithTitle:nil delegate:self
 					   cancelButtonTitle:@"Cancel"

@@ -9,21 +9,25 @@
 #import "ARMBluetoothViewController.h"
 #import "ARMBluetoothManager.h"
 
+const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
+
 @interface ARMBluetoothViewController () <ARMBluetoothManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 {
     ARMBluetoothManager *bluetoothManager;
     UIActivityIndicatorView *selectedCellActivityIndicatorView;
     UITableViewCell *selectedTableViewCell;
+    NSIndexPath *indexPathOfSelectedCell;
     BOOL readyToConnectToBluetooth;
 }
 
-@property (retain, nonatomic) IBOutlet UITableView                  *devicesTableView;
-@property (weak, nonatomic)   IBOutlet UIActivityIndicatorView      *bluetoothActivitySpinner;
+@property (retain, nonatomic) IBOutlet UITableView              *devicesTableView;
+@property (weak, nonatomic)   IBOutlet UIActivityIndicatorView  *bluetoothActivitySpinner;
 
 @end
 
 @implementation ARMBluetoothViewController
 
+@synthesize bluetoothActivitySpinner;
 @synthesize devicesTableView;
 
 
@@ -35,7 +39,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	[devicesTableView setDataSource:self];
+	self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(refreshControlDidActivate:) forControlEvents:UIControlEventValueChanged];
+    [devicesTableView setDataSource:self];
 	[devicesTableView reloadData];          //change
     
     bluetoothManager = [ARMBluetoothManager sharedInstance];
@@ -110,7 +116,7 @@
             case kConnectingToGameTile:
             case kScanningForGameTiles:
 
-                return @"Game Tiles...";
+                return @"Game Tiles";
                 break;
             
             case kResettingBecauseOfSystemReset:
@@ -132,6 +138,55 @@
 
         }
     }
+}
+
+- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    
+    CGFloat width = CGRectGetWidth(tableView.bounds);
+    CGFloat height = 55;
+    
+    UITableViewHeaderFooterView *sectionHeaderView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"headerIndicatorView"];
+    if (sectionHeaderView == nil) {
+        sectionHeaderView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"headerIndicatorView"];
+    }
+    
+    UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 31, width, height)];
+    headerLabel.font = [UIFont systemFontOfSize:14];
+    NSString *title = [self tableView:tableView titleForHeaderInSection:section];
+    headerLabel.text =  [title uppercaseString];
+    NSLog(@"Title: %@", headerLabel.text);
+    [headerLabel sizeToFit];
+  //  NSLog(@"%f", headerLabel.frame.size.width);
+    
+    UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[sectionHeaderView viewWithTag:kTableViewHeaderActivityIndicatorViewTag];
+    if (!activityIndicator)
+    {
+        activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(14+headerLabel.frame.size.width + 8, 30, 21, 21)];
+        [activityIndicator setTag:kTableViewHeaderActivityIndicatorViewTag];
+        [activityIndicator setHidesWhenStopped:YES];
+        [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+        [sectionHeaderView.contentView addSubview:activityIndicator];
+    }
+    
+   bluetoothActivitySpinner = activityIndicator;
+    
+    switch ([bluetoothManager state])
+    {
+        case kScanningForGameTiles:
+        case kConnectingToGameTile:
+        case kDisconnectingFromGameTile:
+        case kExchangingDataWithGameTile:
+        case kDiscoveringGameTileAttributes:
+            [activityIndicator startAnimating];
+            
+            break;
+        default:
+            [activityIndicator stopAnimating];
+            break;
+    }
+
+    return sectionHeaderView;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
@@ -239,21 +294,49 @@
     static NSString *cellID = @"DeviceList"; // move this to a konstant at the top
     // use bleDelegate connectionState in a switch statemet
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
-	
+    UILabel *textLabel = cell.textLabel;
+    UILabel *detailTextLabel = cell.detailTextLabel;
+    
+    
     if ([[ARMPlayerInfo sharedInstance] gameTileName])
     {
-        [cell.textLabel setText:[[ARMPlayerInfo sharedInstance] gameTileName]];
+        [textLabel setText:[[ARMPlayerInfo sharedInstance] gameTileName]];
+        [detailTextLabel setText:@"Connected"];
         [cell setUserInteractionEnabled:NO];
+        [bluetoothActivitySpinner stopAnimating];
     }
     else if ([[bluetoothManager discoveredGameTileNamesArray] count] == 0)
     {
-        [cell.textLabel setText:@"Scanning for GameTiles..."];
+        [textLabel setText:@"Scanning for GameTiles..."];
+        [bluetoothActivitySpinner startAnimating];
+        [detailTextLabel setText:nil];
         [cell setUserInteractionEnabled:NO];
     }
     else
     {
-        [cell.textLabel setText:(NSString *)[[bluetoothManager discoveredGameTileNamesArray] objectAtIndex:indexPath.row]];
-        [cell setUserInteractionEnabled:YES];
+        [textLabel setText:(NSString *)[[bluetoothManager discoveredGameTileNamesArray] objectAtIndex:indexPath.row]];
+        switch ([bluetoothManager state])
+        {
+            case kConnectingToGameTile:
+            case kDiscoveringGameTileAttributes:
+            case kExchangingDataWithGameTile:
+                if (indexPath.row == indexPathOfSelectedCell.row)
+                {
+                    [detailTextLabel setText:nil];
+                    [selectedCellActivityIndicatorView startAnimating];
+                    [bluetoothActivitySpinner startAnimating];
+                    [cell setUserInteractionEnabled:YES];
+                    break;
+                }
+                
+            default:
+                [detailTextLabel setText:@"Not Connected"];
+                [bluetoothActivitySpinner startAnimating];
+                [cell setUserInteractionEnabled:YES];
+                break;
+        }
+        
+       
     }
     
 	return cell;
@@ -282,9 +365,11 @@
         }
         else
         {
+            indexPathOfSelectedCell = indexPath;
             selectedTableViewCell = [tableView cellForRowAtIndexPath:indexPath];
-            selectedCellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:[[selectedTableViewCell accessoryView] frame]];
-            [selectedCellActivityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+            selectedCellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            //    selectedCellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:[[selectedTableViewCell accessoryView] frame]];
+       //     [selectedCellActivityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
             [selectedCellActivityIndicatorView setHidesWhenStopped:YES];
             [selectedCellActivityIndicatorView startAnimating];
             [selectedTableViewCell setAccessoryView:selectedCellActivityIndicatorView];
@@ -297,7 +382,22 @@
     [tableView reloadData];
 }
 
-#pragma mark TODO Implement swipe down, or editing of connected bluetooth item
+- (void)refreshControlDidActivate:(id)sender
+{
+    NSLog(@"Refreshing");
+    if ([[ARMPlayerInfo sharedInstance] gameTileName])
+    {
+        [[ARMPlayerInfo sharedInstance] setGameTileName:nil];
+        // TODO: properly disconnect from the gametile
+    }
+    [bluetoothActivitySpinner startAnimating];
+    NSError *error = [bluetoothManager scanForGameTiles];
+    if (error)
+    {
+        NSLog(@"Error with refresh control: %@", error);
+    }
+    [(UIRefreshControl *)sender endRefreshing];
+}
 
 #pragma mark - LeDiscoveryDelegate
 /****************************************************************************/
@@ -373,18 +473,21 @@
     {
         switch ((BluetoothManagerState)[bluetoothManager state]) {
             case kNotInitialized:
-                //TODO
+                // TODO: NOt sure what I should do when initializing
                 [bluetoothManager startBluetooth];
                 break;
                 
             case kReadyToScanForGameTiles:
             {
-                error = [bluetoothManager scanForGameTiles];
-                if (error)
+                if (![[ARMPlayerInfo sharedInstance] gameTileName])
                 {
-                    // Try to recover...
-                    NSLog(@"Received error trying to scan for game tiles");
-                    [bluetoothManager recoverFromError:error];
+                    error = [bluetoothManager scanForGameTiles];
+                    if (error)
+                    {
+                        // Try to recover...
+                        NSLog(@"Received error trying to scan for game tiles");
+                        [bluetoothManager recoverFromError:error];
+                    }
                 }
             }
                 break;
@@ -403,12 +506,12 @@
             // SUCCESS!
             case kCompletedExchangingDataWithGameTile:
                 [selectedCellActivityIndicatorView stopAnimating];
-                
+                selectedCellActivityIndicatorView = nil;
                 [[ARMPlayerInfo sharedInstance] setGameTileName:[bluetoothManager getNameOfConnectedGameTile]];
                 
                 [selectedTableViewCell setAccessoryView:nil];
-                [[[UIAlertView alloc] initWithTitle:@"GameTile Ready for Gameplay"
-                                            message:@"You have successfully connected to the selected GameTile and it is ready to play with!\nYou may proceed to Settings Step 3."
+                [[[UIAlertView alloc] initWithTitle:@"GameTile Ready"
+                                            message:@"You are successfully connected.\nYou may proceed to Settings Step 3."
                                            delegate:nil
                                   cancelButtonTitle:@"Awesome!"
                                   otherButtonTitles:nil] show];

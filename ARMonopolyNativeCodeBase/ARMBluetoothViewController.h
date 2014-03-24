@@ -10,7 +10,8 @@
 #import "ARMBluetoothManager.h"
 #import "ARMPlayerInfo.h"
 
-@interface ARMBluetoothViewController : UIViewController <ARMBluetoothManagerDelegate>
+
+@interface ARMBluetoothViewController : UITableViewController <ARMBluetoothManagerDelegate>
 
 - (void)bluetoothManagerDidRefreshWithError:(NSError *)error;
 

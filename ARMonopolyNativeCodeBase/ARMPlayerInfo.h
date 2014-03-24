@@ -33,6 +33,7 @@ typedef enum GameServerConnectionStatus GameServerConnectionStatus;
 @property NSString *gameTileName;
 
 // Networking Properties
+@property NSString *sessionName;
 @property NSMutableArray *playersInSessionArray;
 
 @end
