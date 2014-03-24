@@ -73,8 +73,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-
 - (IBAction)displayCurrentPlayers:(id)sender
 {
     NSMutableString *listPlayersString = [NSMutableString new];

@@ -88,8 +88,11 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
             [self hideRightNavigationBarButtonItem];
             [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
                 [gameSessionsTableView reloadData];
-                [self showLeaveGameButtonWithBool:NO];
-                if (error) [self handleNetworkingError:error];
+                if (error)
+                {
+                    [self handleNetworkingError:error];
+                    return;
+                }
                 [self showLeaveGameButtonWithBool:NO];
             }];
         }
@@ -101,8 +104,12 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
             [[ARMGameServerCommunicator sharedInstance] getCurrentPlayersInSessionWithCompletionHandler:^(NSError *error)
              {
                  [gameSessionsTableView reloadData];
+                 if (error)
+                 {
+                     [self handleNetworkingError:error withTitle:kImageDownloadingErrorAlertTitle];
+                     return;
+                 }
                  [self showLeaveGameButtonWithBool:YES];
-                 if (error) {[self handleNetworkingError:error withTitle:kImageDownloadingErrorAlertTitle]; return;}
                  
                  [[ARMGameServerCommunicator sharedInstance] downloadPlayerImagesWithCompletionHandler:^(NSError *error)
                   {
@@ -120,15 +127,27 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
         default:
         {
             [[ARMGameServerCommunicator sharedInstance] loginWithCompletionHandler:^(NSError *error){
-                if (error) [self handleNetworkingError:error];
+                if (error)
+                {
+                    [self handleNetworkingError:error];
+                    return;
+                }
                 
                 // If there wasn't an error in Login step 1, continue to Login step 2
                 [[ARMGameServerCommunicator sharedInstance] putProfileImageToServerWithCompletionHandler:^(NSError *error) {
-                    if (error) [self handleNetworkingError:error];
+                    if (error)
+                    {
+                        [self handleNetworkingError:error];
+                        return;
+                    }
                     
                     [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
                         [gameSessionsTableView reloadData];
-                        if (error) [self handleNetworkingError:error];
+                        if (error)
+                        {
+                            [self handleNetworkingError:error];
+                            return;
+                        }
                         [self showLeaveGameButtonWithBool:NO];
                         
                     }];
@@ -170,14 +189,20 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     
     [[ARMGameServerCommunicator sharedInstance] joinSessionWithIndex:[indexPath row] completionHandler:^(NSError *error) {
         [spinner stopAnimating];
-        if (error) {[self handleNetworkingError:error]; return;};
+        if (error)
+        {
+            [self handleNetworkingError:error];
+            return;
+        }
         
         [self showLeaveGameButtonWithBool:YES];
         
         [gameSessionsTableView reloadData];
         [[ARMGameServerCommunicator sharedInstance] downloadPlayerImagesWithCompletionHandler:^(NSError *error)
         {
-            if (error) [self handleNetworkingError:error withTitle:kImageDownloadingErrorAlertTitle];
+            if (error) {
+                [self handleNetworkingError:error withTitle:kImageDownloadingErrorAlertTitle];
+            }
         }];
     }];
     
@@ -253,12 +278,22 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [[ARMGameServerCommunicator sharedInstance] leaveSessionWithCompletionHandler:^(NSError *error) {
             [gameSessionsTableView reloadData];
-            if (error) {[self handleNetworkingError:error]; [gameSessionsTableView reloadData]; return;};
+            if (error)
+            {
+                [self handleNetworkingError:error];
+                [gameSessionsTableView reloadData];
+                return;
+            }
+            
             [self showLeaveGameButtonWithBool:NO];
             
             [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
                 [gameSessionsTableView reloadData];
-                if (error) {[self handleNetworkingError:error]; return;};
+                if (error)
+                {
+                    [self handleNetworkingError:error];
+                    return;
+                }
                 
             }];
         }];
@@ -266,9 +301,14 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     else // otherwise we will be creating a game
     {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-        [[ARMGameServerCommunicator sharedInstance] createSessionWithName:@"SAM" completionHandler:^(NSError *error) {
+        [[ARMGameServerCommunicator sharedInstance] createSessionWithName:[[ARMPlayerInfo sharedInstance] playerDisplayName] completionHandler:^(NSError *error) {
             [gameSessionsTableView reloadData];
-            if (error) {[self handleNetworkingError:error]; [gameSessionsTableView reloadData]; return;};
+            if (error)
+            {
+                [self handleNetworkingError:error];
+                [gameSessionsTableView reloadData];
+                return;
+            }
             [self showLeaveGameButtonWithBool:YES];
             
         }];

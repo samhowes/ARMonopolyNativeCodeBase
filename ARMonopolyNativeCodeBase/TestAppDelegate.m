@@ -11,9 +11,6 @@
 
 @implementation TestAppDelegate
 
-const NSString *kDefaultImageFileName = @"LOGO.png";
-const NSString *kImageFolderName = @"images";
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Check for the default images that Unity will use

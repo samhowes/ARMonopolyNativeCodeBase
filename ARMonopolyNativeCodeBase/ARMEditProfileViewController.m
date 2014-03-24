@@ -145,6 +145,7 @@
 		
         // Save the new image (original or edited) to the Camera Roll
         UIImageWriteToSavedPhotosAlbum (imageToSave, nil, nil , nil);
+        
 		userDisplayImageView.image = imageToSave;
 		[[ARMPlayerInfo sharedInstance] setPlayerDisplayImage:imageToSave];
 	}

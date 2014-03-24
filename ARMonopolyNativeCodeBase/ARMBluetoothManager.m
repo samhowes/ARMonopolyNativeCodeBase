@@ -659,7 +659,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
         }
         
     }
-    // we fell through the Conditionals, back up and try again
+    
     gameTileConfigurationService = nil;
     gameTileDisplayStringCharacteristic = nil;
     gameTileImageTargetIDCharacteristic = nil;
@@ -833,11 +833,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     
     displayStringHasBeenWritenToGameTile = YES;
     NSLog(@"Successfully wrote User Display String to the GameTile");
-    if (valueStringReadFromImageTargetIDCharacteristic)
-    {
-        state = kCompletedExchangingDataWithGameTile;
-        [self notifyDelegateWithError:nil];
-    }
+    [self completeDataExchange];
 }
 
 
@@ -883,14 +879,17 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     
 	valueStringReadFromImageTargetIDCharacteristic = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]; //Endinaness warning!!!
     NSLog(@"Successfully read the string '%@' from the GameTile!", valueStringReadFromImageTargetIDCharacteristic);
-    
-    [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:valueStringReadFromImageTargetIDCharacteristic];
-    if (displayStringHasBeenWritenToGameTile)
+    [self completeDataExchange];
+}
+
+- (void)completeDataExchange
+{
+    if (displayStringHasBeenWritenToGameTile && valueStringReadFromImageTargetIDCharacteristic)
     {
         state = kCompletedExchangingDataWithGameTile;
+        [[ARMPlayerInfo sharedInstance] bluetoothDidConnectToGameTileWithName:connectedGameTileNameString imageTargetID:valueStringReadFromImageTargetIDCharacteristic];
         [self notifyDelegateWithError:nil];
     }
 }
-
 
 @end

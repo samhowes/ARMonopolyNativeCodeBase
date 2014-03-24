@@ -114,9 +114,11 @@
                         <outlet property="cameraToolbar" destination="cdN-gE-TxO" id="k9V-KO-KhF"/>
                         <outlet property="userDisplayImageView" destination="lST-ik-b2b" id="i9q-Qj-sZ0"/>
                         <outlet property="userDisplayStringTextField" destination="CUq-SY-rS9" id="547-3r-UQz"/>
+                        <segue destination="KBn-3c-cNG" kind="unwind" unwindAction="unwindToList:" id="LN3-91-sVY"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bsQ-8N-OzM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="KBn-3c-cNG" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="765" y="242"/>
         </scene>

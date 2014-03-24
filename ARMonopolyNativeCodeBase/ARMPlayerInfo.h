@@ -9,7 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "ARMNetworkViewController.h"
 
-typedef enum GameServerConnectionStatus GameServerConnectionStatus;
+extern const NSString *kDefaultImageFileName;
+extern const NSString *kImageFolderName;
+
 
 @interface ARMPlayerInfo : NSObject
 
@@ -23,6 +25,10 @@ typedef enum GameServerConnectionStatus GameServerConnectionStatus;
 - (BOOL)isReadyForLogin;
 
 - (void)applicationDidLeaveGameSession;
+
+- (void)bluetoothDidConnectToGameTileWithName:(NSString *)name imageTargetID:(NSString *)imageTargetID;
+
+- (void)bluetoothDidDisconnectGameTile;
 
 // Local Player info
 @property NSString *playerDisplayName;
