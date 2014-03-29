@@ -114,11 +114,9 @@
                         <outlet property="cameraToolbar" destination="cdN-gE-TxO" id="k9V-KO-KhF"/>
                         <outlet property="userDisplayImageView" destination="lST-ik-b2b" id="i9q-Qj-sZ0"/>
                         <outlet property="userDisplayStringTextField" destination="CUq-SY-rS9" id="547-3r-UQz"/>
-                        <segue destination="KBn-3c-cNG" kind="unwind" unwindAction="unwindToList:" id="LN3-91-sVY"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bsQ-8N-OzM" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="KBn-3c-cNG" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="765" y="242"/>
         </scene>
@@ -365,19 +363,15 @@
                         <viewControllerLayoutGuide type="bottom" id="z6S-Od-fZk"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Fn7-me-azH">
-                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G8a-bW-7MW">
-                                <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </view>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Xf-LH-UYA">
-                                <rect key="frame" x="0.0" y="276" width="568" height="44"/>
+                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QB0-4H-QGN">
-                                        <rect key="frame" x="535" y="11" width="22" height="22"/>
+                                        <rect key="frame" x="287" y="11" width="22" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="22" id="G5G-IM-2xI"/>
@@ -391,7 +385,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Players: Tap ⚙ to join a game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RbD-Qh-UDb">
-                                        <rect key="frame" x="11" y="0.0" width="524" height="44"/>
+                                        <rect key="frame" x="11" y="0.0" width="276" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -413,15 +407,10 @@
                         </subviews>
                         <color key="backgroundColor" red="0.03529411927" green="0.93725496529999996" blue="0.23921570180000001" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
-                            <constraint firstItem="z6S-Od-fZk" firstAttribute="top" secondItem="G8a-bW-7MW" secondAttribute="bottom" id="2BF-SN-apQ"/>
                             <constraint firstItem="9Xf-LH-UYA" firstAttribute="leading" secondItem="Fn7-me-azH" secondAttribute="leading" id="6lu-sO-Qwt"/>
-                            <constraint firstItem="G8a-bW-7MW" firstAttribute="top" secondItem="lit-mI-gP3" secondAttribute="bottom" constant="-64" id="J4f-70-lSf"/>
                             <constraint firstItem="z6S-Od-fZk" firstAttribute="top" secondItem="9Xf-LH-UYA" secondAttribute="bottom" id="Lfc-gX-yad"/>
-                            <constraint firstItem="G8a-bW-7MW" firstAttribute="leading" secondItem="Fn7-me-azH" secondAttribute="leading" id="TnE-sc-14A"/>
                             <constraint firstAttribute="trailing" secondItem="9Xf-LH-UYA" secondAttribute="trailing" id="jSR-rx-dXl"/>
-                            <constraint firstAttribute="trailing" secondItem="G8a-bW-7MW" secondAttribute="trailing" id="jqc-nr-Riv"/>
                         </constraints>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="d8p-bn-wjf">
@@ -436,7 +425,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                 <state key="normal" title="⚙"/>
                                 <connections>
-                                    <segue destination="eaQ-Tk-guP" kind="push" id="Bwn-pf-qVA"/>
+                                    <segue destination="eaQ-Tk-guP" kind="push" id="YQV-Zf-BV1"/>
                                 </connections>
                             </button>
                         </barButtonItem>
@@ -444,7 +433,6 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <nil key="simulatedBottomBarMetrics"/>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="currentPlayersLabel" destination="RbD-Qh-UDb" id="Dh7-Fn-BTm"/>
@@ -454,7 +442,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oUT-Dm-ipj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7" y="366"/>
+            <point key="canvasLocation" x="146" y="242"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Zen-tE-DMd">
@@ -478,7 +466,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="41C-DJ-zYk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-588" y="242"/>
+            <point key="canvasLocation" x="-295" y="242"/>
         </scene>
     </scenes>
     <resources>

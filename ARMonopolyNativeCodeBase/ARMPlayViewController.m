@@ -88,6 +88,53 @@
       
 }
 
+- (void)addUnityViewController:(UIViewController *)unityViewController withUnityView:(UIView *)unityView
+{
+    [self addChildViewController:unityViewController];          // 1. Establish Child parent relationship
+    
+    unityView.frame = self.view.frame;           // 2. Set the frame (explicitly or with constraints)
+    [self.view addSubview:unityView];            // 2.1 Add the subview AFTER you set the frame
+    [self.view addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:@"V:|[unityView]|"
+                               options:NSLayoutFormatDirectionLeadingToTrailing
+                               metrics:nil
+                               views:NSDictionaryOfVariableBindings(unityView)]];
+    
+    [self.view addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:@"H:[unityView]|"
+                               options:NSLayoutFormatDirectionLeadingToTrailing
+                               metrics:nil
+                               views:NSDictionaryOfVariableBindings(unityView)]];
+    
+    
+    [self.view sendSubviewToBack:unityView];
+    [unityViewController didMoveToParentViewController:self];   // 3. Tell the child what happened
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    NSLog(@"willRotate was callled! @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    NSArray *children = [self childViewControllers];
+    if ([children count] != 0)
+    {
+        UIViewController *childVC = children[0];        // we will only ever have one child.
+        [childVC willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    }
+   [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    NSLog(@"DidRotate was callled! @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    NSArray *children = [self childViewControllers];
+    if ([children count] != 0)
+    {
+        UIViewController *childVC = children[0];
+        [childVC didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    }
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+}
+
 @end
 
 

@@ -8,6 +8,30 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum
+ARMUnityScreenOrientation
+{
+    armOrientationUnknown,
+    armPortrait,
+    armPortraitUpsideDown,
+    armLandscapeLeft,
+    armLandscapeRight,
+    armAutorotation,
+    armOrientationCount
+}
+ARMUnityScreenOrientation;
+
+ARMUnityScreenOrientation ARMUnityScreenOrientationFromUIInterfaceOrientation(UIInterfaceOrientation newOrientation);
+
+@interface ARMUnityView : UIView
+
+- (void)willRotateTo:(ARMUnityScreenOrientation)orientation;
+- (void)didRotate;
+- (void)addUnityViewController:(UIViewController *)unityViewController;
+
+
+@end
+
 @interface ARMPlayViewController : UIViewController
 
 @end

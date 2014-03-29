@@ -1,6 +1,8 @@
+
 #import <UIKit/UIKit.h>
 #import "UnityAppController.h"
 #import "UI/UnityView.h"
+#import "iPhone_View.h"
 #import "ARMAppController.h"
 #import "ARMPlayViewController.h"
 #import "ARMPlayerInfo.h"
@@ -17,6 +19,7 @@
 
 - (void)createViewHierarchyImpl;
 {
+    NSLog(@"Creating the view hierarchy");
 	/* Manually load the storyboard file
 	 * Instantiate a window, root view controller, and it's root view
 	 */
@@ -25,19 +28,27 @@
 	
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	self.window.rootViewController = mainVC;
+    
+    _rootController = mainVC;
+    _rootView = mainVC.view;
 	
+    // 1. Instantiate the UnityViewController
+    UnityDefaultViewController *unityVC = [[UnityDefaultViewController alloc] init];
+    
+    // 2. Assign the UnityView
+    [unityVC assignUnityView:_unityView];
+    
 	for (UIViewController*vc in [(UINavigationController *)mainVC viewControllers])
 	{
 		if ([vc isKindOfClass: [ARMPlayViewController class]])
 		{
-			[vc.view addSubview:_unityView];
-			[vc.view sendSubviewToBack:_unityView];
+            NSLog(@"Found the Play view controller");
+            ARMPlayViewController *playViewController = (ARMPlayViewController *)vc;
+            // 3. Tell PlayViewController to add it as a child view controller
+            [playViewController addUnityViewController:unityVC withUnityView:_unityView];
 			break;
 		}
 	}
-	
-	_rootController = [self.window rootViewController];
-	_rootView = _rootController.view;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application

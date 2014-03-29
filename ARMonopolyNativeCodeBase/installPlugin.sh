@@ -21,9 +21,12 @@ ARMPlayerInfo.h                 ARMPlayerInfo.m                 \
 DEPLOY_ONLY="\
 ARMAppController.h              ARMAppController.m              \
 "
-CLASSES="\
-ARMPlayViewController.h         ARMPlayViewController.m         \
-$DATA_MODEL $SETTINGS_CONTROLLERS $BLUETOOTH $DEPLOY_ONLY"
+#CLASSES="\
+#ARMPlayViewController.h         ARMPlayViewController.m         \
+#$DATA_MODEL $SETTINGS_CONTROLLERS $BLUETOOTH $DEPLOY_ONLY"
+
+CLASSES="*.m *.h"
+
 LOGO="LOGO.png"
 
 

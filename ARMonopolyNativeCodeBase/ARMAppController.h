@@ -8,12 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "UnityAppController.h"
-#import "UI/UnityView.h"
 
 @interface ARMAppController : UnityAppController
 
 @property (strong, nonatomic) UIWindow *window;
-
-- (void)createViewHierarchyImpl;
 
 @end
