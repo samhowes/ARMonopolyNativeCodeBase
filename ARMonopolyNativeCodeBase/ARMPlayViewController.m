@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Samuel Howes. All rights reserved.
 //
 
+#import <AVFoundation/AVFoundation.h>
 #import "ARMPlayViewController.h"
 #import "ARMPlayerInfo.h"
 #import "ARMNetworkPlayer.h"
@@ -25,11 +26,52 @@
 @synthesize currentPlayersLabel;
 @synthesize displayAllPlayersButton;
 
+static ARMUnityCallbackWithBool unityAcquireCameraCallback;
+
++ (void)setUnityAcquireCameraCallback:(ARMUnityCallbackWithBool)callbackWithBool
+{
+    unityAcquireCameraCallback = callbackWithBool;
+}
+
+// Vuforia 2.8 workaround on iOS7 - save the current format and frame rate durations
+// so the camera doesn't crash when we try to use it again.
+- (void) saveOrRestoreCaptureFormat:(BOOL)shouldSaveCaptureFormat
+{
+    static AVCaptureDeviceFormat *captureFormat = nil;
+    static CMTime captureMinFrameRateDuration;
+    static CMTime captureMaxFrameRateDuration;
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
+        
+        if (shouldSaveCaptureFormat)
+        {
+            AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+            captureFormat = videoDevice.activeFormat;
+            captureMinFrameRateDuration = videoDevice.activeVideoMinFrameDuration;
+            captureMaxFrameRateDuration = videoDevice.activeVideoMaxFrameDuration;
+        }
+        else if (captureFormat) // only load the capture format if we have already saved it
+        {
+            AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+            [videoDevice lockForConfiguration:nil];
+            videoDevice.activeFormat = captureFormat;
+            videoDevice.activeVideoMaxFrameDuration = captureMaxFrameRateDuration;
+            videoDevice.activeVideoMinFrameDuration = captureMinFrameRateDuration;
+            [videoDevice unlockForConfiguration];
+        }
+    }
+}
+
+
 #pragma mark Lifecycle Methods
 
 - (void)viewWillAppear:(BOOL)animated
 {
-	[super viewWillAppear:animated];
+    if (unityAcquireCameraCallback)
+    {
+        [self saveOrRestoreCaptureFormat:NO];
+        unityAcquireCameraCallback(YES);
+    }
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 	
 	[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
@@ -37,7 +79,17 @@
 	self.navigationController.view.backgroundColor = [UIColor clearColor];
 	self.navigationController.navigationBar.translucent = YES;
     [self populatePlayersLabel];
-    
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    if (unityAcquireCameraCallback)
+    {
+        [self saveOrRestoreCaptureFormat:YES];
+        unityAcquireCameraCallback(NO);
+    }
+    [super viewWillDisappear:animated];
 }
 
 - (void)populatePlayersLabel
@@ -137,5 +189,16 @@
 
 @end
 
+#if __cplusplus
+extern "C" {
+#endif
 
+void ARMRegisterUnityCameraCallback(ARMUnityCallbackWithBool callbackWithBool)
+{
+    [ARMPlayViewController setUnityAcquireCameraCallback:callbackWithBool];
+}
 
+#if __cplusplus
+}
+#endif
+    
