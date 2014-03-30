@@ -8,31 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
-typedef enum
-ARMUnityScreenOrientation
-{
-    armOrientationUnknown,
-    armPortrait,
-    armPortraitUpsideDown,
-    armLandscapeLeft,
-    armLandscapeRight,
-    armAutorotation,
-    armOrientationCount
-}
-ARMUnityScreenOrientation;
-
-ARMUnityScreenOrientation ARMUnityScreenOrientationFromUIInterfaceOrientation(UIInterfaceOrientation newOrientation);
-
-@interface ARMUnityView : UIView
-
-- (void)willRotateTo:(ARMUnityScreenOrientation)orientation;
-- (void)didRotate;
-- (void)addUnityViewController:(UIViewController *)unityViewController;
-
-
-@end
+#if __cplusplus
+extern "C" {
+#endif
+    
+    typedef void (*ARMUnityCallbackWithBool)(BOOL);
+    
+#if __cplusplus
+}   // Extern C
+#endif
 
 @interface ARMPlayViewController : UIViewController
+
++ (void)setUnityAcquireCameraCallback:(ARMUnityCallbackWithBool)callbackWithBool;
 
 @end
 

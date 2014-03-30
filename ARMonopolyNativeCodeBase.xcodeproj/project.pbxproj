@@ -16,6 +16,7 @@
 		A533D7C918C7E91200EB42A8 /* face3.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853018C7E221005EE662 /* face3.png */; };
 		A533D7CA18C7E91200EB42A8 /* face4.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853118C7E221005EE662 /* face4.png */; };
 		A533D7CB18C7E91200EB42A8 /* LOGO.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = A59F853218C7E221005EE662 /* LOGO.png */; };
+		A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */ = {isa = PBXBuildFile; fileRef = A5483EF918E7B20000E84E87 /* project.pbxproj */; };
 		A54E40B918D64B5D00D343C2 /* ARMException.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E40B818D64B5D00D343C2 /* ARMException.m */; };
 		A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */; };
 		A59F853318C7E221005EE662 /* face.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F852E18C7E221005EE662 /* face.png */; };
@@ -85,6 +86,7 @@
 		A52CB59818DE5AB800B24AA4 /* tableview_checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tableview_checkmark.png; sourceTree = "<group>"; };
 		A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNetworkPlayer.h; sourceTree = "<group>"; };
 		A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNetworkPlayer.m; sourceTree = "<group>"; };
+		A5483EF918E7B20000E84E87 /* project.pbxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.pbxproject; path = project.pbxproj; sourceTree = "<group>"; };
 		A54E40B718D64B5D00D343C2 /* ARMException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMException.h; sourceTree = "<group>"; };
 		A54E40B818D64B5D00D343C2 /* ARMException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMException.m; sourceTree = "<group>"; };
 		A59F852E18C7E221005EE662 /* face.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face.png; sourceTree = "<group>"; };
@@ -159,6 +161,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A5483EF818E7B20000E84E87 /* integration */ = {
+			isa = PBXGroup;
+			children = (
+				A5483EF918E7B20000E84E87 /* project.pbxproj */,
+			);
+			name = integration;
+			path = ARMonopolyNativeCodeBase/integration;
+			sourceTree = "<group>";
+		};
 		A59F852D18C7E221005EE662 /* images */ = {
 			isa = PBXGroup;
 			children = (
@@ -195,6 +206,7 @@
 		A5C5BA1518C4E8E000435B10 = {
 			isa = PBXGroup;
 			children = (
+				A5483EF818E7B20000E84E87 /* integration */,
 				A59F852D18C7E221005EE662 /* images */,
 				A5C5BA2718C4E8E000435B10 /* ARMonopolyNativeCodeBase */,
 				A5C5BA4018C4E8E000435B10 /* ARMonopolyNativeCodeBaseTests */,
@@ -424,6 +436,7 @@
 				A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */,
 				A5C5BA7518C4E99B00435B10 /* Notes.txt in Resources */,
 				A52CB59718DE571A00B24AA4 /* check_7_2x.png in Resources */,
+				A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */,
 				A59F853418C7E221005EE662 /* face2.png in Resources */,
 				A59F853618C7E221005EE662 /* face4.png in Resources */,
 				A59F853718C7E221005EE662 /* LOGO.png in Resources */,
