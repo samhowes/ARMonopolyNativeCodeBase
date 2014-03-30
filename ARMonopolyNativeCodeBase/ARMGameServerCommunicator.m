@@ -20,7 +20,7 @@
 //--------------------------- URL/HTTP Constants ---------------------------//
 const NSString *ARMGameServerErrorDomain =                      @"ARMGameServerErrorDomain";
 
-const NSString *ARMGameServerURLString =                        @"http://155.41.10.55:3000";
+const NSString *ARMGameServerURLString =                        @"http://192.168.1.6:3000";
 const NSString *kGSHTTPUserAgentHeaderString =                  @"ARMonopoy iOS";
 const NSString *kGSHTTPAcceptContentHeaderString =              @"application/json";
 const NSString *kGSHTTPClientCookieName =                       @"clientID";
@@ -71,6 +71,11 @@ void throwError(NSError *error) {
     @throw [ARMException exceptionWithError:error];
 }
 
+void dispatchOnMainQueue(void (^block)(void))
+{
+    dispatch_async(dispatch_get_main_queue(), block);
+}
+
 NSData *dataWithJSONObject(NSDictionary *jsonObject)
 {
     NSError *jsonError;
@@ -101,6 +106,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 #pragma mark - Implementation
 @implementation ARMGameServerCommunicator
 
+@synthesize delegate;
 @synthesize mainURLSession;
 @synthesize mainURLSessionConfig;
 @synthesize connectionStatus;
@@ -201,7 +207,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
                                   completionHandler:completionHandler data:data response:response error:error];
     }];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
     [loginTask resume];
     
 }
@@ -327,8 +333,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
     }];
-    
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
     [joinSessionTask resume];
 }
 
@@ -346,7 +351,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
     }];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
     [getSessionInfoTask resume];
 }
 
@@ -370,7 +375,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
     }];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
     [leaveSessionTask resume];
     
 }
@@ -419,7 +424,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
     }];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
     [createSessionTask resume];
 }
 
@@ -480,7 +485,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     }
     
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
     // Start all the downloads
     for (NSURLSessionDataTask *downloadTask in downloadTasksArray)
     {
@@ -516,7 +521,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (void)handleGameServerResponseWithProcessor:(HTTPURLProcessorType)processor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:NO];});
     // Default: handle local errors
     [self changeConnectionStatusInError];
     if (error) {[self dispatchCompletionHandler:completionHandler withError:error]; return;}
@@ -563,7 +568,8 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (void)handleGameServerResponseWithImageProcessor:(ARMImageProcessorType)imageProcessor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler imageData:(NSData *)imageData response:(NSURLResponse *)response error:(NSError *)error
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:NO];});
+    
     // Default: handle local errors
     [self changeConnectionStatusInError];
     if (error) {[self dispatchCompletionHandler:completionHandler withError:error]; return;}
@@ -605,7 +611,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 - (void)dispatchCompletionHandler:(CompletionHandlerType)completionHandler withError:(NSError *)error
 {
     if (!shouldSkipCompletionHandler && completionHandler) {
-        dispatch_async(dispatch_get_main_queue(), ^{completionHandler(error);});
+       dispatchOnMainQueue( ^{completionHandler(error);});
     }
 }
 
@@ -721,14 +727,14 @@ didCompleteWithError:(NSError *)error
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    
+    if (tableView) return @" ";
     NSString *titleForHeader;
     switch (connectionStatus) {
         case kNotInitialized:
             titleForHeader = @"Not connected to Game Server";
             break;
         case kLoggingIn:
-            titleForHeader = @"Loggin in to Game Server...";
+            titleForHeader = @"Logging in to Game Server...";
             break;
         case kSendingImage:
             titleForHeader = @"Uploading profile image to Game Server...";

@@ -10,6 +10,7 @@
 #import "ARMNetworkViewController.h"
 #import "ARMNetworkPlayer.h"
 #import "ARMGameServerCommunicator.h"
+#import "ARMTableHeaderViewWithActivityIndicator.h"
 
 const NSString *kBarButtonItemLeaveGameTitle = @"Leave Game";
 const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Images";
@@ -17,12 +18,14 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
 @interface ARMNetworkViewController ()
 
 @property (strong, nonatomic) IBOutlet UITableView *gameSessionsTableView;
+@property (weak, nonatomic) UIActivityIndicatorView *networkActivityIndicator;
 
 @end
 
 
 @implementation ARMNetworkViewController
 
+@synthesize networkActivityIndicator;
 @synthesize gameSessionsTableView;
 
 - (void)viewDidLoad
@@ -30,13 +33,6 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     [super viewDidLoad];
     [gameSessionsTableView setDataSource:[ARMGameServerCommunicator sharedInstance]];
     [gameSessionsTableView reloadData];
-    
-    UIActivityIndicatorView *ac = [[UIActivityIndicatorView alloc]
-                                   initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    [ac startAnimating];
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, ac.frame.size.height)];
-    [view addSubview:ac]; // <-- Your UIActivityIndicatorView
-    self.tableView.tableHeaderView = view;
     
     [[ARMGameServerCommunicator sharedInstance] continueTasksWithCompletionHandler];
 }
@@ -164,10 +160,41 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     // Dispose of any resources that can be recreated.
 }
 
+- (void)setActivityIndicatorsVisible:(BOOL)shouldBeVisible
+{
+    if (shouldBeVisible)
+    {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [networkActivityIndicator startAnimating];
+    }
+    else
+    {
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [networkActivityIndicator stopAnimating];
+    }
+}
+
 #pragma mark - Table view data source
 /****************************************************************************/
 /*							TableView Delegate                              */
 /****************************************************************************/
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView *sectionHeaderView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"headerIndicatorView"];
+    if (sectionHeaderView == nil) {
+        sectionHeaderView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"headerIndicatorView"];
+    }
+    
+    UINib *contentViewNib = [UINib nibWithNibName:@"ARMSectionHeaderView" bundle:nil];
+    ARMTableHeaderViewWithActivityIndicator *contentView = [[contentViewNib instantiateWithOwner:self options:nil] firstObject];
+    
+    networkActivityIndicator = contentView.activityInidcator;
+    contentView.titleLabel.text = [[[ARMGameServerCommunicator sharedInstance] tableView:nil titleForHeaderInSection:section] uppercaseString];
+    [[sectionHeaderView contentView] addSubview:contentView];
+
+    return sectionHeaderView;
+}
 
 //------------------------------------------ User Input
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -275,7 +302,7 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     // If we should leave a game
     if ([[ARMGameServerCommunicator sharedInstance] connectionStatus] == kInGameSession)
     {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [self setActivityIndicatorsVisible:YES];
         [[ARMGameServerCommunicator sharedInstance] leaveSessionWithCompletionHandler:^(NSError *error) {
             [gameSessionsTableView reloadData];
             if (error)
@@ -300,7 +327,7 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     }
     else // otherwise we will be creating a game
     {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [self setActivityIndicatorsVisible:YES];
         [[ARMGameServerCommunicator sharedInstance] createSessionWithName:[[ARMPlayerInfo sharedInstance] playerDisplayName] completionHandler:^(NSError *error) {
             [gameSessionsTableView reloadData];
             if (error)
@@ -331,7 +358,7 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     NSMutableString *errorString = [[NSMutableString alloc] init];
     @try
     {
-        if ([[error domain] isEqualToString:NSURLErrorDomain])      // A local error occured
+        if ([[error domain] isEqualToString:NSURLErrorDomain])      // TODO: Move this into Game Server Communicator
         {
             switch ([error code])
             {

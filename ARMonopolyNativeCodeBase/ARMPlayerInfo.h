@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-//#import "ARMNetworkViewController.h"
 
 extern const NSString *kDefaultImageFileName;
 extern const NSString *kImageFolderName;

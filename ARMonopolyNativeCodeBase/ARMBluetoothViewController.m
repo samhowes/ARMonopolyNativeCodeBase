@@ -8,8 +8,12 @@
 
 #import "ARMBluetoothViewController.h"
 #import "ARMBluetoothManager.h"
+#import "ARMTableHeaderViewWithActivityIndicator.h"
+#import "APLSectionHeaderView.h"
 
 const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
+
+const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifier";
 
 @interface ARMBluetoothViewController () <ARMBluetoothManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 {
@@ -40,10 +44,17 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
 {
     [super viewDidLoad];
     [devicesTableView setDataSource:self];
+    
+    // Set up default values.
+    self.tableView.sectionHeaderHeight = 48;
+    
+   // UINib *sectionHeaderNib = [UINib nibWithNibName:@"ARMSectionHeaderView" bundle:nil];
+    //[self.tableView registerNib:sectionHeaderNib forHeaderFooterViewReuseIdentifier:[ARMSectionHeaderViewIdentifier copy]];
+    
 	[devicesTableView reloadData];          //change
     
-    bluetoothManager = [ARMBluetoothManager sharedInstance];
-	[bluetoothManager setDelegate:self];
+  //  bluetoothManager = [ARMBluetoothManager sharedInstance];
+	//[bluetoothManager setDelegate:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -77,6 +88,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
 /****************************************************************************/
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
+    if (tableView) return @" ";
     if ([[ARMPlayerInfo sharedInstance] gameTileName])
     {
         return @"Your GameTile";
@@ -141,31 +153,19 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
-    CGFloat width = CGRectGetWidth(tableView.bounds);
-    CGFloat height = 55;
-    
+
     UITableViewHeaderFooterView *sectionHeaderView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"headerIndicatorView"];
     if (sectionHeaderView == nil) {
         sectionHeaderView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"headerIndicatorView"];
     }
+   
+    UINib *contentViewNib = [UINib nibWithNibName:@"ARMSectionHeaderView" bundle:nil];
+    ARMTableHeaderViewWithActivityIndicator *contentView = [[contentViewNib instantiateWithOwner:self options:nil] firstObject];
     
-    UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 31, width, height)];
-    headerLabel.font = [UIFont systemFontOfSize:14];
-    NSString *title = [self tableView:tableView titleForHeaderInSection:section];
-    headerLabel.text =  [title uppercaseString];
-    [headerLabel sizeToFit];
-    
-    UIActivityIndicatorView *activityIndicator = (UIActivityIndicatorView *)[sectionHeaderView viewWithTag:kTableViewHeaderActivityIndicatorViewTag];
-    if (!activityIndicator)
-    {
-        activityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(14+headerLabel.frame.size.width + 8, 30, 21, 21)];
-        [activityIndicator setTag:kTableViewHeaderActivityIndicatorViewTag];
-        [activityIndicator setHidesWhenStopped:YES];
-        [activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-        [sectionHeaderView.contentView addSubview:activityIndicator];
-    }
-    
-   bluetoothActivitySpinner = activityIndicator;
+    contentView.titleLabel.text = [[self tableView:nil titleForHeaderInSection:section] uppercaseString];
+    [[sectionHeaderView contentView] addSubview:contentView];
+
+    bluetoothActivitySpinner = contentView.activityInidcator;
     
     switch ([bluetoothManager state])
     {
@@ -174,11 +174,11 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
         case kDisconnectingFromGameTile:
         case kExchangingDataWithGameTile:
         case kDiscoveringGameTileAttributes:
-            [activityIndicator startAnimating];
+            [bluetoothActivitySpinner startAnimating];
             
             break;
         default:
-            [activityIndicator stopAnimating];
+            [bluetoothActivitySpinner stopAnimating];
             break;
     }
 
@@ -187,7 +187,7 @@ const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-	if ([[ARMPlayerInfo sharedInstance] gameTileName])
+    if ([[ARMPlayerInfo sharedInstance] gameTileName])
     {
         return @"Pull down to connect to another GameTile";
     }

@@ -72,15 +72,22 @@ typedef void (^CompletionHandlerType)(NSError *);
 typedef void (^HTTPURLProcessorType)(NSHTTPURLResponse*, NSDictionary *);
 typedef void (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 
+@protocol ARMGSCommunicatorDelegate
+
+- (void)setActivityIndicatorsVisible:(BOOL)shouldBeVisible;
+
+@end
+
 
 @interface ARMGameServerCommunicator : NSObject <UITableViewDataSource>
+
+@property (weak, nonatomic) id<ARMGSCommunicatorDelegate>delegate;
 
 @property GameServerConnectionStatus connectionStatus;
 @property (strong, nonatomic) NSString *currentSessionID;
 @property (strong, nonatomic) NSString *currentSessionName;
 @property (strong, nonatomic) NSString *clientIDCookie;
 @property (strong, nonatomic) NSMutableArray *availableGameSessions;
-
 
 + (id)sharedInstance;
 

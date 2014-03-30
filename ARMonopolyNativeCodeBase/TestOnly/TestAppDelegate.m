@@ -18,6 +18,7 @@
     
     NSLog(@"Checking for application image resources in Documents directory");
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *pathToImagesDirectory = [documentsDirectory stringByAppendingPathComponent:[kImageFolderName copy]];
     NSString *destinationPath = [documentsDirectory stringByAppendingPathComponent:[kImageFolderName stringByAppendingPathComponent:[kDefaultImageFileName copy]]];
     
     NSError *error;
@@ -52,9 +53,9 @@
         NSLog(@"Removing old images from images Directory");
         for (NSString *imagePath in filesInImageDirectory)
         {
-            if (![imagePath isEqualToString:destinationPath])
+            if (![imagePath isEqualToString:kDefaultImageFileName])
             {
-                [[NSFileManager defaultManager] removeItemAtPath:imagePath error:&error];
+                [[NSFileManager defaultManager] removeItemAtPath:[pathToImagesDirectory stringByAppendingPathComponent:imagePath] error:&error];
                 if (error)
                 {
                     NSLog(@"Error removing old image files at launch: %@", error);
