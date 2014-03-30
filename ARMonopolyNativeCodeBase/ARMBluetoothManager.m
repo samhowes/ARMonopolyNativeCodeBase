@@ -194,13 +194,16 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (NSError *)connectToGameTileWithID:(ARMGameTileIDType)gameTileID
 {
+    NSLog(@"Attempting to connect to GameTIle %d", gameTileID);
     if (state != kScanningForGameTiles)
     {
+        NSLog(@"Internal error: got a connection message when not scanning for game tiles");
         return ARMErrorWithCode(kNotReadyToConnectToGameTileErrorCode);
     }
     else if (connectedGameTile)
     {
         // if we're already connected to a game tile, don't connect to another one
+        NSLog(@"Internal error: received connection message when already connected to a gameTile");
         return ARMErrorWithCode(kAlreadyConnectedToGameTileErrorCode);
     }
     CBPeripheral *gameTileToConnectTo = [discoveredGameTilePeripheralsArray objectAtIndex:gameTileID];
@@ -223,12 +226,12 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (NSError *)exchangeDataWithConnectedGameTile
 {
+    NSLog(@"Attempting to exchange data with GameTile");
     if (state != kReadyToExchangeDataWithGameTile || !connectedGameTile
         || !gameTileImageTargetIDCharacteristic || !gameTileDisplayStringCharacteristic)
     {
         return ARMErrorWithCode(kNotReadyToExchangeDataErrorCode);
     }
-    
     
     state = kExchangingDataWithGameTile;
     numberOfWriteAttempts++;
@@ -511,7 +514,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 /*						CBManager Delagate methods							*/
 /****************************************************************************/
 
-- (void) centralManagerDidUpdateState:(CBCentralManager *)central // move this method up higher for progressive reading
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central // move this method up higher for progressive reading
 {
 	NSLog(@"Central manager updated its state to: %d", [central state]);
     switch ([centralManager state]) {
@@ -523,7 +526,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
                 [self notifyDelegateWithError:ARMErrorWithCode(kBluetoothPoweredOffNotificationErrorCode)];
             }
             // TODO manage my data structures here
-            
+            state = kWaitingForBluetoothToBeEnabled;
 			[self notifyDelegateWithError:nil];
 			
 			break;

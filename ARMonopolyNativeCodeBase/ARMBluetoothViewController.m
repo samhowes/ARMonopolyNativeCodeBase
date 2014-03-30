@@ -46,15 +46,13 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
     [devicesTableView setDataSource:self];
     
     // Set up default values.
-    self.tableView.sectionHeaderHeight = 48;
+    //self.tableView.sectionHeaderHeight = 48;
     
-   // UINib *sectionHeaderNib = [UINib nibWithNibName:@"ARMSectionHeaderView" bundle:nil];
-    //[self.tableView registerNib:sectionHeaderNib forHeaderFooterViewReuseIdentifier:[ARMSectionHeaderViewIdentifier copy]];
     
-	[devicesTableView reloadData];          //change
+	[self reloadTableViewWithAnimation];
     
-  //  bluetoothManager = [ARMBluetoothManager sharedInstance];
-	//[bluetoothManager setDelegate:self];
+    bluetoothManager = [ARMBluetoothManager sharedInstance];
+	[bluetoothManager setDelegate:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -364,18 +362,23 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
             indexPathOfSelectedCell = indexPath;
             selectedTableViewCell = [tableView cellForRowAtIndexPath:indexPath];
             selectedCellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-            //    selectedCellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:[[selectedTableViewCell accessoryView] frame]];
-       //     [selectedCellActivityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+       
             [selectedCellActivityIndicatorView setHidesWhenStopped:YES];
             [selectedCellActivityIndicatorView startAnimating];
+            [[selectedTableViewCell detailTextLabel] setText:nil];
             [selectedTableViewCell setAccessoryView:selectedCellActivityIndicatorView];
+            [bluetoothActivitySpinner stopAnimating];                           // On success, the manager will have stopped scanning 
         }
     }
     else if ([bluetoothManager state] == kConnectingToGameTile)
     {
         // do nothing in this case, because we don't want to select multiple game tiles
     }
-    [tableView reloadData];
+}
+
+- (void)reloadTableViewWithAnimation
+{
+    [devicesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)addRefreshControl
@@ -563,7 +566,7 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
         }
     }
     
-	[devicesTableView reloadData];
+	[self reloadTableViewWithAnimation];
 }
 
 

@@ -21,7 +21,6 @@
 		A5483F0318E7C2E400E84E87 /* ARMSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5483F0118E7C2E400E84E87 /* ARMSectionHeaderView.xib */; };
 		A54E40B918D64B5D00D343C2 /* ARMException.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E40B818D64B5D00D343C2 /* ARMException.m */; };
 		A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */; };
-		A59474F418E7D48B007F6F58 /* SectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A59474F218E7D48B007F6F58 /* SectionHeaderView.xib */; };
 		A59474FC18E7D67F007F6F58 /* APLSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A59474FB18E7D67F007F6F58 /* APLSectionHeaderView.m */; };
 		A59C427618E85A960075C3B7 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A59C427518E85A960075C3B7 /* MessageUI.framework */; };
 		A59F853318C7E221005EE662 /* face.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F852E18C7E221005EE662 /* face.png */; };
@@ -54,6 +53,7 @@
 		A5D4A5F018DE8AA40026B008 /* take2.png in Resources */ = {isa = PBXBuildFile; fileRef = A5D4A5EF18DE8AA40026B008 /* take2.png */; };
 		A5D4A5F218DE8C730026B008 /* Take3.png in Resources */ = {isa = PBXBuildFile; fileRef = A5D4A5F118DE8C730026B008 /* Take3.png */; };
 		A5D4A5F418DE8D7E0026B008 /* 66_66.png in Resources */ = {isa = PBXBuildFile; fileRef = A5D4A5F318DE8D7E0026B008 /* 66_66.png */; };
+		A5DBDF4918E8D25E006A21D8 /* iPad_Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5DBDF4718E8D25E006A21D8 /* iPad_Main.storyboard */; };
 		A5F15B0918D3772F00271DD2 /* ARMGameSession.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F15B0818D3772F00271DD2 /* ARMGameSession.m */; };
 /* End PBXBuildFile section */
 
@@ -97,7 +97,6 @@
 		A5483F0218E7C2E400E84E87 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = ARMSectionHeaderView.xib; sourceTree = "<group>"; };
 		A54E40B718D64B5D00D343C2 /* ARMException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMException.h; sourceTree = "<group>"; };
 		A54E40B818D64B5D00D343C2 /* ARMException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMException.m; sourceTree = "<group>"; };
-		A59474F318E7D48B007F6F58 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = SectionHeaderView.xib; sourceTree = "<group>"; };
 		A59474FA18E7D67F007F6F58 /* APLSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APLSectionHeaderView.h; sourceTree = "<group>"; };
 		A59474FB18E7D67F007F6F58 /* APLSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APLSectionHeaderView.m; sourceTree = "<group>"; };
 		A59C427518E85A960075C3B7 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -145,6 +144,7 @@
 		A5D4A5EF18DE8AA40026B008 /* take2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = take2.png; sourceTree = "<group>"; };
 		A5D4A5F118DE8C730026B008 /* Take3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Take3.png; sourceTree = "<group>"; };
 		A5D4A5F318DE8D7E0026B008 /* 66_66.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 66_66.png; sourceTree = "<group>"; };
+		A5DBDF4818E8D25E006A21D8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/iPad_Main.storyboard; sourceTree = "<group>"; };
 		A5F15B0718D3772F00271DD2 /* ARMGameSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMGameSession.h; sourceTree = "<group>"; };
 		A5F15B0818D3772F00271DD2 /* ARMGameSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMGameSession.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -298,7 +298,6 @@
 			children = (
 				A5C5BA5F18C4E99B00435B10 /* Main.storyboard */,
 				A5483F0118E7C2E400E84E87 /* ARMSectionHeaderView.xib */,
-				A59474F218E7D48B007F6F58 /* SectionHeaderView.xib */,
 			);
 			path = Base.lproj;
 			sourceTree = "<group>";
@@ -360,6 +359,7 @@
 		A5F88A1218CE816600D8E263 /* iPad */ = {
 			isa = PBXGroup;
 			children = (
+				A5DBDF4718E8D25E006A21D8 /* iPad_Main.storyboard */,
 			);
 			name = iPad;
 			sourceTree = "<group>";
@@ -453,13 +453,13 @@
 				A5C5BA7418C4E99B00435B10 /* LOGO.png in Resources */,
 				A59F853518C7E221005EE662 /* face3.png in Resources */,
 				A52CB59918DE5AB800B24AA4 /* tableview_checkmark.png in Resources */,
-				A59474F418E7D48B007F6F58 /* SectionHeaderView.xib in Resources */,
 				A5D4A5F218DE8C730026B008 /* Take3.png in Resources */,
 				A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */,
 				A5C5BA7518C4E99B00435B10 /* Notes.txt in Resources */,
 				A52CB59718DE571A00B24AA4 /* check_7_2x.png in Resources */,
 				A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */,
 				A59F853418C7E221005EE662 /* face2.png in Resources */,
+				A5DBDF4918E8D25E006A21D8 /* iPad_Main.storyboard in Resources */,
 				A59F853618C7E221005EE662 /* face4.png in Resources */,
 				A59F853718C7E221005EE662 /* LOGO.png in Resources */,
 				A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */,
@@ -527,14 +527,6 @@
 			name = ARMSectionHeaderView.xib;
 			sourceTree = "<group>";
 		};
-		A59474F218E7D48B007F6F58 /* SectionHeaderView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A59474F318E7D48B007F6F58 /* Base */,
-			);
-			name = SectionHeaderView.xib;
-			sourceTree = "<group>";
-		};
 		A5C5BA2A18C4E8E000435B10 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -557,6 +549,14 @@
 				A5C5BA6018C4E99B00435B10 /* Base */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		A5DBDF4718E8D25E006A21D8 /* iPad_Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A5DBDF4818E8D25E006A21D8 /* Base */,
+			);
+			name = iPad_Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
