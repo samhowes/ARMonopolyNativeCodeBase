@@ -343,11 +343,107 @@
                     <navigationItem key="navigationItem" title="Network" id="2xv-Cs-6k4"/>
                     <connections>
                         <outlet property="gameSessionsTableView" destination="YeC-RW-kIl" id="3Dh-1f-Ngo"/>
+                        <segue destination="NIF-bl-lfK" kind="modal" identifier="CreateGameSegue" id="lQo-K2-BcJ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LOW-gT-AN7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1783" y="765"/>
+        </scene>
+        <!--New Game Prompt View Controller - Create Game-->
+        <scene sceneID="dJe-OG-Qox">
+            <objects>
+                <tableViewController id="PKO-tY-bei" customClass="ARMNewGamePromptViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="osx-nx-LKg">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection id="3Bn-27-1NJ">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Mgu-6s-sdh">
+                                        <rect key="frame" x="0.0" y="129" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Mgu-6s-sdh" id="f57-hv-k4r">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GVm-sA-7f4">
+                                                    <rect key="frame" x="20" y="11" width="46" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="2vj-RS-aF0"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name of Game" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UOc-rE-DAg">
+                                                    <rect key="frame" x="106" y="7" width="194" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <accessibility key="accessibilityConfiguration" hint="Name of Game"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="q69-WN-itb"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="GVm-sA-7f4" firstAttribute="leading" secondItem="f57-hv-k4r" secondAttribute="leading" constant="20" id="72R-at-0PG"/>
+                                                <constraint firstAttribute="bottom" secondItem="GVm-sA-7f4" secondAttribute="bottom" constant="11" id="EM1-tk-K5n"/>
+                                                <constraint firstAttribute="trailing" secondItem="UOc-rE-DAg" secondAttribute="trailing" constant="20" id="H9d-sy-0er"/>
+                                                <constraint firstItem="UOc-rE-DAg" firstAttribute="leading" secondItem="GVm-sA-7f4" secondAttribute="trailing" constant="40" id="LRJ-x9-RfU"/>
+                                                <constraint firstAttribute="bottom" secondItem="UOc-rE-DAg" secondAttribute="bottom" constant="6" id="SIb-d8-CW1"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="PKO-tY-bei" id="xvu-Ge-Im3"/>
+                            <outlet property="delegate" destination="PKO-tY-bei" id="rzH-tq-pV5"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Create Game" prompt="Name Your Game" id="KLU-As-aEw">
+                        <barButtonItem key="backBarButtonItem" title="Cancel" id="SbF-gl-HqP"/>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="8D3-eN-mUn">
+                            <connections>
+                                <segue destination="ZYy-QP-RYD" kind="unwind" unwindAction="unwindToList:" id="DeL-qr-SMK"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Create" id="C9E-R4-GGy">
+                            <connections>
+                                <segue destination="ZYy-QP-RYD" kind="unwind" unwindAction="unwindToList:" id="PYo-j5-DwL"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="cancelBarButton" destination="8D3-eN-mUn" id="Pen-Lq-xpy"/>
+                        <outlet property="createGameBarButton" destination="C9E-R4-GGy" id="r0z-Nl-IVi"/>
+                        <outlet property="gameNameTextField" destination="UOc-rE-DAg" id="LD3-K1-cTC"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fha-ir-24d" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="ZYy-QP-RYD" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="2854" y="765"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="iue-ss-zUB">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="NIF-bl-lfK" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="iby-cM-CDg">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="PKO-tY-bei" kind="relationship" relationship="rootViewController" id="o2E-iS-Kfg"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="taG-5m-apM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2320" y="765"/>
         </scene>
         <!--Play View Controller-->
         <scene sceneID="pjG-Xz-nMI">

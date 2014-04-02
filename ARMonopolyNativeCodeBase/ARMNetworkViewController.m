@@ -11,6 +11,7 @@
 #import "ARMNetworkPlayer.h"
 #import "ARMGameServerCommunicator.h"
 #import "ARMTableHeaderViewWithActivityIndicator.h"
+#import "ARMNewGamePromptViewController.h"
 
 const NSString *kBarButtonItemLeaveGameTitle = @"Leave Game";
 const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Images";
@@ -20,22 +21,18 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
 @property (strong, nonatomic) IBOutlet UITableView *gameSessionsTableView;
 @property (weak, nonatomic) UIActivityIndicatorView *networkActivityIndicator;
 
+@property BOOL isShowingLeaveGameButton;
+
 @end
 
 
 @implementation ARMNetworkViewController
 
+@synthesize isShowingLeaveGameButton;
+
 @synthesize networkActivityIndicator;
 @synthesize gameSessionsTableView;
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [gameSessionsTableView setDataSource:[ARMGameServerCommunicator sharedInstance]];
-    [gameSessionsTableView reloadData];
-    
-    [[ARMGameServerCommunicator sharedInstance] continueTasksWithCompletionHandler];
-}
 
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle
 {
@@ -59,10 +56,14 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [gameSessionsTableView setDataSource:[ARMGameServerCommunicator sharedInstance]];
+    [gameSessionsTableView reloadData];
+    [[ARMGameServerCommunicator sharedInstance] setDelegate:self];
     [[ARMGameServerCommunicator sharedInstance] continueTasksWithCompletionHandler];
-    // Populate static data for testing
+    //DEBUG: Populate static data for testing
     [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:     @"Sam"];
     [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:   @"12"];
+    [[ARMPlayerInfo sharedInstance] setPlayerDisplayImage:[UIImage new]];
     
     if (![[ARMPlayerInfo sharedInstance] isReadyForLogin])
     {
@@ -281,12 +282,10 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     {
         [[self navigationItem] setRightBarButtonItem:
          [[UIBarButtonItem alloc] initWithTitle:[kBarButtonItemLeaveGameTitle copy] style:UIBarButtonItemStylePlain target:self action:@selector(userDidPressBarButtonItem:)] animated:YES];
+        self.isShowingLeaveGameButton = YES;
     } else {
-        [[self navigationItem] setRightBarButtonItem:[[UIBarButtonItem alloc]
-                                                      initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                      target:self
-                                                      action:@selector(userDidPressBarButtonItem:)]
-                                            animated:YES];
+        [[self navigationItem] setRightBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(userDidPressBarButtonItem:)] animated:YES];
+        self.isShowingLeaveGameButton = NO;
     }
     
 }
@@ -296,50 +295,71 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     [[self navigationItem] setRightBarButtonItem:nil animated:YES];
 }
 
-- (IBAction)userDidPressBarButtonItem:(id)sender
+- (void)createGameSessionWithName:(NSString *)gameName
 {
-    
-    // If we should leave a game
-    if ([[ARMGameServerCommunicator sharedInstance] connectionStatus] == kInGameSession)
-    {
-        [self setActivityIndicatorsVisible:YES];
-        [[ARMGameServerCommunicator sharedInstance] leaveSessionWithCompletionHandler:^(NSError *error) {
+    [self setActivityIndicatorsVisible:YES];
+    [[ARMGameServerCommunicator sharedInstance] createSessionWithName:gameName completionHandler:^(NSError *error) {
+        [gameSessionsTableView reloadData];
+        if (error)
+        {
+            [self handleNetworkingError:error];
+            [gameSessionsTableView reloadData];
+            return;
+        }
+        [self showLeaveGameButtonWithBool:YES];
+        
+    }];
+}
+
+-(void)leaveCurrentGameSession
+{
+    [self setActivityIndicatorsVisible:YES];
+    [[ARMGameServerCommunicator sharedInstance] leaveSessionWithCompletionHandler:^(NSError *error) {
+        [gameSessionsTableView reloadData];
+        if (error)
+        {
+            [self handleNetworkingError:error];
+            [gameSessionsTableView reloadData];
+            return;
+        }
+        
+        [self showLeaveGameButtonWithBool:NO];
+        
+        [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
             [gameSessionsTableView reloadData];
             if (error)
             {
                 [self handleNetworkingError:error];
-                [gameSessionsTableView reloadData];
                 return;
             }
             
-            [self showLeaveGameButtonWithBool:NO];
-            
-            [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:^(NSError *error) {
-                [gameSessionsTableView reloadData];
-                if (error)
-                {
-                    [self handleNetworkingError:error];
-                    return;
-                }
-                
-            }];
         }];
+    }];
+}
+
+- (IBAction)userDidPressBarButtonItem:(id)sender
+{
+    // If we should leave a game
+    if (self.isShowingLeaveGameButton)
+    {
+        [self leaveCurrentGameSession];
     }
     else // otherwise we will be creating a game
     {
-        [self setActivityIndicatorsVisible:YES];
-        [[ARMGameServerCommunicator sharedInstance] createSessionWithName:[[ARMPlayerInfo sharedInstance] playerDisplayName] completionHandler:^(NSError *error) {
-            [gameSessionsTableView reloadData];
-            if (error)
-            {
-                [self handleNetworkingError:error];
-                [gameSessionsTableView reloadData];
-                return;
-            }
-            [self showLeaveGameButtonWithBool:YES];
-            
-        }];
+        [self performSegueWithIdentifier:@"CreateGameSegue" sender:self];
     }
+}
+
+- (IBAction)unwindToList:(UIStoryboardSegue *)segue
+{
+    ARMNewGamePromptViewController *source = [segue sourceViewController];
+    if ([source nameOfNewGame])
+    {
+        [self createGameSessionWithName:[source nameOfNewGame]];
+        //TODO: handle the "creating Game session" state properly
+        
+    }
+    // else, the user just pressed the cancel button
 }
 
 #pragma mark - Networking Methods

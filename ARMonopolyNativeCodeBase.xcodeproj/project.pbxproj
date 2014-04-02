@@ -53,7 +53,8 @@
 		A5D4A5F018DE8AA40026B008 /* take2.png in Resources */ = {isa = PBXBuildFile; fileRef = A5D4A5EF18DE8AA40026B008 /* take2.png */; };
 		A5D4A5F218DE8C730026B008 /* Take3.png in Resources */ = {isa = PBXBuildFile; fileRef = A5D4A5F118DE8C730026B008 /* Take3.png */; };
 		A5D4A5F418DE8D7E0026B008 /* 66_66.png in Resources */ = {isa = PBXBuildFile; fileRef = A5D4A5F318DE8D7E0026B008 /* 66_66.png */; };
-		A5DBDF4918E8D25E006A21D8 /* iPad_Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5DBDF4718E8D25E006A21D8 /* iPad_Main.storyboard */; };
+		A5DBDF4918E8D25E006A21D8 /* Main-iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5DBDF4718E8D25E006A21D8 /* Main-iPad.storyboard */; };
+		A5EF082218E9D7DE00981039 /* ARMNewGamePromptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */; };
 		A5F15B0918D3772F00271DD2 /* ARMGameSession.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F15B0818D3772F00271DD2 /* ARMGameSession.m */; };
 /* End PBXBuildFile section */
 
@@ -144,7 +145,9 @@
 		A5D4A5EF18DE8AA40026B008 /* take2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = take2.png; sourceTree = "<group>"; };
 		A5D4A5F118DE8C730026B008 /* Take3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Take3.png; sourceTree = "<group>"; };
 		A5D4A5F318DE8D7E0026B008 /* 66_66.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 66_66.png; sourceTree = "<group>"; };
-		A5DBDF4818E8D25E006A21D8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/iPad_Main.storyboard; sourceTree = "<group>"; };
+		A5DBDF4818E8D25E006A21D8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Main-iPad.storyboard"; sourceTree = "<group>"; };
+		A5EF082018E9D7DE00981039 /* ARMNewGamePromptViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNewGamePromptViewController.h; sourceTree = "<group>"; };
+		A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNewGamePromptViewController.m; sourceTree = "<group>"; };
 		A5F15B0718D3772F00271DD2 /* ARMGameSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMGameSession.h; sourceTree = "<group>"; };
 		A5F15B0818D3772F00271DD2 /* ARMGameSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMGameSession.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -331,6 +334,8 @@
 				A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */,
 				A5483EFE18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.h */,
 				A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */,
+				A5EF082018E9D7DE00981039 /* ARMNewGamePromptViewController.h */,
+				A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -359,7 +364,7 @@
 		A5F88A1218CE816600D8E263 /* iPad */ = {
 			isa = PBXGroup;
 			children = (
-				A5DBDF4718E8D25E006A21D8 /* iPad_Main.storyboard */,
+				A5DBDF4718E8D25E006A21D8 /* Main-iPad.storyboard */,
 			);
 			name = iPad;
 			sourceTree = "<group>";
@@ -459,7 +464,7 @@
 				A52CB59718DE571A00B24AA4 /* check_7_2x.png in Resources */,
 				A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */,
 				A59F853418C7E221005EE662 /* face2.png in Resources */,
-				A5DBDF4918E8D25E006A21D8 /* iPad_Main.storyboard in Resources */,
+				A5DBDF4918E8D25E006A21D8 /* Main-iPad.storyboard in Resources */,
 				A59F853618C7E221005EE662 /* face4.png in Resources */,
 				A59F853718C7E221005EE662 /* LOGO.png in Resources */,
 				A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */,
@@ -482,6 +487,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5EF082218E9D7DE00981039 /* ARMNewGamePromptViewController.m in Sources */,
 				A5C5BA2E18C4E8E000435B10 /* main.m in Sources */,
 				A5F15B0918D3772F00271DD2 /* ARMGameSession.m in Sources */,
 				A54E40B918D64B5D00D343C2 /* ARMException.m in Sources */,
@@ -551,12 +557,12 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		A5DBDF4718E8D25E006A21D8 /* iPad_Main.storyboard */ = {
+		A5DBDF4718E8D25E006A21D8 /* Main-iPad.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A5DBDF4818E8D25E006A21D8 /* Base */,
 			);
-			name = iPad_Main.storyboard;
+			name = "Main-iPad.storyboard";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

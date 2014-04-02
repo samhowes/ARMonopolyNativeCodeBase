@@ -20,7 +20,7 @@
 //--------------------------- URL/HTTP Constants ---------------------------//
 const NSString *ARMGameServerErrorDomain =                      @"ARMGameServerErrorDomain";
 
-const NSString *ARMGameServerURLString =                        @"http://192.168.1.6:3000";
+const NSString *ARMGameServerURLString =                        @"http://155.41.91.178:3000";
 const NSString *kGSHTTPUserAgentHeaderString =                  @"ARMonopoy iOS";
 const NSString *kGSHTTPAcceptContentHeaderString =              @"application/json";
 const NSString *kGSHTTPClientCookieName =                       @"clientID";
@@ -40,8 +40,8 @@ const NSString *kGSUploadImageContentTypeHeader =               @"multipart/form
 const NSString *kGSUploadImageFormBoundaryHeaderValue =         @"------WebKitFormBoundaryOtZ7JwoUlFLeKECK";//----ARMonpolyiOSFormBoundary";
 
 //---------------------- HTTP Body Request Constants -----------------------//
-const NSString *kGSUserNamePostKey =                            @"username";
-const NSString *kGSDeviceIDPostKey =                            @"gameTileID";
+const NSString *kGSUserNamePostKey =                            @"userName";
+const NSString *kGSDeviceIDPostKey =                            @"deviceID";
 const NSString *kGSSessionIDPostKey =                           @"sessionID";
 const NSString *kGSCreateSessionPostKey =                       @"sessionName";
 
@@ -278,6 +278,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
                                               data:data response:response error:error];
     }];
     
+     dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
     [uploadImageTask resume];
 
 }
@@ -304,6 +305,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
     }];
     
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
     [getSessionsTask resume];
 }
 
@@ -402,7 +404,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     NSMutableURLRequest *createSessionRequest;
     @try {
         createSessionRequest = [self requestWithRelativeURLString:[kGSCreateSessionEndpointURLString copy]
-                                             withPostJSONObject: @{kGSSessionIDPostKey:newSessionName}];
+                                             withPostJSONObject: @{kGSCreateSessionPostKey:newSessionName}];
     }
     @catch (NSException *e)
     {
@@ -521,7 +523,9 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (void)handleGameServerResponseWithProcessor:(HTTPURLProcessorType)processor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error
 {
-    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:NO];});
+    dispatchOnMainQueue(^{
+        [delegate setActivityIndicatorsVisible:NO];
+    });
     // Default: handle local errors
     [self changeConnectionStatusInError];
     if (error) {[self dispatchCompletionHandler:completionHandler withError:error]; return;}
@@ -740,10 +744,10 @@ didCompleteWithError:(NSError *)error
             titleForHeader = @"Uploading profile image to Game Server...";
             break;
         case kRetrievingGameSessions:
-            titleForHeader = @"Retrieving active sessions...";
+            titleForHeader = @"Retrieving active games...";
             break;
         case kReadyForSelection:
-            titleForHeader = @"Select a session...";
+            titleForHeader = @"Select a game...";
             break;
         case kInGameSession:
             if (section == 0)

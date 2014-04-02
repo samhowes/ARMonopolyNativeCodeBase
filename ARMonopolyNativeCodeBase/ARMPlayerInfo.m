@@ -88,8 +88,7 @@ const NSString *kImageFolderName = @"images";
 
 - (BOOL)isReadyForLogin
 {
-    if ([self isReadyToConnectToGameTile] &&
-        playerDisplayName && playerDisplayImage && gameTileImageTargetID)
+    if (playerDisplayName && playerDisplayImage && gameTileImageTargetID)
     {
         return YES;
     }
