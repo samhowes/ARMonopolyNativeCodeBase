@@ -18,16 +18,19 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
 
 @interface ARMNetworkViewController ()
 
+
 @property (strong, nonatomic) IBOutlet UITableView *gameSessionsTableView;
 @property (weak, nonatomic) UIActivityIndicatorView *networkActivityIndicator;
 
 @property BOOL isShowingLeaveGameButton;
+@property (strong, nonatomic) NSMutableDictionary *completionHandlerDictionary;
 
 @end
 
 
 @implementation ARMNetworkViewController
 
+@synthesize completionHandlerDictionary;
 @synthesize isShowingLeaveGameButton;
 
 @synthesize networkActivityIndicator;
@@ -47,6 +50,42 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
                       otherButtonTitles:nil] show];
 }
 
+- (void)viewDidLoad
+{
+    __unsafe_unretained typeof(self) weakSelf = self;
+    
+    [completionHandlerDictionary setObject:^(NSError *error)
+    {
+        [weakSelf.gameSessionsTableView reloadData];
+        if (error)
+        {
+            [weakSelf handleNetworkingError:error];
+            return;
+        }
+        [weakSelf showLeaveGameButtonWithBool:NO];
+    }
+    forKey:@"getActiveSessions"];
+    
+    [completionHandlerDictionary setObject:^(NSError *error)
+     {
+         [gameSessionsTableView reloadData];
+         if (error)
+         {
+             [self handleNetworkingError:error withTitle:kImageDownloadingErrorAlertTitle];
+             return;
+         }
+         [self showLeaveGameButtonWithBool:YES];
+         
+         [[ARMGameServerCommunicator sharedInstance] downloadPlayerImagesWithCompletionHandler:^(NSError *error)
+          {
+              [gameSessionsTableView reloadData];
+              if (error) [self handleNetworkingError:error withTitle:kImageDownloadingErrorAlertTitle];
+          }];
+     } forKey:@"GetCurrentSessions"];
+    
+    [super viewDidLoad];
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[ARMGameServerCommunicator sharedInstance] finishTasksWithoutCompletionHandlerAndPreserveState];
@@ -59,7 +98,6 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     [gameSessionsTableView setDataSource:[ARMGameServerCommunicator sharedInstance]];
     [gameSessionsTableView reloadData];
     [[ARMGameServerCommunicator sharedInstance] setDelegate:self];
-    [[ARMGameServerCommunicator sharedInstance] continueTasksWithCompletionHandler];
     //DEBUG: Populate static data for testing
     [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:     @"Sam"];
     [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:   @"12"];
