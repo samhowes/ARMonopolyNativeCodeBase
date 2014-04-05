@@ -68,6 +68,10 @@
 		A5483ECD18E76F1000E84E87 /* ARMException.m in Sources */ = {isa = PBXBuildFile; fileRef = A5483EC018E76F1000E84E87 /* ARMException.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -fobjc-exceptions"; }; };
 		A5483ECF18E76F1D00E84E87 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5483ECE18E76F1D00E84E87 /* CoreBluetooth.framework */; };
 		A5483ED118E76F2900E84E87 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5483ED018E76F2900E84E87 /* MobileCoreServices.framework */; };
+		A566BBD318EF1313003456FB /* ARMNewGamePromptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A566BBCE18EF1313003456FB /* ARMNewGamePromptViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -fobjc-exceptions"; }; };
+		A566BBD418EF1313003456FB /* ARMSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A566BBCF18EF1313003456FB /* ARMSectionHeaderView.xib */; };
+		A566BBD518EF1313003456FB /* ARMTableHeaderViewWithActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A566BBD118EF1313003456FB /* ARMTableHeaderViewWithActivityIndicator.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -fobjc-exceptions"; }; };
+		A566BBD918EF3AF8003456FB /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A566BBD218EF1313003456FB /* LOGO.png */; };
 		CC9FCA1D1445D76E004F4DC3 /* QCAR in Resources */ = {isa = PBXBuildFile; fileRef = CC9FCA171445D76E004F4DC3 /* QCAR */; };
 		CCE8C2BA135C7EA3000D8035 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE8C2B9135C7EA3000D8035 /* Security.framework */; };
 		D82DCFC30E8000A5005D6AD8 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = D82DCFBB0E8000A5005D6AD8 /* main.mm */; };
@@ -209,6 +213,12 @@
 		A5483EC018E76F1000E84E87 /* ARMException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMException.m; sourceTree = "<group>"; };
 		A5483ECE18E76F1D00E84E87 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		A5483ED018E76F2900E84E87 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		A566BBCD18EF1313003456FB /* ARMNewGamePromptViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNewGamePromptViewController.h; sourceTree = "<group>"; };
+		A566BBCE18EF1313003456FB /* ARMNewGamePromptViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNewGamePromptViewController.m; sourceTree = "<group>"; };
+		A566BBCF18EF1313003456FB /* ARMSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ARMSectionHeaderView.xib; sourceTree = "<group>"; };
+		A566BBD018EF1313003456FB /* ARMTableHeaderViewWithActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMTableHeaderViewWithActivityIndicator.h; sourceTree = "<group>"; };
+		A566BBD118EF1313003456FB /* ARMTableHeaderViewWithActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMTableHeaderViewWithActivityIndicator.m; sourceTree = "<group>"; };
+		A566BBD218EF1313003456FB /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LOGO.png; sourceTree = "<group>"; };
 		CC9FCA171445D76E004F4DC3 /* QCAR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = QCAR; path = Data/Raw/QCAR; sourceTree = SOURCE_ROOT; };
 		CCE8C2B9135C7EA3000D8035 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		D82DCFBA0E8000A5005D6AD8 /* iPhone_target_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPhone_target_Prefix.pch; path = Classes/iPhone_target_Prefix.pch; sourceTree = SOURCE_ROOT; };
@@ -420,6 +430,12 @@
 		D8A1C7220E80637F000160D3 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A566BBCD18EF1313003456FB /* ARMNewGamePromptViewController.h */,
+				A566BBCE18EF1313003456FB /* ARMNewGamePromptViewController.m */,
+				A566BBCF18EF1313003456FB /* ARMSectionHeaderView.xib */,
+				A566BBD018EF1313003456FB /* ARMTableHeaderViewWithActivityIndicator.h */,
+				A566BBD118EF1313003456FB /* ARMTableHeaderViewWithActivityIndicator.m */,
+				A566BBD218EF1313003456FB /* LOGO.png */,
 				A5483EA818E76F1000E84E87 /* Main.storyboard */,
 				A5483EA918E76F1000E84E87 /* ARMPlayViewController.h */,
 				A5483EAA18E76F1000E84E87 /* ARMPlayViewController.m */,
@@ -523,6 +539,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A566BBD918EF3AF8003456FB /* LOGO.png in Resources */,
+				A566BBD418EF1313003456FB /* ARMSectionHeaderView.xib in Resources */,
 				CC9FCA1D1445D76E004F4DC3 /* QCAR in Resources */,
 				A5483EC118E76F1000E84E87 /* Main.storyboard in Resources */,
 				56C56C9817D6015200616839 /* Images.xcassets in Resources */,
@@ -569,6 +587,7 @@
 				D8A1C700bE80637F000160D4 /* Default-568h@2x.png in Sources */,
 				D8A1C700cE80637F000160D4 /* Default-Landscape.png in Sources */,
 				D8A1C700dE80637F000160D4 /* Default-Portrait.png in Sources */,
+				A566BBD518EF1313003456FB /* ARMTableHeaderViewWithActivityIndicator.m in Sources */,
 				D8A1C700eE80637F000160D4 /* Default-Landscape@2x.png in Sources */,
 				D8A1C700fE80637F000160D4 /* Default-Portrait@2x.png in Sources */,
 				D8A1C7010E80637F000160D4 /* Icon-72.png in Sources */,
@@ -578,6 +597,7 @@
 				8A2EF43E138549090070AA2F /* iPhone_Profiler.cpp in Sources */,
 				8A9EB22E156E5A25000DC2B4 /* iPhone_View.mm in Sources */,
 				A5483EC318E76F1000E84E87 /* ARMAppController.m in Sources */,
+				A566BBD318EF1313003456FB /* ARMNewGamePromptViewController.m in Sources */,
 				8AA568AE1827DD79004969C7 /* WWWConnection.mm in Sources */,
 				56DBF99D15E3CDC9007A4A8D /* iPhone_Sensors.mm in Sources */,
 				8A3EDDC81615B7C1001839E9 /* SplashScreen.mm in Sources */,
@@ -624,6 +644,7 @@
 				ARCHS = armv7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libstdc++";
+				COMPRESS_PNG_FILES = NO;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -664,6 +685,7 @@
 				ARCHS = armv7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libstdc++";
+				COMPRESS_PNG_FILES = NO;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;

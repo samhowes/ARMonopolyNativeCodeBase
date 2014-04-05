@@ -10,7 +10,7 @@
 
 extern const NSString *kDefaultImageFileName;
 extern const NSString *kImageFolderName;
-
+extern const NSString *kAvatarImageFilenameFormatString;
 
 @interface ARMPlayerInfo : NSObject
 

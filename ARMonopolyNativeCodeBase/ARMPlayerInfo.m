@@ -8,6 +8,7 @@
 
 #import "ARMPlayerInfo.h"
 
+const NSString *kAvatarImageFilenameFormatString = @"imageTargetID%@.png";
 const NSString *kDefaultImageFileName = @"LOGO.png";
 const NSString *kImageFolderName = @"images";
 
@@ -18,6 +19,7 @@ const NSString *kImageFolderName = @"images";
 @synthesize gameTileImageTargetID;
 @synthesize gameTileName;
 
+#error ARMPlayerInfo Will no longer implement current players in session or Session Name
 @synthesize sessionName;
 @synthesize playersInSessionArray;
 
@@ -113,7 +115,6 @@ const NSString *kImageFolderName = @"images";
     NSData *imageData = UIImagePNGRepresentation(playerDisplayImage);
     [imageData writeToFile:destinationPath atomically:NO];
 
-    
 }
 
 /*
@@ -134,8 +135,7 @@ const NSString *kImageFolderName = @"images";
 {
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     return [documentsDirectory stringByAppendingPathComponent:
-            [[kImageFolderName stringByAppendingPathComponent:gameTileImageTargetID]
-                               stringByAppendingPathExtension:[kDefaultImageFileName pathExtension]]];
+            [kImageFolderName stringByAppendingPathComponent:[NSString stringWithFormat:[kAvatarImageFileNameFormatString copy], gameTileImageTargetID]]];
 }
 
 /************************ Coding Methods ***********************************/

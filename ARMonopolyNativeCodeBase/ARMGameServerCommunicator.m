@@ -20,7 +20,7 @@
 //--------------------------- URL/HTTP Constants ---------------------------//
 const NSString *ARMGameServerErrorDomain =                      @"ARMGameServerErrorDomain";
 
-const NSString *ARMGameServerURLString =                        @"http://155.41.91.178:3000";
+const NSString *ARMGameServerURLString =                        @"http://168.122.170.140:3000";
 const NSString *kGSHTTPUserAgentHeaderString =                  @"ARMonopoy iOS";
 const NSString *kGSHTTPAcceptContentHeaderString =              @"application/json";
 const NSString *kGSHTTPClientCookieName =                       @"clientID";
@@ -63,6 +63,18 @@ const NSString *kGSCurrentPlayersReplyKey =                     @"currentPlayers
 const NSString *kGSPlayerNameReplyKey =                         @"name";
 const NSString *kGSPlayerImageTargetIDReplyKey =                @"deviceID";
 const NSString *kGSPlayerImageURLReplyKey =                     @"imageURL";
+
+//----------------------- Completion Key Constants ------------------------//
+const NSString *kGSLoginCompletionKey =                         @"kGSLoginCompletionKey";
+const NSString *kGSLogoutCompletionKey =                        @"kGSLogoutCompletionKey";
+const NSString *kGSUploadImageCompletionKey =                   @"kGSUploadImageCompletionKey";
+const NSString *kGSDownloadImageCompletionKey =                 @"kGSDownloadImageCompletionKey";
+const NSString *kGSGetCurrentSessionInfoCompletionKey =         @"kGSGetCurrentSessionInfoCompletionKey";
+const NSString *kGSGetAllGameSessionsCompletionKey =            @"kGSGetAllGameSessionsCompletionKey";
+const NSString *kGSCreateGameSessionCompletionKey =             @"kGSCreateGameSessionCompletionKey";
+const NSString *kGSJoinGameSessionCompletionKey =               @"kGSJoinGameSessionCompletionKey";
+const NSString *kGSLeaveGameSessionCompletionKey =              @"kGSLeaveGameSessionCompletionKey";
+
 
 
 #pragma mark - C Helper/Inline functions
@@ -107,6 +119,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 @implementation ARMGameServerCommunicator
 
 @synthesize delegate;
+@synthesize completionHandlerDictionary;
 @synthesize mainURLSession;
 @synthesize mainURLSessionConfig;
 @synthesize connectionStatus;
@@ -115,6 +128,10 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 @synthesize currentSessionID;
 @synthesize currentSessionName;
 
+#pragma mark - Lifecycle
+/****************************************************************************/
+/*                              Lifecycle Methods                           */
+/****************************************************************************/
 + (id)sharedInstance
 {
     static ARMGameServerCommunicator *this = nil;
@@ -158,14 +175,34 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     shouldSkipCompletionHandler = NO;
 }
 
-#pragma mark - Networking Methods
+- (void)purgeNetworkImagesFromFileSystem
+{
+    if (networkImagePathStrings)
+    {
+        NSError *error;
+        for (NSString *filePath in networkImagePathStrings)
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+            if (error)
+            {
+                NSLog(@"Error deleting network image files: %@", error);
+            }
+        }
+    }
+}
+
+#pragma mark - Public Networking Methods
 /****************************************************************************/
-/*							Networking Methods                              */
+/*                      Public Networking Methods                           */
 /****************************************************************************/
 
 - (void)loginWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
     connectionStatus = kLoggingIn;
+    if (completionHandler == nil)
+    {
+        completionHandler = [completionHandlerDictionary objectForKey:kGSLoginCompletionKey];
+    }
     
     NSMutableURLRequest *loginRequest;
     @try {
@@ -212,9 +249,15 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     
 }
 
+#warning - Incomplete implementation without logoutWithCompletionhandler implemented
+
 - (void)putProfileImageToServerWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
     connectionStatus = kSendingImage;
+    if (completionHandler == nil)
+    {
+        completionHandler = [completionHandlerDictionary objectForKey:kGSUploadImageCompletionKey];
+    }
     
     UIImage *imageToUpload = [[ARMPlayerInfo sharedInstance] playerDisplayImage];
     NSMutableURLRequest *uploadImageRequest;
@@ -286,6 +329,10 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 - (void)getActiveSessionsWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
     connectionStatus = kRetrievingGameSessions;
+    if (completionHandler == nil)
+    {
+        completionHandler = [completionHandlerDictionary objectForKey:kGSGetAllGameSessionsCompletionKey];
+    }
     
     NSURL *getSessionsURL = [NSURL URLWithString:[kGSActiveSessionsEndpointURLString copy] relativeToURL:[NSURL URLWithString:[ARMGameServerURLString copy]]];
     
@@ -312,6 +359,11 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 - (void)joinSessionWithIndex:(NSInteger)indexOfSessionToJoin completionHandler:(CompletionHandlerType)completionHandler
 {
     connectionStatus = kJoiningGameSession;
+    if (completionHandler == nil)
+    {
+        completionHandler = [completionHandlerDictionary objectForKey:kGSJoinGameSessionCompletionKey];
+    }
+    
     NSMutableURLRequest *joinSessionRequest;
     @try {
         self.currentSessionID = [(ARMGameSession *)availableGameSessions[indexOfSessionToJoin] ID];
@@ -341,6 +393,12 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (void)getCurrentPlayersInSessionWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
+    connectionStatus = kRetrievingSessionInfo;
+    if (completionHandler == nil)
+    {
+        completionHandler = [completionHandlerDictionary objectForKey:kGSGetCurrentSessionInfoCompletionKey];
+    }
+    
     NSMutableURLRequest *getSessionInfoRequest = [self requestWithRelativeURLString:[NSString stringWithFormat:[kGSGetPlayersInSessionEndpointURLFormatString copy], self.currentSessionID] withPostJSONObject:nil];
     
     HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
@@ -357,54 +415,17 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     [getSessionInfoTask resume];
 }
 
-- (void)leaveSessionWithCompletionHandler:(CompletionHandlerType)completionHandler
-{
-    connectionStatus = kLeavingGameSession;
-    NSMutableURLRequest *leaveSessionRequest = [self requestWithRelativeURLString:[kGSLeaveSessionEndpointURLString copy]
-                                                               withPostJSONObject: nil];
-
-    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
-    {
-        connectionStatus = kLoggedIn;
-        currentSessionID = nil;
-        currentSessionName = nil;
-        [userData applicationDidLeaveGameSession];
-        
-    };
-    
-    NSURLSessionDataTask *leaveSessionTask = [mainURLSession dataTaskWithRequest:leaveSessionRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        
-        [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
-    }];
-    
-    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
-    [leaveSessionTask resume];
-    
-}
-
-- (void)purgeNetworkImagesFromFileSystem
-{
-    if (networkImagePathStrings)
-    {
-        NSError *error;
-        for (NSString *filePath in networkImagePathStrings)
-        {
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
-            if (error)
-            {
-                NSLog(@"Error deleting network image files: %@", error);
-            }
-        }
-    }
-}
-
 - (void)createSessionWithName:(NSString *)newSessionName completionHandler:(CompletionHandlerType)completionHandler
 {
     connectionStatus = kCreatingGameSession;
+    if (completionHandler == nil)
+    {
+        completionHandler = [completionHandlerDictionary objectForKey:kGSCreateGameSessionCompletionKey];
+    }
     NSMutableURLRequest *createSessionRequest;
     @try {
         createSessionRequest = [self requestWithRelativeURLString:[kGSCreateSessionEndpointURLString copy]
-                                             withPostJSONObject: @{kGSCreateSessionPostKey:newSessionName}];
+                                               withPostJSONObject: @{kGSCreateSessionPostKey:newSessionName}];
     }
     @catch (NSException *e)
     {
@@ -430,28 +451,43 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     [createSessionTask resume];
 }
 
-- (void)receiveCurrentSessionResponseWithJSONObject:(NSDictionary *)jsonObject
+- (void)leaveSessionWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
-    NSString *receivedSessionID = jsonObject[kGSSessionIDReplyKey];
-    NSAssert([receivedSessionID isEqualToString:self.currentSessionID], @"Server replied with the incorrect session.");
-    
-    NSMutableArray *currentPlayers = [NSMutableArray new];
-    for (NSDictionary *player in jsonObject[kGSCurrentPlayersReplyKey])
+    connectionStatus = kLeavingGameSession;
+    if (completionHandler == nil)
     {
-        [currentPlayers addObject:
-         [[ARMNetworkPlayer alloc]
-          initWithName:                 (NSString *)[player objectForKey:kGSPlayerNameReplyKey]
-          gameTileImageTargetID:        (NSString *)[player objectForKey:kGSPlayerImageTargetIDReplyKey]
-          imageNetworkRelativeURLString:(NSString *)[player objectForKey:kGSPlayerImageURLReplyKey]
-          ]
-         ];
+        completionHandler = [completionHandlerDictionary objectForKey:kGSLeaveGameSessionCompletionKey];
     }
-    [userData setSessionName:[jsonObject objectForKey:kGSSessionNameReplyKey]];
-    [userData setPlayersInSessionArray:currentPlayers];
+    NSMutableURLRequest *leaveSessionRequest = [self requestWithRelativeURLString:[kGSLeaveSessionEndpointURLString copy]
+                                                               withPostJSONObject: nil];
+
+    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
+    {
+        connectionStatus = kLoggedIn;
+        currentSessionID = nil;
+        currentSessionName = nil;
+        [userData applicationDidLeaveGameSession];
+        
+    };
+    
+    NSURLSessionDataTask *leaveSessionTask = [mainURLSession dataTaskWithRequest:leaveSessionRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        
+        [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
+    }];
+    
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
+    [leaveSessionTask resume];
+    
 }
 
 - (void)downloadPlayerImagesWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
+    connectionStatus = kDownloadingPlayerProfiles;
+    if (completionHandler == nil)
+    {
+        completionHandler = [completionHandlerDictionary objectForKey:kGSDownloadImageCompletionKey];
+    }
+    
     if ([[userData playersInSessionArray] count] == 0) return;
     NSMutableArray *downloadTasksArray = [NSMutableArray new];
     if (!networkImagePathStrings)
@@ -495,8 +531,12 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     }
 }
 
-#pragma mark Helper Methods
-//----------------------- Networking Helper methods ------------------------//
+
+#pragma mark - Public Networking Methods
+/****************************************************************************/
+/*                      Private Network Helper Methods                      */
+/****************************************************************************/
+
 - (NSURL *)URLWithRelativePathString:(NSString *)relativePath
 {
     return [[NSURL URLWithString:relativePath relativeToURL:[NSURL URLWithString:[ARMGameServerURLString copy]]] absoluteURL];
@@ -519,6 +559,26 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     }
     
     return request;
+}
+
+- (void)receiveCurrentSessionResponseWithJSONObject:(NSDictionary *)jsonObject
+{
+    NSString *receivedSessionID = jsonObject[kGSSessionIDReplyKey];
+    NSAssert([receivedSessionID isEqualToString:self.currentSessionID], @"Server replied with the incorrect session.");
+    
+    NSMutableArray *currentPlayers = [NSMutableArray new];
+    for (NSDictionary *player in jsonObject[kGSCurrentPlayersReplyKey])
+    {
+        [currentPlayers addObject:
+         [[ARMNetworkPlayer alloc]
+          initWithName:                 (NSString *)[player objectForKey:kGSPlayerNameReplyKey]
+          gameTileImageTargetID:        (NSString *)[player objectForKey:kGSPlayerImageTargetIDReplyKey]
+          imageNetworkRelativeURLString:(NSString *)[player objectForKey:kGSPlayerImageURLReplyKey]
+          ]
+         ];
+    }
+    [userData setSessionName:[jsonObject objectForKey:kGSSessionNameReplyKey]];
+    [userData setPlayersInSessionArray:currentPlayers];
 }
 
 - (void)handleGameServerResponseWithProcessor:(HTTPURLProcessorType)processor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error
@@ -614,7 +674,8 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (void)dispatchCompletionHandler:(CompletionHandlerType)completionHandler withError:(NSError *)error
 {
-    if (!shouldSkipCompletionHandler && completionHandler) {
+    if (!self->shouldSkipCompletionHandler && completionHandler)
+    {
        dispatchOnMainQueue( ^{completionHandler(error);});
     }
 }
@@ -638,6 +699,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (void)changeConnectionStatusInError
 {
+#warning Code Section needs review, You probably want to change this to a "Recover from error" method
     switch (connectionStatus)
     {
         case kNotInitialized:
@@ -655,7 +717,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         case kRetrievingGameSessions:
             connectionStatus = kLoggedIn;
             break;
-        case kReadyForSelection:
+      /*  case kReadyForSelection:
             // no need to change anything
             break;
         case kJoiningGameSession:
@@ -663,7 +725,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
             break;
         case kCreatingGameSession:
             connectionStatus = kReadyForSelection;
-            break;
+            break; */
         case kInGameSession:
             // no need to change anything
             break;
@@ -710,126 +772,6 @@ didCompleteWithError:(NSError *)error
     NSLog(@"Did Complete with error Called!");
     
 }
-
-
-#pragma mark - UITableViewDataSource Methods
-/****************************************************************************/
-/*					   UITableViewDatasource Methods                        */
-/****************************************************************************/
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    if (connectionStatus == kInGameSession)
-    {
-        return 2;       // list [Current session, current players]
-    }
-    else
-    {
-        return 1;       // List the available game sessions
-    }
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    if (tableView) return @" ";
-    NSString *titleForHeader;
-    switch (connectionStatus) {
-        case kNotInitialized:
-            titleForHeader = @"Not connected to Game Server";
-            break;
-        case kLoggingIn:
-            titleForHeader = @"Logging in to Game Server...";
-            break;
-        case kSendingImage:
-            titleForHeader = @"Uploading profile image to Game Server...";
-            break;
-        case kRetrievingGameSessions:
-            titleForHeader = @"Retrieving active games...";
-            break;
-        case kReadyForSelection:
-            titleForHeader = @"Select a game...";
-            break;
-        case kInGameSession:
-            if (section == 0)
-            {
-                titleForHeader = @"Current Game Session";
-            }
-            else
-            {
-                titleForHeader = @"Current Players";
-            }
-            break;
-        case kFailedToConnectToServer:
-            titleForHeader = @"Error connecting to Game Server!";
-            break;
-        default:
-            titleForHeader = @"Not connected to Game Server and Failed Switch";
-            break;
-    }
-    return titleForHeader;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
-{
-    if (connectionStatus == kReadyForSelection)
-    {
-        return @"Tap '+' to create your own";
-    } else if (connectionStatus == kInGameSession && section == 0) {
-        return @"Tap 'Leave' to join a different session";
-    }
-    
-    return nil;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    if (connectionStatus == kInGameSession)
-    {
-        if (section == 0)
-        {
-            return 1;       // just display the current game session
-        }
-        else {
-            return [[userData  playersInSessionArray] count];
-        }
-    }
-    else
-    {
-        return [availableGameSessions count];
-    }
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"GameSessionCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    // Configure the cell...
-    if (connectionStatus == kInGameSession)
-    {
-        if (indexPath.section == 0)     // Display the current game session at the top
-        {
-            cell.textLabel.text = [userData  sessionName];
-            [cell setUserInteractionEnabled:NO];
-        }
-        else    // display the Current players below
-        {
-            cell.textLabel.text = [[[userData  playersInSessionArray]
-                                    objectAtIndex:indexPath.row] playerName];
-            [cell setUserInteractionEnabled:NO];
-        }
-    }
-    else
-    {   // Display a current game session
-        cell.textLabel.text = [(ARMGameSession *)availableGameSessions[indexPath.row] name];
-        [cell setUserInteractionEnabled:YES];
-    }
-    
-    return cell;
-}
-
-
 
 
 @end

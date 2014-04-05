@@ -7,8 +7,8 @@
 //
 
 #import "ARMNetworkPlayer.h"
+#import "ARMPlayerInfo.h"
 
-const NSString *kLocalFilenameFormatString = @"%@.png";
 
 @implementation ARMNetworkPlayer
 
@@ -24,7 +24,7 @@ const NSString *kLocalFilenameFormatString = @"%@.png";
         self.playerName = name;
         self.gameTileImageTargetID = imageTargetID;
         self.imageNetworkRelativeURLString = networkRelativeURLString;
-        self.imageLocalFileName = [NSString stringWithFormat:[kLocalFilenameFormatString copy], gameTileImageTargetID];
+        self.imageLocalFileName = [NSString stringWithFormat:[kAvatarImageFileNameFormatString copy], gameTileImageTargetID];
     }
     return self;
 }

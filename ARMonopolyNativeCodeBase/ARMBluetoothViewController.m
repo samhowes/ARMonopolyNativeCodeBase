@@ -9,7 +9,6 @@
 #import "ARMBluetoothViewController.h"
 #import "ARMBluetoothManager.h"
 #import "ARMTableHeaderViewWithActivityIndicator.h"
-#import "APLSectionHeaderView.h"
 
 const NSInteger kTableViewHeaderActivityIndicatorViewTag = 1020;
 

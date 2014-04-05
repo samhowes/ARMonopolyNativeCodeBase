@@ -9,6 +9,19 @@
 #import <Foundation/Foundation.h>
 
 extern const NSString *ARMGameServerErrorDomain;
+//---------------------- Constants for Other Classes ------------------------//
+
+extern const NSString *kGSLoginCompletionKey;
+extern const NSString *kGSLogoutCompletionKey;
+extern const NSString *kGSUploadImageCompletionKey;
+extern const NSString *kGSDownloadImageCompletionKey;
+extern const NSString *kGSGetCurrentSessionInfoCompletionKey;
+extern const NSString *kGSGetAllGameSessionsCompletionKey;
+extern const NSString *kGSCreateGameSessionCompletionKey;
+extern const NSString *kGSJoinGameSessionCompletionKey;
+extern const NSString *kGSLeaveGameSessionCompletionKey;
+
+
 
 typedef enum ARMGameServerErrorCode {
     ARMUnkownErrorCode,
@@ -56,16 +69,17 @@ extern const NSString *kGSPlayerImageURLReplyKey;
 
 typedef enum GameServerConnectionStatus {
     kNotInitialized,
+    kFailedToConnectToServer,
     kLoggingIn,
     kSendingImage,
     kLoggedIn,
     kRetrievingGameSessions,
-    kReadyForSelection,
     kJoiningGameSession,
     kCreatingGameSession,
     kInGameSession,
-    kLeavingGameSession,
-    kFailedToConnectToServer
+    kRetrievingSessionInfo,
+    kDownloadingPlayerProfiles,
+    kLeavingGameSession
 } GameServerConnectionStatus;
 
 typedef void (^CompletionHandlerType)(NSError *);
@@ -78,10 +92,14 @@ typedef void (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 
 @end
 
+/****************************************************************************/
+/*                         Main Class Interface                             */
+/****************************************************************************/
 
 @interface ARMGameServerCommunicator : NSObject <UITableViewDataSource>
 
 @property (weak, nonatomic) id<ARMGSCommunicatorDelegate>delegate;
+@property (strong, nonatomic) NSMutableDictionary *completionHandlerDictionary;
 
 @property GameServerConnectionStatus connectionStatus;
 @property (strong, nonatomic) NSString *currentSessionID;
