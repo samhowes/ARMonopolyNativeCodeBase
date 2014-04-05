@@ -88,7 +88,7 @@ void dispatchOnMainQueue(void (^block)(void))
     dispatch_async(dispatch_get_main_queue(), block);
 }
 
-NSData *dataWithJSONObject(NSDictionary *jsonObject)
+NSData *dataFromJSONObject(NSDictionary *jsonObject)
 {
     NSError *jsonError;
     NSData *data = [NSJSONSerialization dataWithJSONObject:jsonObject
@@ -127,6 +127,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 @synthesize clientIDCookie;
 @synthesize currentSessionID;
 @synthesize currentSessionName;
+@synthesize playersInSessionArray;
 
 #pragma mark - Lifecycle
 /****************************************************************************/
@@ -167,6 +168,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (void)finishTasksWithoutCompletionHandlerAndPreserveState
 {
+#warning incomplete implementation
     shouldSkipCompletionHandler = YES;
 }
 
@@ -204,6 +206,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         completionHandler = [completionHandlerDictionary objectForKey:kGSLoginCompletionKey];
     }
     
+    //---------    First: Create a request with the User's Info to POST    --------//
     NSMutableURLRequest *loginRequest;
     @try {
         loginRequest = [self requestWithRelativeURLString:[kGSLoginEndpointURLString copy]
@@ -218,23 +221,27 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     }
     
     
-    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject) {
+    HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject) {
+        // Check our cookie: it is our client ID
         NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:[ARMGameServerURLString copy]]];
-        NSLog(@"After the first sever response we have %d cookies", (int)[cookies count]);
-        assert([cookies count] == 1);
         
         NSHTTPCookie *clientCookie = cookies[0];
-        NSLog(@"Cookie with name %@ recieved, with value: %@", [clientCookie name], [clientCookie value]);
-        assert([[clientCookie name] isEqualToString:[kGSHTTPClientCookieName copy]]);
-        
-        NSURL *urlWeShouldBeRedirectedTo = [self URLWithRelativePathString:[NSString stringWithFormat:[kGSImagesEndpointURLFormatString copy], [clientCookie value]]];
-        
         [self setClientIDCookie:[clientCookie value]];
+        
+        // Make sure we're going to the right place
+        NSURL *urlWeShouldBeRedirectedTo = [self URLWithRelativePathString:[NSString stringWithFormat:[kGSImagesEndpointURLFormatString copy], [clientCookie value]]];
         
         NSDictionary *responseHeaders = [httpResponse allHeaderFields];
         NSURL *urlWeAreBeingRedirectedTo = [self URLWithRelativePathString:responseHeaders[@"Location"]];
-        // DO something with the http response here
-        assert([[urlWeShouldBeRedirectedTo absoluteURL] isEqual:urlWeAreBeingRedirectedTo]);
+        
+        // Raise an exception any of these checks fail. This means we weren't able to properly log in.
+        if ([cookies count] < 1 ||
+            ![[clientCookie name] isEqualToString:[kGSHTTPClientCookieName copy]] ||
+            ![[urlWeShouldBeRedirectedTo absoluteURL] isEqual:urlWeAreBeingRedirectedTo])
+        {
+            return [NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseErrorCode userInfo:nil];
+        }
+        return nil;
     };
     
     NSURLSessionDataTask *loginTask = [mainURLSession dataTaskWithRequest:loginRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
@@ -261,21 +268,25 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     
     UIImage *imageToUpload = [[ARMPlayerInfo sharedInstance] playerDisplayImage];
     NSMutableURLRequest *uploadImageRequest;
+    
     @try {
         // DO Something with imageURL here
         if (!imageToUpload)
         {
             @throw [NSException new];
         }
-        uploadImageRequest = [self requestWithRelativeURLString:[NSString stringWithFormat:[kGSImagesEndpointURLFormatString copy], clientIDCookie]
-                                     withPostJSONObject: nil];
-        NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:[uploadImageRequest allHTTPHeaderFields]];
+        //---------    First: Create a request    --------//
+        uploadImageRequest = [self requestWithRelativeURLString:[NSString stringWithFormat:[kGSImagesEndpointURLFormatString copy], clientIDCookie] withPostJSONObject: nil];
         
-        [uploadImageRequest setHTTPMethod:@"POST"];
+        // Alter the headers
+        NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:[uploadImageRequest allHTTPHeaderFields]];
         headers[@"Content-Type"] = [kGSUploadImageContentTypeHeader copy];
         [uploadImageRequest setAllHTTPHeaderFields:headers];
         
-        // Prepare all the data we want to post in the HTTP Body
+        [uploadImageRequest setHTTPMethod:@"POST"];
+        
+        //---------    Second: Prepare the data    --------//
+        
         // Start with the Form data
         NSMutableString *postBodyHeader = [NSMutableString stringWithFormat:@"%@", kGSUploadImageFormBoundaryHeaderValue];
         [postBodyHeader appendFormat:@"\n%@; %@; %@", kGSUploadContentDispositionString, kGSUploadFormValueFieldString,
@@ -284,22 +295,26 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         [postBodyHeader appendFormat:@"\n%@", kGSUploadContentTypeString];
         [postBodyHeader appendFormat:@"\n\n"];
         
-        // Now the actual image upload
+        
+        // Now prepare the image data
         NSData *imageData = UIImagePNGRepresentation(imageToUpload);
         
-        // end with the form boundary again
+        // Finally set the footer
         NSMutableString *postBodyFooter = [NSMutableString stringWithFormat:@"\n%@--\n\n", kGSUploadImageFormBoundaryHeaderValue];
         
+        
+        //---------    Third: Package everything for submission    --------//
+        
+        // Switch to network line endings
         [postBodyHeader replaceOccurrencesOfString:@"\n" withString:@"\r\n" options:NSLiteralSearch range:NSMakeRange(0, [postBodyHeader length])];
         [postBodyFooter replaceOccurrencesOfString:@"\n" withString:@"\r\n" options:NSLiteralSearch range:NSMakeRange(0, [postBodyFooter length])];
-         
         
+        // Pack the final data
         NSMutableData *bodyData = [NSMutableData new];
         [bodyData appendData:[postBodyHeader dataUsingEncoding:NSUTF8StringEncoding]];
         [bodyData appendData:imageData];
         [bodyData appendData:[postBodyFooter dataUsingEncoding:NSUTF8StringEncoding]];
         
-        // Finally set the actual request body
         [uploadImageRequest setHTTPBody:bodyData];
     }
     @catch (NSException *e)
@@ -308,10 +323,11 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         return;
     }
     
-    // TODO: Make this an upload task
-    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
+    //---------    Finally: Send out the request    --------//
+    HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
     {
         connectionStatus = kLoggedIn;
+        return nil;
     };
     
     NSURLSessionDataTask *uploadImageTask = [mainURLSession dataTaskWithRequest:uploadImageRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -326,7 +342,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 }
 
-- (void)getActiveSessionsWithCompletionHandler:(CompletionHandlerType)completionHandler
+- (void)getAllGameSessionsWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
     connectionStatus = kRetrievingGameSessions;
     if (completionHandler == nil)
@@ -334,9 +350,10 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         completionHandler = [completionHandlerDictionary objectForKey:kGSGetAllGameSessionsCompletionKey];
     }
     
+    //---------    SimpleRequest: Only use a URL and a Processor    --------//
     NSURL *getSessionsURL = [NSURL URLWithString:[kGSActiveSessionsEndpointURLString copy] relativeToURL:[NSURL URLWithString:[ARMGameServerURLString copy]]];
     
-    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
+    HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
     {
         NSMutableArray *activeSessions = [NSMutableArray new];
         for (NSDictionary *gameSession in jsonObject[kGSActiveSessionsReplyKey])
@@ -344,9 +361,11 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
             [activeSessions addObject:[[ARMGameSession alloc] initWithName:gameSession[kGSSessionNameReplyKey] withID:gameSession[kGSSessionIDReplyKey]]];
         }
         availableGameSessions = activeSessions;
-        connectionStatus = kReadyForSelection;
+        connectionStatus = kLoggedIn;
+        return nil;
     };
     
+    //---------    Submit the request    --------//
     NSURLSessionDataTask *getSessionsTask = [mainURLSession dataTaskWithURL:getSessionsURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
@@ -364,6 +383,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         completionHandler = [completionHandlerDictionary objectForKey:kGSJoinGameSessionCompletionKey];
     }
     
+    //---------    First: Prepare the POST Data    --------//
     NSMutableURLRequest *joinSessionRequest;
     @try {
         self.currentSessionID = [(ARMGameSession *)availableGameSessions[indexOfSessionToJoin] ID];
@@ -376,11 +396,13 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         return;
     }
     
-    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
+    //---------    Last: Declare the processor and submit the request    --------//
+    HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
     {
         connectionStatus = kInGameSession;
-        [self receiveCurrentSessionResponseWithJSONObject:jsonObject];
-        availableGameSessions = nil;
+        [self receiveCurrentSessionResponseWithJSONObject:jsonObject];          // Allow our middleware to handle this part
+        availableGameSessions = nil;                                            // Forget the game sessions so we never use stale data
+        return nil;
     };
     
     NSURLSessionDataTask *joinSessionTask = [mainURLSession dataTaskWithRequest:joinSessionRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -391,21 +413,32 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     [joinSessionTask resume];
 }
 
-- (void)getCurrentPlayersInSessionWithCompletionHandler:(CompletionHandlerType)completionHandler
+- (void)getCurrentSessionInfoWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
-    connectionStatus = kRetrievingSessionInfo;
+    if (connectionStatus == kInGameSession)
+    {
+        connectionStatus = kRefreshingSessionInfo;
+    }
+    else
+    {
+        connectionStatus = kRetrievingSessionInfo;
+    }
+    
     if (completionHandler == nil)
     {
         completionHandler = [completionHandlerDictionary objectForKey:kGSGetCurrentSessionInfoCompletionKey];
     }
     
+    //---------    Prepare a simple GET    --------//
     NSMutableURLRequest *getSessionInfoRequest = [self requestWithRelativeURLString:[NSString stringWithFormat:[kGSGetPlayersInSessionEndpointURLFormatString copy], self.currentSessionID] withPostJSONObject:nil];
     
-    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
+    HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
     {
         [self receiveCurrentSessionResponseWithJSONObject:jsonObject];
+        return nil;
     };
     
+    //---------    Submit    --------//
     NSURLSessionDataTask *getSessionInfoTask = [mainURLSession dataTaskWithRequest:getSessionInfoRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
@@ -422,6 +455,8 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     {
         completionHandler = [completionHandlerDictionary objectForKey:kGSCreateGameSessionCompletionKey];
     }
+    
+    //---------    First: Prepare the POST Data    --------//
     NSMutableURLRequest *createSessionRequest;
     @try {
         createSessionRequest = [self requestWithRelativeURLString:[kGSCreateSessionEndpointURLString copy]
@@ -433,15 +468,18 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         return;
     }
     
-    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
+    //---------    Second: Prepare the Processor    --------//
+    HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
     {
         connectionStatus = kInGameSession;
         currentSessionID = [jsonObject objectForKey:kGSSessionIDReplyKey];
         currentSessionName = [jsonObject objectForKey:kGSSessionNameReplyKey];
         [self receiveCurrentSessionResponseWithJSONObject:jsonObject];
         availableGameSessions = nil;
+        return nil;
     };
     
+    //---------    Finally: Submit the request    --------//
     NSURLSessionDataTask *createSessionTask = [mainURLSession dataTaskWithRequest:createSessionRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
@@ -458,18 +496,23 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     {
         completionHandler = [completionHandlerDictionary objectForKey:kGSLeaveGameSessionCompletionKey];
     }
+    
+    //---------    First: Prepare the DELETE Request    --------//
     NSMutableURLRequest *leaveSessionRequest = [self requestWithRelativeURLString:[kGSLeaveSessionEndpointURLString copy]
                                                                withPostJSONObject: nil];
-
-    HTTPURLProcessorType processor = ^(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
+    [leaveSessionRequest setHTTPMethod:@"DELETE"];
+    
+    HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
     {
+        // Clean up our instance variables
         connectionStatus = kLoggedIn;
         currentSessionID = nil;
         currentSessionName = nil;
-        [userData applicationDidLeaveGameSession];
-        
+        playersInSessionArray = nil;
+        return nil;
     };
     
+    //---------    Finally: Submit the request    --------//
     NSURLSessionDataTask *leaveSessionTask = [mainURLSession dataTaskWithRequest:leaveSessionRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
@@ -488,24 +531,28 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         completionHandler = [completionHandlerDictionary objectForKey:kGSDownloadImageCompletionKey];
     }
     
-    if ([[userData playersInSessionArray] count] == 0) return;
+    if ([self.playersInSessionArray count] == 0) return;
+    
+    
+    //---------    First: Prepare our pool of Download Tasks    --------//
     NSMutableArray *downloadTasksArray = [NSMutableArray new];
     if (!networkImagePathStrings)
     {
         networkImagePathStrings = [NSMutableArray new];
     }
     
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
     // Create a download task for each player
-    for (ARMNetworkPlayer *player in [userData playersInSessionArray])
+    for (ARMNetworkPlayer *player in self.playersInSessionArray)
     {
-        NSMutableURLRequest *getSessionInfoRequest = [self requestWithRelativeURLString:
+        NSMutableURLRequest *getPlayerInfoRequest = [self requestWithRelativeURLString:
                             [player imageNetworkRelativeURLString] withPostJSONObject:nil];
         
-        ARMImageProcessorType processor = ^(NSHTTPURLResponse *httpResponse, UIImage *downloadedImage)
+        ARMImageProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, UIImage *downloadedImage)
         {
             // Save the file to the documents directory so vuforia can access it
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-            NSString *documentsDirectory = [paths objectAtIndex:0];
             NSString *saveImagePath = [documentsDirectory stringByAppendingPathComponent:[player imageLocalFileName]];
             
             // Save the file path so we can delete it when we leave the game session
@@ -513,18 +560,19 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
             NSData *imageData = UIImagePNGRepresentation(downloadedImage);
             [imageData writeToFile:saveImagePath atomically:NO];
+            return nil;
         };
         
         [downloadTasksArray addObject:
-         [mainURLSession dataTaskWithRequest:getSessionInfoRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+         [mainURLSession dataTaskWithRequest:getPlayerInfoRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             
             [self handleGameServerResponseWithImageProcessor:processor successStatusCode:200 completionHandler:completionHandler imageData:data response:response error:error];
         }]];
     }
     
-    
     dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
-    // Start all the downloads
+    
+    //---------    Finally: Start all the downloads    --------//
     for (NSURLSessionDataTask *downloadTask in downloadTasksArray)
     {
         [downloadTask resume];
@@ -544,11 +592,11 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
 
 - (NSMutableURLRequest *)requestWithRelativeURLString:(NSString *)relativePath withPostJSONObject:(NSDictionary *)postJSONObject
 {
-    NSError *jsonError;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[self URLWithRelativePathString:relativePath]];
     
     if (postJSONObject)
     {
+        NSError *jsonError;
         [request setHTTPMethod:@"POST"];
         [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:postJSONObject options:NSJSONWritingPrettyPrinted error:&jsonError]];
         if (jsonError) throwError(jsonError);
@@ -566,10 +614,10 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     NSString *receivedSessionID = jsonObject[kGSSessionIDReplyKey];
     NSAssert([receivedSessionID isEqualToString:self.currentSessionID], @"Server replied with the incorrect session.");
     
-    NSMutableArray *currentPlayers = [NSMutableArray new];
+    playersInSessionArray = [NSMutableArray new];
     for (NSDictionary *player in jsonObject[kGSCurrentPlayersReplyKey])
     {
-        [currentPlayers addObject:
+        [playersInSessionArray addObject:
          [[ARMNetworkPlayer alloc]
           initWithName:                 (NSString *)[player objectForKey:kGSPlayerNameReplyKey]
           gameTileImageTargetID:        (NSString *)[player objectForKey:kGSPlayerImageTargetIDReplyKey]
@@ -577,8 +625,8 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
           ]
          ];
     }
-    [userData setSessionName:[jsonObject objectForKey:kGSSessionNameReplyKey]];
-    [userData setPlayersInSessionArray:currentPlayers];
+    
+    currentSessionName = [jsonObject objectForKey:kGSSessionNameReplyKey];
 }
 
 - (void)handleGameServerResponseWithProcessor:(HTTPURLProcessorType)processor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler data:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error
@@ -586,14 +634,19 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     dispatchOnMainQueue(^{
         [delegate setActivityIndicatorsVisible:NO];
     });
-    // Default: handle local errors
-    [self changeConnectionStatusInError];
-    if (error) {[self dispatchCompletionHandler:completionHandler withError:error]; return;}
     
-    // Default: get JSONObject and httpResponse
+    // First: Handle any local errors that may have occurred
+    if (error)
+    {
+        [self processLocalError:error];
+        [self updateConnectionStatusInError];
+        [self dispatchCompletionHandler:completionHandler withError:error];
+        return;
+    }
+    
+    // Second: Get the HTTPResponse and try to extract some JSON from it
     NSDictionary *jsonObject;
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-    
     @try
     {
         if (data == nil || [data length] == 0)
@@ -603,73 +656,84 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
         else
         {
             jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-            if (error) throwError([NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseDataErrorCode userInfo:nil]);
-            // Default: Check status code
+            if (error) throwError([NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseErrorCode userInfo:nil]);
+            
+            // Third: Validate the status code
             if ([httpResponse statusCode] != statusCode)
             {
-                error = [self handleGameServerErrorWithJSONObject:[jsonObject objectForKey:kGSErrorReplyKey]];
+                error = [self ARMErrorFromJSONObject:[jsonObject objectForKey:kGSErrorReplyKey]];
                 throwError(error);
             }
         }
-        
-        // Custom: Process response
-        if (processor) processor(httpResponse, jsonObject);
-        
     }
     @catch (NSException *e) // Default: Process any errors
     {
-        [self changeConnectionStatusInError];
+        [self updateConnectionStatusInError];
         if ([e isKindOfClass:[ARMException class]])
         {
             error = [(ARMException *)e errorObject];
         }
     }
-    // Default: call completion handler
-    
-    // Allow the caller to complete execution
-    if (completionHandler) [self dispatchCompletionHandler:completionHandler withError:error];
+
+#warning incomplete implementation without attempting to retry failed requests
+    // Allow the callers to complete execution
+    if (processor)          error = processor(httpResponse, jsonObject);
+    if (completionHandler)  [self dispatchCompletionHandler:completionHandler withError:error];
 }
 
 - (void)handleGameServerResponseWithImageProcessor:(ARMImageProcessorType)imageProcessor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler imageData:(NSData *)imageData response:(NSURLResponse *)response error:(NSError *)error
 {
-    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:NO];});
+    dispatchOnMainQueue(^{
+        [delegate setActivityIndicatorsVisible:NO];
+    });
     
-    // Default: handle local errors
-    [self changeConnectionStatusInError];
-    if (error) {[self dispatchCompletionHandler:completionHandler withError:error]; return;}
+    // First: Handle any local errors that may have occurred
+    if (error)
+    {
+        [self processLocalError:error];
+        [self updateConnectionStatusInError];
+        [self dispatchCompletionHandler:completionHandler withError:error];
+        return;
+    }
     
-    // Default: get JSONObject and httpResponse
+    // Second: Get the HTTPResponse and try to extract the image from it
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
     UIImage *downloadedImage;
     @try
     {
-        // Default: Check status code
         if ([httpResponse statusCode] != statusCode)
         {
             NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:imageData options:0 error:&error];
-            if (error) throwError([NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseDataErrorCode userInfo:nil]);
-            error = [self handleGameServerErrorWithJSONObject:[jsonObject objectForKey:kGSErrorReplyKey]];
+            if (error) throwError([NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseErrorCode userInfo:nil]);
+            error = [self ARMErrorFromJSONObject:[jsonObject objectForKey:kGSErrorReplyKey]];
             throwError(error);
+        }
+        
+        if (imageData == nil || [imageData length] == 0)
+        {
+            downloadedImage = nil;
+            throwError([NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseErrorCode userInfo:nil]);
         }
         
         downloadedImage = [UIImage imageWithData:imageData];
         
         // Custom: Process response
-        if (imageProcessor) imageProcessor(httpResponse, downloadedImage);
+        
         
     }
     @catch (NSException *e) // Default: Process any errors
     {
-        [self changeConnectionStatusInError];
+        [self updateConnectionStatusInError];
         if ([e isKindOfClass:[ARMException class]])
         {
             error = [(ARMException *)e errorObject];
         }
     }
-    // Default: call completion handler
     
-    // Allow the caller to complete execution
-    if (completionHandler) [self dispatchCompletionHandler:completionHandler withError:error];
+#warning incomplete implementation without attempting to retry failed requests
+    // Allow the callers to complete execution
+    if (imageProcessor)     imageProcessor(httpResponse, downloadedImage);
+    if (completionHandler)  [self dispatchCompletionHandler:completionHandler withError:error];
 }
 
 - (void)dispatchCompletionHandler:(CompletionHandlerType)completionHandler withError:(NSError *)error
@@ -680,9 +744,48 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
     }
 }
 
-- (NSError *)handleGameServerErrorWithJSONObject:(NSDictionary *)jsonObject
+- (NSError *)processLocalError:(NSError *)error
 {
-    [self changeConnectionStatusInError];
+#warning Implementation under review! You may want to handle more errors
+    NSInteger returnErrorCode = ARMUnkownErrorCode;
+    NSMutableDictionary *returnUserInfo = [NSMutableDictionary new];
+    
+    if ([[error domain] isEqualToString:NSURLErrorDomain])
+    {
+        switch ([error code])
+        {
+            case NSURLErrorBadURL:
+            case NSURLErrorTimedOut:
+            case NSURLErrorUnsupportedURL:
+            case NSURLErrorCannotFindHost:
+            case NSURLErrorCannotConnectToHost:
+                returnErrorCode = ARMUnableToReachServerErrorCode;
+                returnUserInfo[NSURLErrorFailingURLStringErrorKey] = [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey];
+                break;
+            case NSURLErrorNotConnectedToInternet:
+                returnErrorCode = ARMNoInternetConnectionErrorCode;
+                break;
+                
+            case NSURLErrorBadServerResponse:
+                returnErrorCode = ARMInvalidServerResponseErrorCode;
+                break;
+                
+            default:
+                returnErrorCode = ARMUnkownErrorCode;
+                break;
+        }
+    }
+    if ([returnUserInfo count] == 0)
+    {
+        returnUserInfo = nil;
+    }
+    
+    return [NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:returnErrorCode userInfo:returnUserInfo];
+}
+
+- (NSError *)ARMErrorFromJSONObject:(NSDictionary *)jsonObject
+{
+    [self updateConnectionStatusInError];
     // Get the error descriptions in a non-exception raising way
     NSNumber *errorCode =   [jsonObject objectForKey:kGSErrorCodeReplyKey];
     NSString *reason =      [jsonObject objectForKey:kGSErrorReasonReplyKey];
@@ -697,7 +800,7 @@ NSData *dataWithJSONObject(NSDictionary *jsonObject)
                                       }];
 }
 
-- (void)changeConnectionStatusInError
+- (void)updateConnectionStatusInError
 {
 #warning Code Section needs review, You probably want to change this to a "Recover from error" method
     switch (connectionStatus)

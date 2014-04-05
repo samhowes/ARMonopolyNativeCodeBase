@@ -23,8 +23,6 @@ extern const NSString *kAvatarImageFilenameFormatString;
 /* If we have adequate data for use with the game server */
 - (BOOL)isReadyForLogin;
 
-- (void)applicationDidLeaveGameSession;
-
 - (void)bluetoothDidConnectToGameTileWithName:(NSString *)name imageTargetID:(NSString *)imageTargetID;
 
 - (void)bluetoothWillConnectToNewGameTile;
@@ -36,9 +34,5 @@ extern const NSString *kAvatarImageFilenameFormatString;
 
 @property NSString *gameTileImageTargetID;
 @property NSString *gameTileName;
-
-// Networking Properties
-@property NSString *sessionName;
-@property NSMutableArray *playersInSessionArray;
 
 @end

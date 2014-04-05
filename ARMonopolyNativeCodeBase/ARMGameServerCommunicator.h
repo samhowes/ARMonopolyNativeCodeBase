@@ -21,14 +21,14 @@ extern const NSString *kGSCreateGameSessionCompletionKey;
 extern const NSString *kGSJoinGameSessionCompletionKey;
 extern const NSString *kGSLeaveGameSessionCompletionKey;
 
-
-
 typedef enum ARMGameServerErrorCode {
     ARMUnkownErrorCode,
     ARMInvalidPostDataErrorCode,
     ARMInvalidPutDataErrorCode,
-    ARMInvalidServerResponseDataErrorCode,
-    ARMGameServerErrorResponseErrorCode
+    ARMInvalidServerResponseErrorCode,
+    ARMGameServerErrorResponseErrorCode,
+    ARMUnableToReachServerErrorCode,
+    ARMNoInternetConnectionErrorCode
 } ARMGameServerErrorCode;
 
 //--------------------------- URL/HTTP Constants ---------------------------//
@@ -78,13 +78,14 @@ typedef enum GameServerConnectionStatus {
     kCreatingGameSession,
     kInGameSession,
     kRetrievingSessionInfo,
+    kRefreshingSessionInfo,
     kDownloadingPlayerProfiles,
     kLeavingGameSession
 } GameServerConnectionStatus;
 
 typedef void (^CompletionHandlerType)(NSError *);
-typedef void (^HTTPURLProcessorType)(NSHTTPURLResponse*, NSDictionary *);
-typedef void (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
+typedef NSError * (^HTTPURLProcessorType)(NSHTTPURLResponse*, NSDictionary *);
+typedef NSError * (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 
 @protocol ARMGSCommunicatorDelegate
 
@@ -96,16 +97,19 @@ typedef void (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 /*                         Main Class Interface                             */
 /****************************************************************************/
 
-@interface ARMGameServerCommunicator : NSObject <UITableViewDataSource>
+@interface ARMGameServerCommunicator : NSObject
 
 @property (weak, nonatomic) id<ARMGSCommunicatorDelegate>delegate;
 @property (strong, nonatomic) NSMutableDictionary *completionHandlerDictionary;
 
 @property GameServerConnectionStatus connectionStatus;
+@property (strong, nonatomic) NSString *clientIDCookie;
+
+@property (strong, nonatomic) NSMutableArray *availableGameSessions;
+
 @property (strong, nonatomic) NSString *currentSessionID;
 @property (strong, nonatomic) NSString *currentSessionName;
-@property (strong, nonatomic) NSString *clientIDCookie;
-@property (strong, nonatomic) NSMutableArray *availableGameSessions;
+@property (strong, nonatomic) NSMutableArray *playersInSessionArray;
 
 + (id)sharedInstance;
 
@@ -117,7 +121,7 @@ typedef void (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 
 - (void)putProfileImageToServerWithCompletionHandler:(CompletionHandlerType)completionHandler;
 
-- (void)getActiveSessionsWithCompletionHandler:(CompletionHandlerType)completionHandler;
+- (void)getAllGameSessionsWithCompletionHandler:(CompletionHandlerType)completionHandler;
 
 - (void)joinSessionWithIndex:(NSInteger)indexOfSessionToJoin completionHandler:(CompletionHandlerType)completionHandler;
 
@@ -125,7 +129,7 @@ typedef void (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 
 - (void)createSessionWithName:(NSString *)newSessionName completionHandler:(CompletionHandlerType)completionHandler;
 
-- (void)getCurrentPlayersInSessionWithCompletionHandler:(CompletionHandlerType)completionHandler;
+- (void)getCurrentSessionInfoWithCompletionHandler:(CompletionHandlerType)completionHandler;
 
 - (void)downloadPlayerImagesWithCompletionHandler:(CompletionHandlerType)completionHandler;
 

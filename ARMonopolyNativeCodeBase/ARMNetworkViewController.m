@@ -87,7 +87,7 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
     [completionHandlerDictionary setObject:^(NSError *error)
      {
          if (basicHandler(error)) return;
-         [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:nil];
+         [[ARMGameServerCommunicator sharedInstance] getAllGameSessionsWithCompletionHandler:nil];
      }
                                     forKey:kGSUploadImageCompletionKey];
     
@@ -119,7 +119,7 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
          if (basicHandler(error)) return;
          
          [weakSelf showLeaveGameButtonWithBool:NO];
-         [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:nil];
+         [[ARMGameServerCommunicator sharedInstance] getAllGameSessionsWithCompletionHandler:nil];
      }
                                     forKey:kGSDownloadImageCompletionKey];
     
@@ -157,14 +157,14 @@ const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Im
         case kJoiningGameSession:
         case kCreatingGameSession:
             [self hideRightNavigationBarButtonItem];
-            [[ARMGameServerCommunicator sharedInstance] getActiveSessionsWithCompletionHandler:nil];
+            [[ARMGameServerCommunicator sharedInstance] getAllGameSessionsWithCompletionHandler:nil];
             break;
             
         //----------------- Get the current session Cases -------------------------//
         case kInGameSession:
         case kLeavingGameSession:
             [self showLeaveGameButtonWithBool:YES];
-            [[ARMGameServerCommunicator sharedInstance] getCurrentPlayersInSessionWithCompletionHandler:nil];
+            [[ARMGameServerCommunicator sharedInstance] getCurrentSessionInfoWithCompletionHandler:nil];
             break;
 
         //----------------------------- Login Cases -------------------------------//

@@ -98,11 +98,6 @@ const NSString *kImageFolderName = @"images";
     return NO;
 }
 
-- (void)applicationDidLeaveGameSession
-{
-    playersInSessionArray = nil;
-}
-
 - (void)bluetoothDidConnectToGameTileWithName:(NSString *)name imageTargetID:(NSString *)imageTargetID
 {
     gameTileName = name;
