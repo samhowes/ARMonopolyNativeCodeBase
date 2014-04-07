@@ -27,6 +27,7 @@ const NSString *kGSHTTPClientCookieName =                       @"clientID";
 
 
 const NSString *kGSLoginEndpointURLString =                     @"/login";
+const NSString *kGSLogoutEndpointURLString =                    @"/logout";
 const NSString *kGSImagesEndpointURLFormatString =              @"/images/%@.png";
 const NSString *kGSActiveSessionsEndpointURLString =            @"/game_sessions";
 const NSString *kGSCreateSessionURLString =                     @"/game_sessions/create";
@@ -104,10 +105,8 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 /****************************************************************************/
 @interface ARMGameServerCommunicator () <NSURLSessionTaskDelegate>
 {
-    ARMPlayerInfo *userData;
-    NSUInteger loginTaskIdentifier;
     BOOL shouldSkipCompletionHandler;
-    NSMutableArray *networkImagePathStrings;
+    NSMutableArray *networkImagePathStringsArray;
 }
 
 @property (strong, nonatomic) NSURLSession *mainURLSession;
@@ -148,7 +147,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     self = [super init];
     if (self) {
         // custom initialization
-        shouldSkipCompletionHandler = NO;
+        shouldSkipCompletionHandler = YES;
         
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
         
@@ -161,9 +160,14 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         
         mainURLSession = [NSURLSession sessionWithConfiguration:mainURLSessionConfig delegate:self delegateQueue:[NSOperationQueue mainQueue]];
         
-        userData = [ARMPlayerInfo sharedInstance];
     }
     return self;
+}
+
+- (void)setDelegate:(id<ARMGSCommunicatorDelegate>)newDelegate
+{
+    delegate = newDelegate;
+    self->shouldSkipCompletionHandler = NO;
 }
 
 - (void)finishTasksWithoutCompletionHandlerAndPreserveState
@@ -179,10 +183,10 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 
 - (void)purgeNetworkImagesFromFileSystem
 {
-    if (networkImagePathStrings)
+    if (networkImagePathStringsArray)
     {
         NSError *error;
-        for (NSString *filePath in networkImagePathStrings)
+        for (NSString *filePath in networkImagePathStringsArray)
         {
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
             if (error)
@@ -208,6 +212,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     
     //---------    First: Create a request with the User's Info to POST    --------//
     NSMutableURLRequest *loginRequest;
+    ARMPlayerInfo *userData = [ARMPlayerInfo sharedInstance];
     @try {
         loginRequest = [self requestWithRelativeURLString:[kGSLoginEndpointURLString copy]
                                        withPostJSONObject: @{kGSUserNamePostKey: [userData playerDisplayName],
@@ -256,7 +261,40 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     
 }
 
-#warning - Incomplete implementation without logoutWithCompletionhandler implemented
+- (void)logoutWithCompletionHandler:(CompletionHandlerType)completionHandler
+{
+    connectionStatus = kLoggingOut;
+    if (completionHandler == nil)
+    {
+        completionHandler = [completionHandlerDictionary objectForKey:kGSLogoutCompletionKey];
+    }
+    
+    //---------    First: Prepare the DELETE Request    --------//
+    NSMutableURLRequest *logoutRequest = [self requestWithRelativeURLString:[kGSLogoutEndpointURLString copy]
+                                                               withPostJSONObject: nil];
+    [logoutRequest setHTTPMethod:@"DELETE"];
+    
+    HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
+    {
+        // Clean up our instance variables
+        connectionStatus = kNotConnectedToGameServer;
+        clientIDCookie = nil;
+        currentSessionID = nil;
+        currentSessionName = nil;
+        playersInSessionArray = nil;
+        return nil;
+    };
+    
+    //---------    Finally: Submit the request    --------//
+    NSURLSessionDataTask *logoutTask = [mainURLSession dataTaskWithRequest:logoutRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        
+        [self handleGameServerResponseWithProcessor:processor successStatusCode:200 completionHandler:completionHandler data:data response:response error:error];
+    }];
+    
+    dispatchOnMainQueue(^{[delegate setActivityIndicatorsVisible:YES];});
+    [logoutTask resume];
+    
+}
 
 - (void)putProfileImageToServerWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
@@ -536,9 +574,9 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     
     //---------    First: Prepare our pool of Download Tasks    --------//
     NSMutableArray *downloadTasksArray = [NSMutableArray new];
-    if (!networkImagePathStrings)
+    if (!networkImagePathStringsArray)
     {
-        networkImagePathStrings = [NSMutableArray new];
+        networkImagePathStringsArray = [NSMutableArray new];
     }
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -556,7 +594,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
             NSString *saveImagePath = [documentsDirectory stringByAppendingPathComponent:[player imageLocalFileName]];
             
             // Save the file path so we can delete it when we leave the game session
-            [networkImagePathStrings addObject:saveImagePath];
+            [networkImagePathStringsArray addObject:saveImagePath];
 
             NSData *imageData = UIImagePNGRepresentation(downloadedImage);
             [imageData writeToFile:saveImagePath atomically:NO];
@@ -638,7 +676,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     // First: Handle any local errors that may have occurred
     if (error)
     {
-        [self processLocalError:error];
+        error = [self processLocalError:error];
         [self updateConnectionStatusInError];
         [self dispatchCompletionHandler:completionHandler withError:error];
         return;
@@ -690,7 +728,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     // First: Handle any local errors that may have occurred
     if (error)
     {
-        [self processLocalError:error];
+        error = [self processLocalError:error];
         [self updateConnectionStatusInError];
         [self dispatchCompletionHandler:completionHandler withError:error];
         return;
@@ -759,7 +797,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
             case NSURLErrorUnsupportedURL:
             case NSURLErrorCannotFindHost:
             case NSURLErrorCannotConnectToHost:
-                returnErrorCode = ARMUnableToReachServerErrorCode;
+                returnErrorCode = ARMServerUnreachableErrorCode;
                 returnUserInfo[NSURLErrorFailingURLStringErrorKey] = [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey];
                 break;
             case NSURLErrorNotConnectedToInternet:
@@ -779,8 +817,8 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     {
         returnUserInfo = nil;
     }
-    
-    return [NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:returnErrorCode userInfo:returnUserInfo];
+    error = [NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:returnErrorCode userInfo:returnUserInfo];
+    return error;
 }
 
 - (NSError *)ARMErrorFromJSONObject:(NSDictionary *)jsonObject
@@ -805,42 +843,35 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 #warning Code Section needs review, You probably want to change this to a "Recover from error" method
     switch (connectionStatus)
     {
-        case kNotInitialized:
-            // no need to change anything
-            break;
         case kLoggingIn:
-            connectionStatus = kNotInitialized;
-            break;
         case kSendingImage:
-            connectionStatus = kNotInitialized;
+            connectionStatus = kFailedToConnectToServer;
             break;
-        case kLoggedIn:
-            // no need to change anything
+            
+        case kLoggingOut:
+            connectionStatus = kNotConnectedToGameServer;
             break;
+            
         case kRetrievingGameSessions:
-            connectionStatus = kLoggedIn;
-            break;
-      /*  case kReadyForSelection:
-            // no need to change anything
-            break;
         case kJoiningGameSession:
-            connectionStatus = kReadyForSelection;
-            break;
         case kCreatingGameSession:
-            connectionStatus = kReadyForSelection;
-            break; */
-        case kInGameSession:
-            // no need to change anything
-            break;
         case kLeavingGameSession:
             connectionStatus = kLoggedIn;
             break;
+        
+        case kRetrievingSessionInfo:
+        case kRefreshingSessionInfo:
+        case kDownloadingPlayerProfiles:
+            connectionStatus = kInGameSession;
+            break;
+        case kInGameSession:
+        case kNotInitialized:
         case kFailedToConnectToServer:
-            // No need to change anything
-            break;
+        case kNotConnectedToGameServer:
+        case kLoggedIn:
         default:
-            connectionStatus = kNotInitialized;
             break;
+        
     }
 }
 

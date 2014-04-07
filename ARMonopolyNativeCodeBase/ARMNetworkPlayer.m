@@ -24,7 +24,7 @@
         self.playerName = name;
         self.gameTileImageTargetID = imageTargetID;
         self.imageNetworkRelativeURLString = networkRelativeURLString;
-        self.imageLocalFileName = [NSString stringWithFormat:[kAvatarImageFileNameFormatString copy], gameTileImageTargetID];
+        self.imageLocalFileName = [NSString stringWithFormat:[kAvatarImageFilenameFormatString copy], gameTileImageTargetID];
     }
     return self;
 }

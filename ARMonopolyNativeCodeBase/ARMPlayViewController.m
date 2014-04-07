@@ -8,7 +8,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "ARMPlayViewController.h"
-#import "ARMPlayerInfo.h"
+#import "ARMGameServerCommunicator.h"
 #import "ARMNetworkPlayer.h"
 
 @interface ARMPlayViewController ()
@@ -94,15 +94,22 @@ static ARMUnityCallbackWithBool unityAcquireCameraCallback;
 
 - (void)populatePlayersLabel
 {
-    NSArray *playersArray = [[ARMPlayerInfo sharedInstance] playersInSessionArray];
+    NSArray *playersArray = [[ARMGameServerCommunicator sharedInstance] playersInSessionArray];
     NSString *errorString = @"No Players: Tap ⚙ to join a game";
     NSString *titleString = @"Players:";
     NSMutableString *displayString = [NSMutableString new];
     
-    if ([playersArray count] == 0)
+    if (!playersArray || [playersArray count] == 0)
     {
-        [displayString appendString:errorString];
-        [displayAllPlayersButton setHidden:YES];
+        if ([[ARMGameServerCommunicator sharedInstance] currentSessionName])
+        {
+            [displayString appendString:@"Waiting for more players..."];
+        }
+        else
+        {
+            [displayString appendString:errorString];
+            [displayAllPlayersButton setHidden:YES];
+        }
     }
     else
     {
@@ -128,7 +135,7 @@ static ARMUnityCallbackWithBool unityAcquireCameraCallback;
 - (IBAction)displayCurrentPlayers:(id)sender
 {
     NSMutableString *listPlayersString = [NSMutableString new];
-    for (ARMNetworkPlayer *player in [[ARMPlayerInfo sharedInstance] playersInSessionArray])
+    for (ARMNetworkPlayer *player in [[ARMGameServerCommunicator sharedInstance] playersInSessionArray])
     {
         [listPlayersString appendFormat:@"%@\n", [player playerName]];
     }

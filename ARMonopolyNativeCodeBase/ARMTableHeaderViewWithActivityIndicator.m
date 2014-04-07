@@ -7,49 +7,53 @@
 //
 
 #import "ARMTableHeaderViewWithActivityIndicator.h"
+#import "ARMTableHeaderContentView.h"
 
 @implementation ARMTableHeaderViewWithActivityIndicator
 
+@synthesize activityIndicator;
 @synthesize titleLabel;
-@synthesize activityInidcator;
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-}
-
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-}
-/*
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
-*/
-/*
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithReuseIdentifier:reuseIdentifier];
-    if (self) {
-        // Initialization code
-    
+    if (self)
+    {
+        [self initImpl];
     }
     return self;
-}*/
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
 }
-*/
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        [self initImpl];
+    }
+    return self;
+}
+
+- (void)initImpl
+{
+    
+    UINib *contentViewNib = [UINib nibWithNibName:@"ARMSectionHeaderView" bundle:nil];
+    
+    self.ARMContentView = [[contentViewNib instantiateWithOwner:nil options:nil] firstObject];
+    self.activityIndicator = self.ARMContentView.activityIndicator;
+    titleLabel = self.ARMContentView.titleLabel;
+    
+    [titleLabel setText:@"YAY"];
+    
+    [activityIndicator setHidesWhenStopped:YES];
+    [activityIndicator setHidden:YES];
+    
+    [self.contentView addSubview:self.ARMContentView];
+}
+
+- (void)setTitleLabelText:(NSString *)newTitle
+{
+//    self.ARMContentView.titleLabel.text = newTitle;
+}
 
 @end

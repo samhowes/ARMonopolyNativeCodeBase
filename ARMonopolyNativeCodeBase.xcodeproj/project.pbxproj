@@ -8,16 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		A503B22A18D211BC000D7595 /* ARMGameServerCommunicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */; };
-		A52CB59718DE571A00B24AA4 /* check_7_2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A52CB59618DE571A00B24AA4 /* check_7_2x.png */; };
+		A50FED3718F345C200243A36 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6418C4E99B00435B10 /* LOGO.png */; };
+		A50FED3918F3465400243A36 /* ARMSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A50FED3818F3465400243A36 /* ARMSectionHeaderView.xib */; };
 		A52F6FAD18D1489500799EA4 /* ARMNetworkPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */; };
 		A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */ = {isa = PBXBuildFile; fileRef = A5483EF918E7B20000E84E87 /* project.pbxproj */; };
 		A5483F0018E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */; };
 		A54E40B918D64B5D00D343C2 /* ARMException.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E40B818D64B5D00D343C2 /* ARMException.m */; };
 		A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */; };
 		A59C427618E85A960075C3B7 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A59C427518E85A960075C3B7 /* MessageUI.framework */; };
-		A59F853318C7E221005EE662 /* face.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F852E18C7E221005EE662 /* face.png */; };
-		A59F853418C7E221005EE662 /* face2.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F852F18C7E221005EE662 /* face2.png */; };
-		A59F853618C7E221005EE662 /* face4.png in Resources */ = {isa = PBXBuildFile; fileRef = A59F853118C7E221005EE662 /* face4.png */; };
 		A5C5BA2218C4E8E000435B10 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2118C4E8E000435B10 /* Foundation.framework */; };
 		A5C5BA2418C4E8E000435B10 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2318C4E8E000435B10 /* CoreGraphics.framework */; };
 		A5C5BA2618C4E8E000435B10 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2518C4E8E000435B10 /* UIKit.framework */; };
@@ -37,9 +35,9 @@
 		A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6118C4E99B00435B10 /* installPlugin.sh */; };
 		A5C5BA7318C4E99B00435B10 /* ARMBluetoothManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */; };
 		A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */; };
-		A5DBDF4918E8D25E006A21D8 /* Main-iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5DBDF4718E8D25E006A21D8 /* Main-iPad.storyboard */; };
 		A5EF082218E9D7DE00981039 /* ARMNewGamePromptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */; };
 		A5F15B0918D3772F00271DD2 /* ARMGameSession.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F15B0818D3772F00271DD2 /* ARMGameSession.m */; };
+		A5F96C3A18F3134C00EDCD04 /* ARMTableHeaderContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F96C3918F3134C00EDCD04 /* ARMTableHeaderContentView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,21 +65,17 @@
 /* Begin PBXFileReference section */
 		A503B22818D211BB000D7595 /* ARMGameServerCommunicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMGameServerCommunicator.h; sourceTree = "<group>"; };
 		A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMGameServerCommunicator.m; sourceTree = "<group>"; };
-		A52CB59618DE571A00B24AA4 /* check_7_2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check_7_2x.png; sourceTree = "<group>"; };
+		A50FED3518F3449F00243A36 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		A50FED3818F3465400243A36 /* ARMSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ARMSectionHeaderView.xib; sourceTree = "<group>"; };
 		A52CB59818DE5AB800B24AA4 /* tableview_checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tableview_checkmark.png; sourceTree = "<group>"; };
 		A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNetworkPlayer.h; sourceTree = "<group>"; };
 		A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNetworkPlayer.m; sourceTree = "<group>"; };
 		A5483EF918E7B20000E84E87 /* project.pbxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.pbxproject; path = project.pbxproj; sourceTree = "<group>"; };
 		A5483EFE18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMTableHeaderViewWithActivityIndicator.h; sourceTree = "<group>"; };
 		A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMTableHeaderViewWithActivityIndicator.m; sourceTree = "<group>"; };
-		A5483F0218E7C2E400E84E87 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = ARMSectionHeaderView.xib; sourceTree = "<group>"; };
 		A54E40B718D64B5D00D343C2 /* ARMException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMException.h; sourceTree = "<group>"; };
 		A54E40B818D64B5D00D343C2 /* ARMException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMException.m; sourceTree = "<group>"; };
 		A59C427518E85A960075C3B7 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		A59F852E18C7E221005EE662 /* face.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face.png; sourceTree = "<group>"; };
-		A59F852F18C7E221005EE662 /* face2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face2.png; sourceTree = "<group>"; };
-		A59F853018C7E221005EE662 /* face3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face3.png; sourceTree = "<group>"; };
-		A59F853118C7E221005EE662 /* face4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face4.png; sourceTree = "<group>"; };
 		A5C5BA1E18C4E8E000435B10 /* ARMonopolyNativeCodeBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARMonopolyNativeCodeBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C5BA2118C4E8E000435B10 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A5C5BA2318C4E8E000435B10 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -110,7 +104,6 @@
 		A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMPlayViewController.m; sourceTree = "<group>"; };
 		A5C5BA5C18C4E99B00435B10 /* ARMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMSettingsViewController.h; sourceTree = "<group>"; };
 		A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMSettingsViewController.m; sourceTree = "<group>"; };
-		A5C5BA6018C4E99B00435B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Main.storyboard; sourceTree = "<group>"; };
 		A5C5BA6118C4E99B00435B10 /* installPlugin.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = installPlugin.sh; sourceTree = "<group>"; };
 		A5C5BA6218C4E99B00435B10 /* ARMBluetoothManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMBluetoothManager.h; sourceTree = "<group>"; };
 		A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMBluetoothManager.m; sourceTree = "<group>"; };
@@ -118,14 +111,12 @@
 		A5C5BA6518C4E99B00435B10 /* Notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Notes.txt; sourceTree = "<group>"; };
 		A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestAppDelegate.h; path = TestOnly/TestAppDelegate.h; sourceTree = "<group>"; };
 		A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAppDelegate.m; path = TestOnly/TestAppDelegate.m; sourceTree = "<group>"; };
-		A5D4A5EF18DE8AA40026B008 /* take2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = take2.png; sourceTree = "<group>"; };
-		A5D4A5F118DE8C730026B008 /* Take3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Take3.png; sourceTree = "<group>"; };
-		A5D4A5F318DE8D7E0026B008 /* 66_66.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 66_66.png; sourceTree = "<group>"; };
-		A5DBDF4818E8D25E006A21D8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Main-iPad.storyboard"; sourceTree = "<group>"; };
 		A5EF082018E9D7DE00981039 /* ARMNewGamePromptViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNewGamePromptViewController.h; sourceTree = "<group>"; };
 		A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNewGamePromptViewController.m; sourceTree = "<group>"; };
 		A5F15B0718D3772F00271DD2 /* ARMGameSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMGameSession.h; sourceTree = "<group>"; };
 		A5F15B0818D3772F00271DD2 /* ARMGameSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMGameSession.m; sourceTree = "<group>"; };
+		A5F96C3818F3134C00EDCD04 /* ARMTableHeaderContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMTableHeaderContentView.h; sourceTree = "<group>"; };
+		A5F96C3918F3134C00EDCD04 /* ARMTableHeaderContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMTableHeaderContentView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,15 +156,7 @@
 		A59F852D18C7E221005EE662 /* images */ = {
 			isa = PBXGroup;
 			children = (
-				A5D4A5F318DE8D7E0026B008 /* 66_66.png */,
-				A5D4A5F118DE8C730026B008 /* Take3.png */,
-				A5D4A5EF18DE8AA40026B008 /* take2.png */,
 				A52CB59818DE5AB800B24AA4 /* tableview_checkmark.png */,
-				A52CB59618DE571A00B24AA4 /* check_7_2x.png */,
-				A59F852E18C7E221005EE662 /* face.png */,
-				A59F852F18C7E221005EE662 /* face2.png */,
-				A59F853018C7E221005EE662 /* face3.png */,
-				A59F853118C7E221005EE662 /* face4.png */,
 				A5C5BA6418C4E99B00435B10 /* LOGO.png */,
 			);
 			name = images;
@@ -231,7 +214,8 @@
 		A5C5BA2718C4E8E000435B10 /* ARMonopolyNativeCodeBase */ = {
 			isa = PBXGroup;
 			children = (
-				A5F88A1218CE816600D8E263 /* iPad */,
+				A50FED3818F3465400243A36 /* ARMSectionHeaderView.xib */,
+				A50FED3518F3449F00243A36 /* Main.storyboard */,
 				A5C5BA5E18C4E99B00435B10 /* Base.lproj */,
 				A5C5BA6118C4E99B00435B10 /* installPlugin.sh */,
 				A5C5BA6518C4E99B00435B10 /* Notes.txt */,
@@ -274,8 +258,6 @@
 		A5C5BA5E18C4E99B00435B10 /* Base.lproj */ = {
 			isa = PBXGroup;
 			children = (
-				A5C5BA5F18C4E99B00435B10 /* Main.storyboard */,
-				A5483F0118E7C2E400E84E87 /* ARMSectionHeaderView.xib */,
 			);
 			path = Base.lproj;
 			sourceTree = "<group>";
@@ -305,6 +287,8 @@
 				A5C5BA5718C4E99B00435B10 /* ARMNetworkViewController.m */,
 				A5C5BA5C18C4E99B00435B10 /* ARMSettingsViewController.h */,
 				A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */,
+				A5F96C3818F3134C00EDCD04 /* ARMTableHeaderContentView.h */,
+				A5F96C3918F3134C00EDCD04 /* ARMTableHeaderContentView.m */,
 				A5483EFE18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.h */,
 				A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */,
 				A5EF082018E9D7DE00981039 /* ARMNewGamePromptViewController.h */,
@@ -332,14 +316,6 @@
 				A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */,
 			);
 			name = TestOnly;
-			sourceTree = "<group>";
-		};
-		A5F88A1218CE816600D8E263 /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-				A5DBDF4718E8D25E006A21D8 /* Main-iPad.storyboard */,
-			);
-			name = iPad;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -423,15 +399,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A50FED3718F345C200243A36 /* LOGO.png in Resources */,
 				A5C5BA2C18C4E8E000435B10 /* InfoPlist.strings in Resources */,
+				A50FED3918F3465400243A36 /* ARMSectionHeaderView.xib in Resources */,
 				A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */,
-				A52CB59718DE571A00B24AA4 /* check_7_2x.png in Resources */,
 				A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */,
-				A59F853418C7E221005EE662 /* face2.png in Resources */,
-				A5DBDF4918E8D25E006A21D8 /* Main-iPad.storyboard in Resources */,
-				A59F853618C7E221005EE662 /* face4.png in Resources */,
 				A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */,
-				A59F853318C7E221005EE662 /* face.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,6 +436,7 @@
 				A5483F0018E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m in Sources */,
 				A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */,
 				A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */,
+				A5F96C3A18F3134C00EDCD04 /* ARMTableHeaderContentView.m in Sources */,
 				A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */,
 				A5C5BA6C18C4E99B00435B10 /* ARMEditProfileViewController.m in Sources */,
 			);
@@ -487,14 +461,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		A5483F0118E7C2E400E84E87 /* ARMSectionHeaderView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A5483F0218E7C2E400E84E87 /* Base */,
-			);
-			name = ARMSectionHeaderView.xib;
-			sourceTree = "<group>";
-		};
 		A5C5BA2A18C4E8E000435B10 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -509,22 +475,6 @@
 				A5C5BA4418C4E8E000435B10 /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		A5C5BA5F18C4E99B00435B10 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A5C5BA6018C4E99B00435B10 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		A5DBDF4718E8D25E006A21D8 /* Main-iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A5DBDF4818E8D25E006A21D8 /* Base */,
-			);
-			name = "Main-iPad.storyboard";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -609,7 +559,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Prefix.pch";
 				INFOPLIST_FILE = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -625,7 +575,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Prefix.pch";
 				INFOPLIST_FILE = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

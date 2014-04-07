@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="SnH-7D-jqJ">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
@@ -293,22 +292,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="GameSessionCell" id="kc6-ra-gV6">
+                            <tableViewCell contentMode="scaleAspectFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationWidth="0.0" reuseIdentifier="GameSessionCell" id="MpG-7o-cRG">
                                 <rect key="frame" x="0.0" y="55" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kc6-ra-gV6" id="piE-CJ-3IT">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                            <tableViewCell contentMode="scaleAspectFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationWidth="0.0" reuseIdentifier="DeviceList" id="MpG-7o-cRG">
-                                <rect key="frame" x="0.0" y="99" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MpG-7o-cRG" id="a8k-vD-Rb8">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView hidden="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tableview_checkmark.png" translatesAutoresizingMaskIntoConstraints="NO" id="cNv-vK-do0">
+                                        <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tableview_checkmark.png" translatesAutoresizingMaskIntoConstraints="NO" id="cNv-vK-do0">
                                             <rect key="frame" x="8" y="11" width="21" height="21"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <constraints>
@@ -316,7 +307,7 @@
                                                 <constraint firstAttribute="height" constant="21" id="oTe-9q-VDj"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="44" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCh-Qr-o4F">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Game Session Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vCh-Qr-o4F">
                                             <rect key="frame" x="37" y="0.0" width="283" height="43"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -333,11 +324,28 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PlayerCell" textLabel="OL0-Fy-NGu" style="IBUITableViewCellStyleDefault" id="kc6-ra-gV6">
+                                <rect key="frame" x="0.0" y="99" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kc6-ra-gV6" id="piE-CJ-3IT">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Player Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="OL0-Fy-NGu">
+                                            <rect key="frame" x="15" y="0.0" width="290" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
                         </prototypes>
                         <sections/>
                         <connections>
-                            <outlet property="dataSource" destination="kZw-j4-LtY" id="8qo-iD-TV3"/>
-                            <outlet property="delegate" destination="kZw-j4-LtY" id="hCX-FF-Ltw"/>
+                            <outlet property="dataSource" destination="kZw-j4-LtY" id="z53-IA-U0q"/>
+                            <outlet property="delegate" destination="kZw-j4-LtY" id="Etv-uv-fKP"/>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Network" id="2xv-Cs-6k4"/>
@@ -401,21 +409,17 @@
                                 </cells>
                             </tableViewSection>
                         </sections>
-                        <connections>
-                            <outlet property="dataSource" destination="PKO-tY-bei" id="xvu-Ge-Im3"/>
-                            <outlet property="delegate" destination="PKO-tY-bei" id="rzH-tq-pV5"/>
-                        </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Create Game" prompt="Name Your Game" id="KLU-As-aEw">
                         <barButtonItem key="backBarButtonItem" title="Cancel" id="SbF-gl-HqP"/>
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="8D3-eN-mUn">
                             <connections>
-                                <segue destination="ZYy-QP-RYD" kind="unwind" unwindAction="unwindToList:" id="DeL-qr-SMK"/>
+                                <segue destination="ZYy-QP-RYD" kind="unwind" unwindAction="returnFromNewGamePrompt:" id="S4n-Y9-HBE"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" enabled="NO" title="Create" id="C9E-R4-GGy">
                             <connections>
-                                <segue destination="ZYy-QP-RYD" kind="unwind" unwindAction="unwindToList:" id="PYo-j5-DwL"/>
+                                <segue destination="ZYy-QP-RYD" kind="unwind" unwindAction="returnFromNewGamePrompt:" id="NKN-uu-jau"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -561,7 +565,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LOGO.png" width="668" height="578"/>
+        <image name="LOGO.png" width="665" height="576"/>
         <image name="tableview_checkmark.png" width="42" height="42"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

@@ -53,7 +53,7 @@
         NSLog(@"Removing old images from images Directory");
         for (NSString *imagePath in filesInImageDirectory)
         {
-            if (![imagePath isEqualToString:kDefaultImageFileName])
+            if (![imagePath isEqualToString:[kDefaultImageFileName copy]])
             {
                 [[NSFileManager defaultManager] removeItemAtPath:[pathToImagesDirectory stringByAppendingPathComponent:imagePath] error:&error];
                 if (error)

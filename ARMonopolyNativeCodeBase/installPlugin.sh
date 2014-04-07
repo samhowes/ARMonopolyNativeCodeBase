@@ -9,7 +9,7 @@ STORYBOARD="Base.lproj/Main.storyboard Base.lproj/ARMSectionHeaderView.xib"
 
 CLASSES="ARM*.m ARM*.h"
 
-LOGO="LOGO.png"
+IMAGES="LOGO.png tableview_checkmark.png"
 
 COPY_FILES="$STORYBOARD $CLASSES $LOGO"
 COMPILE_DIRNAME="../../ARMonopolyProduct/Libraries"

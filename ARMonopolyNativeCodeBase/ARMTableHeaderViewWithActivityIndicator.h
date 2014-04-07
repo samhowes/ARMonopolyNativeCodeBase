@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ARMTableHeaderContentView.h"
 
-@interface ARMTableHeaderViewWithActivityIndicator : UIView
+@interface ARMTableHeaderViewWithActivityIndicator : UITableViewHeaderFooterView
 
-@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityInidcator;
+@property (weak, nonatomic) ARMTableHeaderContentView *ARMContentView;
+
+@property (weak, nonatomic) UIActivityIndicatorView *activityIndicator;
+@property (weak, nonatomic) UILabel *titleLabel;
 
 @end
+

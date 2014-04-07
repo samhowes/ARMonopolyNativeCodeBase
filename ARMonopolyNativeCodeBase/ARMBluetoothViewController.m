@@ -150,19 +150,18 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
-
     UITableViewHeaderFooterView *sectionHeaderView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"headerIndicatorView"];
     if (sectionHeaderView == nil) {
         sectionHeaderView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"headerIndicatorView"];
     }
    
-    UINib *contentViewNib = [UINib nibWithNibName:@"ARMSectionHeaderView" bundle:nil];
+  /*  UINib *contentViewNib = [UINib nibWithNibName:@"ARMSectionHeaderView" bundle:nil];
     ARMTableHeaderViewWithActivityIndicator *contentView = [[contentViewNib instantiateWithOwner:self options:nil] firstObject];
     
     contentView.titleLabel.text = [[self tableView:nil titleForHeaderInSection:section] uppercaseString];
     [[sectionHeaderView contentView] addSubview:contentView];
 
-    bluetoothActivitySpinner = contentView.activityInidcator;
+    bluetoothActivitySpinner = contentView.activityIndicator;
     
     switch ([bluetoothManager state])
     {
@@ -179,7 +178,8 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
             break;
     }
 
-    return sectionHeaderView;
+    return sectionHeaderView; */
+    return nil;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section

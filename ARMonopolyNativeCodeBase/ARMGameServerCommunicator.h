@@ -26,8 +26,7 @@ typedef enum ARMGameServerErrorCode {
     ARMInvalidPostDataErrorCode,
     ARMInvalidPutDataErrorCode,
     ARMInvalidServerResponseErrorCode,
-    ARMGameServerErrorResponseErrorCode,
-    ARMUnableToReachServerErrorCode,
+    ARMServerUnreachableErrorCode,
     ARMNoInternetConnectionErrorCode
 } ARMGameServerErrorCode;
 
@@ -39,6 +38,7 @@ extern const NSString *kGSHTTPClientCookieName;
 
 
 extern const NSString *kGSLoginEndpointURLString;
+extern const NSString *kGSLogoutEndpointURLString;
 extern const NSString *kGSImagesEndpointURLFormatString;
 extern const NSString *kGSActiveSessionsEndpointURLString;
 extern const NSString *kGSCreateSessionURLString;
@@ -70,7 +70,9 @@ extern const NSString *kGSPlayerImageURLReplyKey;
 typedef enum GameServerConnectionStatus {
     kNotInitialized,
     kFailedToConnectToServer,
+    kNotConnectedToGameServer,
     kLoggingIn,
+    kLoggingOut,
     kSendingImage,
     kLoggedIn,
     kRetrievingGameSessions,
@@ -118,6 +120,8 @@ typedef NSError * (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 - (void)continueTasksWithCompletionHandler;
 
 - (void)loginWithCompletionHandler:(CompletionHandlerType)completionHandler;
+
+- (void)logoutWithCompletionHandler:(CompletionHandlerType)completionHandler;
 
 - (void)putProfileImageToServerWithCompletionHandler:(CompletionHandlerType)completionHandler;
 

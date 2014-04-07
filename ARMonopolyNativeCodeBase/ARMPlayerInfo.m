@@ -19,10 +19,6 @@ const NSString *kImageFolderName = @"images";
 @synthesize gameTileImageTargetID;
 @synthesize gameTileName;
 
-#error ARMPlayerInfo Will no longer implement current players in session or Session Name
-@synthesize sessionName;
-@synthesize playersInSessionArray;
-
 /****************************************************************************/
 /*								Class Methods                               */
 /****************************************************************************/
@@ -56,15 +52,6 @@ const NSString *kImageFolderName = @"images";
 /****************************************************************************/
 /*							Instance Methods                                */
 /****************************************************************************/
-
-- (id)init
-{
-	self = [super init];
-	if (self) {
-		playersInSessionArray = [[NSMutableArray alloc] init];
-	}
-	return self;
-}
 
 - (id)initWithCoder:(NSCoder *)decoder
 {
@@ -130,7 +117,7 @@ const NSString *kImageFolderName = @"images";
 {
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     return [documentsDirectory stringByAppendingPathComponent:
-            [kImageFolderName stringByAppendingPathComponent:[NSString stringWithFormat:[kAvatarImageFileNameFormatString copy], gameTileImageTargetID]]];
+            [kImageFolderName stringByAppendingPathComponent:[NSString stringWithFormat:[kAvatarImageFilenameFormatString copy], gameTileImageTargetID]]];
 }
 
 /************************ Coding Methods ***********************************/
