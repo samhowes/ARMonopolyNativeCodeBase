@@ -5,7 +5,7 @@
 #
 #  Created by Samuel Howes on 2/1/14.
 #  Copyright (c) 2014 Samuel Howes. All rights reserved.
-STORYBOARD="Base.lproj/Main.storyboard Base.lproj/ARMSectionHeaderView.xib"
+STORYBOARD="Main.storyboard ARMSectionHeaderView.xib"
 
 CLASSES="ARM*.m ARM*.h"
 

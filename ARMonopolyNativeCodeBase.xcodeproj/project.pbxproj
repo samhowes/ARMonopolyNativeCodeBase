@@ -8,14 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		A503B22A18D211BC000D7595 /* ARMGameServerCommunicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */; };
-		A50FED3718F345C200243A36 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6418C4E99B00435B10 /* LOGO.png */; };
 		A50FED3918F3465400243A36 /* ARMSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A50FED3818F3465400243A36 /* ARMSectionHeaderView.xib */; };
 		A50FED3A18F34C3300243A36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A50FED3518F3449F00243A36 /* Main.storyboard */; };
-		A50FED3B18F3520B00243A36 /* tableview_checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = A52CB59818DE5AB800B24AA4 /* tableview_checkmark.png */; };
 		A52F6FAD18D1489500799EA4 /* ARMNetworkPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */; };
-		A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */ = {isa = PBXBuildFile; fileRef = A5483EF918E7B20000E84E87 /* project.pbxproj */; };
 		A5483F0018E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */; };
 		A54E40B918D64B5D00D343C2 /* ARMException.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E40B818D64B5D00D343C2 /* ARMException.m */; };
+		A54F62C218F3964F001DDCD3 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A54F62C018F3964F001DDCD3 /* LOGO.png */; };
+		A54F62C318F3964F001DDCD3 /* tableview_checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = A54F62C118F3964F001DDCD3 /* tableview_checkmark.png */; };
 		A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */; };
 		A59C427618E85A960075C3B7 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A59C427518E85A960075C3B7 /* MessageUI.framework */; };
 		A5C5BA2218C4E8E000435B10 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2118C4E8E000435B10 /* Foundation.framework */; };
@@ -34,7 +33,6 @@
 		A5C5BA6D18C4E99B00435B10 /* ARMNetworkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5718C4E99B00435B10 /* ARMNetworkViewController.m */; };
 		A5C5BA6E18C4E99B00435B10 /* ARMPlayerInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */; };
 		A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */; };
-		A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6118C4E99B00435B10 /* installPlugin.sh */; };
 		A5C5BA7318C4E99B00435B10 /* ARMBluetoothManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */; };
 		A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */; };
 		A5EF082218E9D7DE00981039 /* ARMNewGamePromptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */; };
@@ -69,7 +67,6 @@
 		A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMGameServerCommunicator.m; sourceTree = "<group>"; };
 		A50FED3518F3449F00243A36 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A50FED3818F3465400243A36 /* ARMSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ARMSectionHeaderView.xib; sourceTree = "<group>"; };
-		A52CB59818DE5AB800B24AA4 /* tableview_checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tableview_checkmark.png; sourceTree = "<group>"; };
 		A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNetworkPlayer.h; sourceTree = "<group>"; };
 		A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNetworkPlayer.m; sourceTree = "<group>"; };
 		A5483EF918E7B20000E84E87 /* project.pbxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.pbxproject; path = project.pbxproj; sourceTree = "<group>"; };
@@ -77,6 +74,8 @@
 		A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMTableHeaderViewWithActivityIndicator.m; sourceTree = "<group>"; };
 		A54E40B718D64B5D00D343C2 /* ARMException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMException.h; sourceTree = "<group>"; };
 		A54E40B818D64B5D00D343C2 /* ARMException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMException.m; sourceTree = "<group>"; };
+		A54F62C018F3964F001DDCD3 /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LOGO.png; path = ARMonopolyNativeCodeBase/LOGO.png; sourceTree = SOURCE_ROOT; };
+		A54F62C118F3964F001DDCD3 /* tableview_checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tableview_checkmark.png; path = ARMonopolyNativeCodeBase/tableview_checkmark.png; sourceTree = SOURCE_ROOT; };
 		A59C427518E85A960075C3B7 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A5C5BA1E18C4E8E000435B10 /* ARMonopolyNativeCodeBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARMonopolyNativeCodeBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C5BA2118C4E8E000435B10 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -109,7 +108,6 @@
 		A5C5BA6118C4E99B00435B10 /* installPlugin.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = installPlugin.sh; sourceTree = "<group>"; };
 		A5C5BA6218C4E99B00435B10 /* ARMBluetoothManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMBluetoothManager.h; sourceTree = "<group>"; };
 		A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMBluetoothManager.m; sourceTree = "<group>"; };
-		A5C5BA6418C4E99B00435B10 /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LOGO.png; path = ../LOGO.png; sourceTree = "<group>"; };
 		A5C5BA6518C4E99B00435B10 /* Notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Notes.txt; sourceTree = "<group>"; };
 		A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestAppDelegate.h; path = TestOnly/TestAppDelegate.h; sourceTree = "<group>"; };
 		A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAppDelegate.m; path = TestOnly/TestAppDelegate.m; sourceTree = "<group>"; };
@@ -158,11 +156,10 @@
 		A59F852D18C7E221005EE662 /* images */ = {
 			isa = PBXGroup;
 			children = (
-				A52CB59818DE5AB800B24AA4 /* tableview_checkmark.png */,
-				A5C5BA6418C4E99B00435B10 /* LOGO.png */,
+				A54F62C018F3964F001DDCD3 /* LOGO.png */,
+				A54F62C118F3964F001DDCD3 /* tableview_checkmark.png */,
 			);
-			name = images;
-			path = ARMonopolyNativeCodeBase/images;
+			path = images;
 			sourceTree = "<group>";
 		};
 		A5BA84F318D7FEBE00F19C76 /* Network */ = {
@@ -184,7 +181,6 @@
 			isa = PBXGroup;
 			children = (
 				A5483EF818E7B20000E84E87 /* integration */,
-				A59F852D18C7E221005EE662 /* images */,
 				A5C5BA2718C4E8E000435B10 /* ARMonopolyNativeCodeBase */,
 				A5C5BA4018C4E8E000435B10 /* ARMonopolyNativeCodeBaseTests */,
 				A5C5BA2018C4E8E000435B10 /* Frameworks */,
@@ -216,6 +212,7 @@
 		A5C5BA2718C4E8E000435B10 /* ARMonopolyNativeCodeBase */ = {
 			isa = PBXGroup;
 			children = (
+				A59F852D18C7E221005EE662 /* images */,
 				A50FED3818F3465400243A36 /* ARMSectionHeaderView.xib */,
 				A50FED3518F3449F00243A36 /* Main.storyboard */,
 				A5C5BA5E18C4E99B00435B10 /* Base.lproj */,
@@ -401,14 +398,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A50FED3B18F3520B00243A36 /* tableview_checkmark.png in Resources */,
 				A50FED3A18F34C3300243A36 /* Main.storyboard in Resources */,
-				A50FED3718F345C200243A36 /* LOGO.png in Resources */,
 				A5C5BA2C18C4E8E000435B10 /* InfoPlist.strings in Resources */,
+				A54F62C218F3964F001DDCD3 /* LOGO.png in Resources */,
 				A50FED3918F3465400243A36 /* ARMSectionHeaderView.xib in Resources */,
 				A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */,
-				A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */,
-				A5C5BA7218C4E99B00435B10 /* installPlugin.sh in Resources */,
+				A54F62C318F3964F001DDCD3 /* tableview_checkmark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -478,7 +478,7 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
                                        delegate:nil
                               cancelButtonTitle:@"Come on, do better."
                               otherButtonTitles:nil] show];
-            NSLog(@"An unexpected error has occured in Bluetoth state %ld: %@", [bluetoothManager state], error);
+            NSLog(@"An unexpected error has occured in Bluetoth state %d: %@", [bluetoothManager state], error);
             [bluetoothManager recoverFromError:error];
         }
     }
