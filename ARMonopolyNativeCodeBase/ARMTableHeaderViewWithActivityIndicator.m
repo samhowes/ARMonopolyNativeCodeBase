@@ -9,6 +9,8 @@
 #import "ARMTableHeaderViewWithActivityIndicator.h"
 #import "ARMTableHeaderContentView.h"
 
+const NSString *ARMReuseIdentifierForTableViewHeaderWithActivityIndicator = @"ARMReuseIdentifierForTableViewHeaderWithActivityIndicator";
+
 @implementation ARMTableHeaderViewWithActivityIndicator
 
 @synthesize activityIndicator;

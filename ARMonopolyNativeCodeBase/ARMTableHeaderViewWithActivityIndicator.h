@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "ARMTableHeaderContentView.h"
 
+extern const NSString *ARMReuseIdentifierForTableViewHeaderWithActivityIndicator;
+
 @interface ARMTableHeaderViewWithActivityIndicator : UITableViewHeaderFooterView
 
 @property (weak, nonatomic) ARMTableHeaderContentView *ARMContentView;

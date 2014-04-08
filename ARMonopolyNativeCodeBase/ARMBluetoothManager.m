@@ -125,7 +125,10 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     delegate = nil;
     if (centralManager)
     {
-        [centralManager stopScan];
+        if ([centralManager state] == CBCentralManagerStatePoweredOn)
+        {
+            [centralManager stopScan];
+        }
     }
     switch (state)
     {

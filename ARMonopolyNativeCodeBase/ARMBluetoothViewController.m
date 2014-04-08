@@ -24,7 +24,7 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
 }
 
 @property (retain, nonatomic) IBOutlet UITableView              *devicesTableView;
-@property (weak, nonatomic)   IBOutlet UIActivityIndicatorView  *bluetoothActivitySpinner;
+@property (weak, nonatomic)   UIActivityIndicatorView  *bluetoothActivitySpinner;
 
 @end
 
@@ -44,9 +44,7 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
     [super viewDidLoad];
     [devicesTableView setDataSource:self];
     
-    // Set up default values.
-    //self.tableView.sectionHeaderHeight = 48;
-    
+    [self.devicesTableView registerClass:[ARMTableHeaderViewWithActivityIndicator class] forHeaderFooterViewReuseIdentifier:[ARMReuseIdentifierForTableViewHeaderWithActivityIndicator copy]];
     
 	[self reloadTableViewWithAnimation];
     
@@ -150,19 +148,18 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     
-    UITableViewHeaderFooterView *sectionHeaderView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"headerIndicatorView"];
-    if (sectionHeaderView == nil) {
-        sectionHeaderView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"headerIndicatorView"];
-    }
-   
-  /*  UINib *contentViewNib = [UINib nibWithNibName:@"ARMSectionHeaderView" bundle:nil];
-    ARMTableHeaderViewWithActivityIndicator *contentView = [[contentViewNib instantiateWithOwner:self options:nil] firstObject];
+    UITableViewHeaderFooterView *sectionHeaderView;
+    ARMTableHeaderViewWithActivityIndicator *armSectionHeaderView;
     
-    contentView.titleLabel.text = [[self tableView:nil titleForHeaderInSection:section] uppercaseString];
-    [[sectionHeaderView contentView] addSubview:contentView];
+        
+    //---------    First: Dequeue the view if it is available    --------//
 
-    bluetoothActivitySpinner = contentView.activityIndicator;
+    armSectionHeaderView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:[ARMReuseIdentifierForTableViewHeaderWithActivityIndicator copy]];
+    armSectionHeaderView.titleLabel.text = [[self tableView:nil titleForHeaderInSection:section] uppercaseString];
+    bluetoothActivitySpinner = armSectionHeaderView.activityIndicator;
     
+    sectionHeaderView = (UITableViewHeaderFooterView *)armSectionHeaderView;
+
     switch ([bluetoothManager state])
     {
         case kScanningForGameTiles:
@@ -178,8 +175,7 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
             break;
     }
 
-    return sectionHeaderView; */
-    return nil;
+    return sectionHeaderView;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section

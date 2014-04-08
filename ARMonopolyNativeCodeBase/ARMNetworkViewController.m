@@ -18,7 +18,6 @@ const NSInteger kTableCellTagForGameSessionCheckmark = 1;
 const NSInteger kTableCellTagForGameSessionTitleLabel = 2;
 const NSInteger kTableCellTagForPlayeNameLabel = 1;
 
-const NSString *ARMReuseIdentifierForTableViewHeaderWithActivityIndicator = @"ARMReuseIdentifierForTableViewHeaderWithActivityIndicator";
 const NSString *ARMReuseIdentifierForDefaultTableViewHeader = @"ARMReuseIdentifierForDefaultTableViewHeader";
 
 const NSString *kBarButtonItemLeaveGameTitle = @"Leave Game";
