@@ -25,6 +25,10 @@ const NSString *kBarButtonItemLeaveGameTitle = @"Leave Game";
 const NSString *kImageDownloadingErrorAlertTitle = @"Error Downloading Player Images";
 
 @interface ARMNetworkViewController ()
+{
+    NSInteger selectedCellNumber;
+    BOOL isReturningFromNewGamePrompt;
+}
 
 @property (weak, nonatomic) IBOutlet UITableView *gameSessionsTableView;
 @property (weak, nonatomic) UIActivityIndicatorView *networkActivityIndicator;
@@ -101,35 +105,40 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
                           otherButtonTitles:nil] show];
         return;
     }
-    
-    switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
+    if (isReturningFromNewGamePrompt)
     {
-        //--------------------- Get all sessions Cases ----------------------------//
-        case kLoggedIn:
-        case kRetrievingGameSessions:
-        case kJoiningGameSession:
-        case kCreatingGameSession:
-            [self hideRightNavigationBarButtonItem];
-            [[ARMGameServerCommunicator sharedInstance] getAllGameSessionsWithCompletionHandler:nil];
-            break;
-            
-        //----------------- Get the current session Cases -------------------------//
-        case kInGameSession:
-        case kLeavingGameSession:
-            [self showRightBarButtonItemWithBool:YES];
-            [[ARMGameServerCommunicator sharedInstance] getCurrentSessionInfoWithCompletionHandler:nil];
-            break;
-
-        //----------------------------- Login Cases -------------------------------//
-        case kNotInitialized:
-        case kFailedToConnectToServer:
-        case kLoggingIn:
-        case kSendingImage:
-        default:
-            [[ARMGameServerCommunicator sharedInstance] loginWithCompletionHandler:nil];
-            break;
+        isReturningFromNewGamePrompt = NO;
     }
-    
+    else
+    {
+        switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
+        {
+            //--------------------- Get all sessions Cases ----------------------------//
+            case kLoggedIn:
+            case kRetrievingGameSessions:
+            case kJoiningGameSession:
+            case kCreatingGameSession:
+                [self hideRightNavigationBarButtonItem];
+                [[ARMGameServerCommunicator sharedInstance] getAllGameSessionsWithCompletionHandler:nil];
+                break;
+                
+            //----------------- Get the current session Cases -------------------------//
+            case kInGameSession:
+            case kLeavingGameSession:
+                [self showRightBarButtonItemWithBool:YES];
+                [[ARMGameServerCommunicator sharedInstance] getCurrentSessionInfoWithCompletionHandler:nil];
+                break;
+
+            //----------------------------- Login Cases -------------------------------//
+            case kNotInitialized:
+            case kFailedToConnectToServer:
+            case kLoggingIn:
+            case kSendingImage:
+            default:
+                [[ARMGameServerCommunicator sharedInstance] loginWithCompletionHandler:nil];
+                break;
+        }
+    }
     [self refreshDisplayWithAnimation];
 }
 
@@ -141,12 +150,13 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
 
 - (IBAction)returnFromNewGamePrompt:(UIStoryboardSegue *)segue
 {
+    isReturningFromNewGamePrompt = YES;
     ARMNewGamePromptViewController *source = [segue sourceViewController];
     if ([source nameOfNewGame])
     {
         [[ARMGameServerCommunicator sharedInstance] createSessionWithName:[source nameOfNewGame] completionHandler:nil];
-        
     }
+    [self refreshDisplayWithAnimation];
     // else, the user just pressed the cancel button
 }
 
@@ -211,7 +221,12 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     
     
     //------------------------- GetCurrentGameSession -------------------------//
-    [completionHandlerDictionary setObject:basicHandler forKey:kGSGetCurrentSessionInfoCompletionKey];
+    [completionHandlerDictionary setObject:^(NSError *error)
+     {
+         if (basicHandler(error)) return;
+         [[ARMGameServerCommunicator sharedInstance] downloadPlayerImagesWithCompletionHandler:nil];
+     }
+                                    forKey:kGSGetCurrentSessionInfoCompletionKey];
     
     //-------------------------- GetAllGameSessions ---------------------------//
     [completionHandlerDictionary setObject:basicHandler forKey:kGSGetAllGameSessionsCompletionKey];
@@ -238,7 +253,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
          [weakSelf showRightBarButtonItemWithBool:NO];
          [[ARMGameServerCommunicator sharedInstance] getAllGameSessionsWithCompletionHandler:nil];
      }
-                                    forKey:kGSDownloadImageCompletionKey];
+                                    forKey:kGSLeaveGameSessionCompletionKey];
     
     
     [[ARMGameServerCommunicator sharedInstance] setCompletionHandlerDictionary:completionHandlerDictionary];
@@ -306,6 +321,44 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     
     // Finallly: Animate the reloading of the table
     NSRange indexRange = NSMakeRange(0, [self numberOfSectionsInTableView:gameSessionsTableView]);
+    NSInteger previousSections = [gameSessionsTableView numberOfSections];
+    NSInteger futureSections = [self numberOfSectionsInTableView:gameSessionsTableView];
+    GameServerConnectionStatus connectionStatus = [[ARMGameServerCommunicator sharedInstance] connectionStatus];
+    if (futureSections != previousSections)
+    {
+        [gameSessionsTableView beginUpdates];
+        if (futureSections == 2) // if we are adding a section to the top
+        {
+            NSArray *playersArray = [[ARMGameServerCommunicator sharedInstance] playersInSessionArray];
+            NSMutableArray *indexPathsArray = [NSMutableArray new];
+            for (NSInteger index = 0; index < [gameSessionsTableView numberOfRowsInSection:0]; index += 1)
+            {
+                if (index != selectedCellNumber)
+                {
+                    [indexPathsArray addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
+            }
+        
+            [gameSessionsTableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            [gameSessionsTableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            indexPathsArray = [NSMutableArray new];
+            
+            [playersArray enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+                [indexPathsArray addObject:[NSIndexPath indexPathForRow:index inSection:1]];
+                
+            }];
+            
+            [gameSessionsTableView insertRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        else // else we are removing the second section
+        {
+            [gameSessionsTableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+       // [gameSessionsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:indexRange] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [gameSessionsTableView endUpdates];
+    }
     [gameSessionsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:indexRange] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
@@ -328,6 +381,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
 
 - (void)refreshControlDidActivate:(id)sender
 {
+    [self.refreshControl endRefreshing];
     switch ((GameServerConnectionStatus)[[ARMGameServerCommunicator sharedInstance] connectionStatus])
     {
             // Cases where we want to try logging in again
@@ -366,7 +420,6 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     }
     
     // By now we have started our own activity indicators, so we can stop this one now.
-    [self.refreshControl endRefreshing];
     dispatch_async(dispatch_get_main_queue(), ^{[self refreshDisplayWithAnimation];});        // Call this with dispatch so we execute it after the event has ended
     // if we don't dispatch, the refresh control will throw an Exception and crash the application
 }
@@ -454,6 +507,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [networkActivityIndicator stopAnimating];
     }
+    [self refreshDisplayWithAnimation];
 }
 
 #pragma mark - Networking Methods
@@ -530,6 +584,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     if (self.isShowingLeaveGameButton)
     {
         [[ARMGameServerCommunicator sharedInstance] leaveSessionWithCompletionHandler:nil];
+        [self refreshDisplayWithAnimation];
     }
     else // otherwise we will be creating a game
     {
@@ -547,6 +602,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
         return; // do nothing if we are already joining a game session, or in a game session
     }
     
+    selectedCellNumber = indexPath.row;
     UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
     UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithFrame:[[selectedCell accessoryView] frame]];
     [spinner setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
@@ -603,6 +659,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     {
         case kInGameSession:
         case kRetrievingSessionInfo:
+        case kDownloadingPlayerProfiles:
         case kRefreshingSessionInfo:
             return 2;       // list [Current session, current players]
             break;

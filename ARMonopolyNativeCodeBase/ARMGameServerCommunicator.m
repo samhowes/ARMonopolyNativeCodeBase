@@ -20,7 +20,7 @@
 //--------------------------- URL/HTTP Constants ---------------------------//
 const NSString *ARMGameServerErrorDomain =                      @"ARMGameServerErrorDomain";
 
-const NSString *ARMGameServerURLString =                        @"http://168.122.170.140:3000";
+const NSString *ARMGameServerURLString =                        @"http://168.122.170.131:3000";
 const NSString *kGSHTTPUserAgentHeaderString =                  @"ARMonopoy iOS";
 const NSString *kGSHTTPAcceptContentHeaderString =              @"application/json";
 const NSString *kGSHTTPClientCookieName =                       @"clientID";
@@ -195,6 +195,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
             }
         }
     }
+    networkImagePathStringsArray = nil;
 }
 
 #pragma mark - Public Networking Methods
@@ -534,6 +535,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     {
         completionHandler = [completionHandlerDictionary objectForKey:kGSLeaveGameSessionCompletionKey];
     }
+    [self purgeNetworkImagesFromFileSystem];
     
     //---------    First: Prepare the DELETE Request    --------//
     NSMutableURLRequest *leaveSessionRequest = [self requestWithRelativeURLString:[kGSLeaveSessionEndpointURLString copy]
@@ -563,13 +565,15 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 
 - (void)downloadPlayerImagesWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
+    if ([self.playersInSessionArray count] == 0)
+    {
+        return;
+    }
     connectionStatus = kDownloadingPlayerProfiles;
     if (completionHandler == nil)
     {
         completionHandler = [completionHandlerDictionary objectForKey:kGSDownloadImageCompletionKey];
     }
-    
-    if ([self.playersInSessionArray count] == 0) return;
     
     
     //---------    First: Prepare our pool of Download Tasks    --------//
@@ -580,24 +584,38 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     }
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    
+    NSString *imagesDirectory = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"images"];
+
+    NSMutableArray *remainingPlayersToDownload = [NSMutableArray new];
     // Create a download task for each player
     for (ARMNetworkPlayer *player in self.playersInSessionArray)
     {
         NSMutableURLRequest *getPlayerInfoRequest = [self requestWithRelativeURLString:
                             [player imageNetworkRelativeURLString] withPostJSONObject:nil];
+        [remainingPlayersToDownload addObject:player];
         
         ARMImageProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, UIImage *downloadedImage)
         {
+            [remainingPlayersToDownload removeObject:player];
+            
             // Save the file to the documents directory so vuforia can access it
-            NSString *saveImagePath = [documentsDirectory stringByAppendingPathComponent:[player imageLocalFileName]];
+            NSString *saveImagePath = [imagesDirectory stringByAppendingPathComponent:[player imageLocalFileName]];
             
             // Save the file path so we can delete it when we leave the game session
             [networkImagePathStringsArray addObject:saveImagePath];
 
             NSData *imageData = UIImagePNGRepresentation(downloadedImage);
-            [imageData writeToFile:saveImagePath atomically:NO];
+            [imageData writeToFile:saveImagePath atomically:YES];
+            
+            
+            if ([remainingPlayersToDownload count] == 0)
+            {
+                connectionStatus = kInGameSession;
+                dispatchOnMainQueue(^{
+                    [delegate setActivityIndicatorsVisible:NO];
+                });
+                [self dispatchCompletionHandler:completionHandler withError:nil];
+            }
             return nil;
         };
         
@@ -650,7 +668,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 - (void)receiveCurrentSessionResponseWithJSONObject:(NSDictionary *)jsonObject
 {
     NSString *receivedSessionID = jsonObject[kGSSessionIDReplyKey];
-    NSAssert([receivedSessionID isEqualToString:self.currentSessionID], @"Server replied with the incorrect session.");
+    //NSAssert([receivedSessionID isEqualToString:self.currentSessionID], @"Server replied with the incorrect session.");
     
     playersInSessionArray = [NSMutableArray new];
     for (NSDictionary *player in jsonObject[kGSCurrentPlayersReplyKey])
@@ -721,10 +739,6 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 
 - (void)handleGameServerResponseWithImageProcessor:(ARMImageProcessorType)imageProcessor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler imageData:(NSData *)imageData response:(NSURLResponse *)response error:(NSError *)error
 {
-    dispatchOnMainQueue(^{
-        [delegate setActivityIndicatorsVisible:NO];
-    });
-    
     // First: Handle any local errors that may have occurred
     if (error)
     {
@@ -771,7 +785,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 #warning incomplete implementation without attempting to retry failed requests
     // Allow the callers to complete execution
     if (imageProcessor)     imageProcessor(httpResponse, downloadedImage);
-    if (completionHandler)  [self dispatchCompletionHandler:completionHandler withError:error];
+    // the image Processor will take care of the completion handler here
 }
 
 - (void)dispatchCompletionHandler:(CompletionHandlerType)completionHandler withError:(NSError *)error

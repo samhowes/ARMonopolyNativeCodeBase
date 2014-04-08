@@ -10,6 +10,8 @@
 		A503B22A18D211BC000D7595 /* ARMGameServerCommunicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A503B22918D211BB000D7595 /* ARMGameServerCommunicator.m */; };
 		A50FED3718F345C200243A36 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A5C5BA6418C4E99B00435B10 /* LOGO.png */; };
 		A50FED3918F3465400243A36 /* ARMSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A50FED3818F3465400243A36 /* ARMSectionHeaderView.xib */; };
+		A50FED3A18F34C3300243A36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A50FED3518F3449F00243A36 /* Main.storyboard */; };
+		A50FED3B18F3520B00243A36 /* tableview_checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = A52CB59818DE5AB800B24AA4 /* tableview_checkmark.png */; };
 		A52F6FAD18D1489500799EA4 /* ARMNetworkPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */; };
 		A5483EFA18E7B20000E84E87 /* project.pbxproj in Resources */ = {isa = PBXBuildFile; fileRef = A5483EF918E7B20000E84E87 /* project.pbxproj */; };
 		A5483F0018E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */; };
@@ -399,6 +401,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A50FED3B18F3520B00243A36 /* tableview_checkmark.png in Resources */,
+				A50FED3A18F34C3300243A36 /* Main.storyboard in Resources */,
 				A50FED3718F345C200243A36 /* LOGO.png in Resources */,
 				A5C5BA2C18C4E8E000435B10 /* InfoPlist.strings in Resources */,
 				A50FED3918F3465400243A36 /* ARMSectionHeaderView.xib in Resources */,
@@ -559,7 +563,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Prefix.pch";
 				INFOPLIST_FILE = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -575,7 +579,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Prefix.pch";
 				INFOPLIST_FILE = "ARMonopolyNativeCodeBase/ARMonopolyNativeCodeBase-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

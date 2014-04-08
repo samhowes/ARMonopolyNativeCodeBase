@@ -13,6 +13,24 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self prepareDocumentsDirectory];
+    
+    // Initialize our User Data
+    [ARMPlayerInfo sharedInstance];
+    
+    return YES;
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+	// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+	// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[ARMPlayerInfo sharedInstance] saveInstanceToArchive];
+    
+}
+
+- (void)prepareDocumentsDirectory
+{
     // Check for the default images that Unity will use
     NSBundle* myBundle = [NSBundle mainBundle];
     
@@ -35,6 +53,12 @@
     else if (!isDirectory)
     {
         NSLog(@"Error: image folder name '%@' is not a directory!", [kImageFolderName copy]);
+    }
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:destinationPath error:&error];
+        error = nil;
     }
     
     if (![[NSFileManager defaultManager] copyItemAtPath:sourcePath toPath:destinationPath error:&error])
@@ -63,19 +87,7 @@
             }
         }
     }
-    
-    // Initialize our User Data
-    [ARMPlayerInfo sharedInstance];
-    
-    return YES;
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-	// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-	// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    [[ARMPlayerInfo sharedInstance] saveInstanceToArchive];
-    
-}
 
 @end
