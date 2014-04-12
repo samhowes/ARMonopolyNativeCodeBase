@@ -749,6 +749,10 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 
 - (void)handleGameServerResponseWithImageProcessor:(ARMImageProcessorType)imageProcessor successStatusCode:(NSInteger)statusCode completionHandler:(CompletionHandlerType)completionHandler imageData:(NSData *)imageData response:(NSURLResponse *)response error:(NSError *)error
 {
+    dispatchOnMainQueue(^{
+        [delegate setActivityIndicatorsVisible:NO];
+    });
+    
     // First: Handle any local errors that may have occurred
     if (error)
     {
