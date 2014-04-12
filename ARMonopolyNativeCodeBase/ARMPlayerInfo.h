@@ -27,6 +27,8 @@ extern const NSString *kAvatarImageFilenameFormatString;
 
 - (void)bluetoothWillConnectToNewGameTile;
 
+- (void)networkingDidLogInWithCookie:(NSHTTPCookie *)newCookie;
+
 // Local Player info
 @property NSString *playerDisplayName;
 
@@ -34,5 +36,8 @@ extern const NSString *kAvatarImageFilenameFormatString;
 
 @property NSString *gameTileImageTargetID;
 @property NSString *gameTileName;
+
+// Networking info to store
+@property NSHTTPCookie *gameServerCookie;
 
 @end

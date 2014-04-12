@@ -150,6 +150,11 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         // custom initialization
         shouldSkipCompletionHandler = YES;
         
+        if ([[ARMPlayerInfo sharedInstance] gameServerCookie])
+        {
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:[[ARMPlayerInfo sharedInstance] gameServerCookie]];
+        }
+        
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
         
         mainURLSessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -251,6 +256,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         {
             return [NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseErrorCode userInfo:nil];
         }
+        [[ARMPlayerInfo sharedInstance] networkingDidLogInWithCookie:clientCookie];
         return nil;
     };
     

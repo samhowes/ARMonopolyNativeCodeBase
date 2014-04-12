@@ -18,6 +18,7 @@ const NSString *kImageFolderName = @"images";
 @synthesize playerDisplayImage;
 @synthesize gameTileImageTargetID;
 @synthesize gameTileName;
+@synthesize gameServerCookie;
 
 /****************************************************************************/
 /*								Class Methods                               */
@@ -113,6 +114,11 @@ const NSString *kImageFolderName = @"images";
     gameTileImageTargetID = nil;
 } 
 
+- (void)networkingDidLogInWithCookie:(NSHTTPCookie *)newCookie
+{
+    gameServerCookie = newCookie;
+}
+
 - (NSString *)pathToSaveUsersImage
 {
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -124,7 +130,7 @@ const NSString *kImageFolderName = @"images";
 - (NSArray *)keysForEncoding;
 {
 	return [NSArray arrayWithObjects:@"playerDisplayName",
-			@"playerDisplayImage", @"gameTileImageTargetID", nil];
+			@"playerDisplayImage", @"gameTileImageTargetID", @"gameServerCookie", nil];
 }
 
 - (BOOL)saveInstanceToArchive
