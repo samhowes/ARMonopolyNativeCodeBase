@@ -250,10 +250,8 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     //-------------------------- LeaveGameSession -----------------------------//
     [completionHandlerDictionary setObject:^(NSError *error)
      {
-         [weakSelf showCreateGameBarButtonItem];
-         
          if (basicHandler(error)) return;
-         
+         [weakSelf showCreateGameBarButtonItem];
          
          [[ARMGameServerCommunicator sharedInstance] getAllGameSessionsWithCompletionHandler:nil];
      }
@@ -565,14 +563,18 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
             switch ((ARMGameServerResponseErrorCode)[error code])
             {
                     // Cases where the GameServerCommunicator will correct itself
-                case GSRNotInSameSessionErrorCode:          // We tried to get a players image who isn't in our session
                 case GSRClientAlreadyInSessionErrorCode:    // We tried to join or create a session when we are already in one
+                    // Tell the server to remove us from the game session
+                    [[ARMGameServerCommunicator sharedInstance] leaveSessionWithCompletionHandler:nil];
+                    
+                case GSRNotInSameSessionErrorCode:          // We tried to get a players image who isn't in our session
                 case GSRInvalidClientIDErrorCode:           // We sent a cookie, and we aren't logged in to the server.
                 case GSRCookieIDMismatchErrorCode:          // This shouldn't be sent, ever.
                 case GSRInvalidPostParameterErrorCode:      // We sent the wrong data in our request
                 case GSRClientNotMemberOfSessionErrorCode:  // We tried to get some info on a user or session we aren't in
-                    errorString = @"An internal error has occurred; don't worry, we'll fix it.";
+                    errorString = @"An internal error has occurred.\nDon't worry, we'll fix it.";
                     break;
+                    
                     
                 case GSRUserNameAlreadyTakenErrorCode:
                     errorString = @"A user with that name already exists\nPlease choose another name in 'Customize Profile'";
