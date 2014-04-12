@@ -11,7 +11,7 @@ CLASSES="ARM*.m ARM*.h"
 
 IMAGES="LOGO.png tableview_checkmark.png"
 
-COPY_FILES="$STORYBOARD $CLASSES $LOGO"
+COPY_FILES="$STORYBOARD $CLASSES $IMAGES"
 COMPILE_DIRNAME="../../ARMonopolyProduct/Libraries"
 
 PROJECT_FILENAME="project.pbxproj"
