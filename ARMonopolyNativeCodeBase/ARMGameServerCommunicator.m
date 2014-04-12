@@ -19,10 +19,11 @@
 
 //--------------------------- URL/HTTP Constants ---------------------------//
 const NSString *ARMGameServerErrorDomain =                      @"ARMGameServerErrorDomain";
+const NSString *ARMGameServerResponseErrorDomain =              @"ARMGameServerResponseErrorDomain";
 
-const NSString *ARMGameServerURLString =                        @"http://168.122.170.131:3000";
+const NSString *ARMGameServerURLString =                        @"http://mary008-0103-dhcp249:3002";
 const NSString *kGSHTTPUserAgentHeaderString =                  @"ARMonopoy iOS";
-const NSString *kGSHTTPAcceptContentHeaderString =              @"application/json";
+const NSString *kGSHTTPJSONContentHeaderString =                @"application/json";
 const NSString *kGSHTTPClientCookieName =                       @"clientID";
 
 
@@ -44,7 +45,7 @@ const NSString *kGSUploadImageFormBoundaryHeaderValue =         @"------WebKitFo
 const NSString *kGSUserNamePostKey =                            @"userName";
 const NSString *kGSDeviceIDPostKey =                            @"deviceID";
 const NSString *kGSSessionIDPostKey =                           @"sessionID";
-const NSString *kGSCreateSessionPostKey =                       @"sessionName";
+const NSString *kGSCreateSessionPostKey =                       @"newSessionName";
 
 const NSString *kGSUploadContentDispositionString =             @"Content-Disposition: form-data";
 const NSString *kGSUploadFormValueFieldString =                 @"name=\"image\"";
@@ -153,7 +154,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         
         mainURLSessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
         [mainURLSessionConfig setAllowsCellularAccess:YES];
-        [mainURLSessionConfig setHTTPAdditionalHeaders:@{@"User-Agent":kGSHTTPUserAgentHeaderString, @"Accept": kGSHTTPAcceptContentHeaderString}];
+        [mainURLSessionConfig setHTTPAdditionalHeaders:@{@"User-Agent":kGSHTTPUserAgentHeaderString, @"Accept": kGSHTTPJSONContentHeaderString, @"Content-Type": kGSHTTPJSONContentHeaderString}];
         [mainURLSessionConfig setTimeoutIntervalForRequest:30.0];
         [mainURLSessionConfig setTimeoutIntervalForResource:60.0];
         [mainURLSessionConfig setHTTPMaximumConnectionsPerHost:1];
@@ -226,12 +227,15 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         return;
     }
     
+    NSData *httpBody = [loginRequest HTTPBody];
     
     HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject) {
         // Check our cookie: it is our client ID
         NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:[ARMGameServerURLString copy]]];
         
-        NSHTTPCookie *clientCookie = cookies[0];
+        //TODO: Check cookies properly
+        NSHTTPCookie *clientCookie = [cookies objectAtIndex:0];
+        if (!clientCookie) throwError([NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseErrorCode userInfo:nil]);
         [self setClientIDCookie:[clientCookie value]];
         
         // Make sure we're going to the right place
@@ -654,7 +658,8 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     {
         NSError *jsonError;
         [request setHTTPMethod:@"POST"];
-        [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:postJSONObject options:NSJSONWritingPrettyPrinted error:&jsonError]];
+        NSData *postBody = [NSJSONSerialization dataWithJSONObject:postJSONObject options:NSJSONWritingPrettyPrinted error:&jsonError];
+        [request setHTTPBody: postBody];
         if (jsonError) throwError(jsonError);
     }
     else
@@ -705,6 +710,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
     @try
     {
+        NSString *description = [data description];
         if (data == nil || [data length] == 0)
         {
             jsonObject = nil;
@@ -713,14 +719,17 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         {
             jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
             if (error) throwError([NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseErrorCode userInfo:nil]);
-            
-            // Third: Validate the status code
-            if ([httpResponse statusCode] != statusCode)
-            {
-                error = [self ARMErrorFromJSONObject:[jsonObject objectForKey:kGSErrorReplyKey]];
-                throwError(error);
-            }
         }
+        
+        // Third: Validate the status code
+        if ([httpResponse statusCode] != statusCode)
+        {
+            error = [self ARMErrorFromJSONObject:[jsonObject objectForKey:kGSErrorReplyKey]];
+            throwError(error);
+        }
+        
+        // Allow the callers to complete execution
+        if (processor) error = processor(httpResponse, jsonObject);
     }
     @catch (NSException *e) // Default: Process any errors
     {
@@ -729,11 +738,12 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         {
             error = [(ARMException *)e errorObject];
         }
+        else
+        {
+            error = [NSError errorWithDomain:[ARMGameServerErrorDomain copy] code:ARMInvalidServerResponseErrorCode userInfo:nil];
+        }
     }
 
-#warning incomplete implementation without attempting to retry failed requests
-    // Allow the callers to complete execution
-    if (processor)          error = processor(httpResponse, jsonObject);
     if (completionHandler)  [self dispatchCompletionHandler:completionHandler withError:error];
 }
 
@@ -782,7 +792,6 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         }
     }
     
-#warning incomplete implementation without attempting to retry failed requests
     // Allow the callers to complete execution
     if (imageProcessor)     imageProcessor(httpResponse, downloadedImage);
     // the image Processor will take care of the completion handler here
@@ -798,7 +807,6 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 
 - (NSError *)processLocalError:(NSError *)error
 {
-#warning Implementation under review! You may want to handle more errors
     NSInteger returnErrorCode = ARMUnkownErrorCode;
     NSMutableDictionary *returnUserInfo = [NSMutableDictionary new];
     
@@ -837,24 +845,20 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 
 - (NSError *)ARMErrorFromJSONObject:(NSDictionary *)jsonObject
 {
-    [self updateConnectionStatusInError];
     // Get the error descriptions in a non-exception raising way
     NSNumber *errorCode =   [jsonObject objectForKey:kGSErrorCodeReplyKey];
-    NSString *reason =      [jsonObject objectForKey:kGSErrorReasonReplyKey];
     NSString *description = [jsonObject objectForKey:kGSErrorDescriptionReplyKey];
+    NSMutableDictionary *userInfo = (NSMutableDictionary *)@{
+                                     NSLocalizedDescriptionKey: description
+                                     };
     
-    
-    return [NSError errorWithDomain:[ARMGameServerErrorDomain copy]
+    return [NSError errorWithDomain:[ARMGameServerResponseErrorDomain copy]
                                code:(errorCode == nil ? ARMUnkownErrorCode: [errorCode integerValue])
-                           userInfo:@{
-                                      NSLocalizedFailureReasonErrorKey: reason,
-                                      NSLocalizedDescriptionKey: description
-                                      }];
+                           userInfo:userInfo];
 }
 
 - (void)updateConnectionStatusInError
 {
-#warning Code Section needs review, You probably want to change this to a "Recover from error" method
     switch (connectionStatus)
     {
         case kLoggingIn:

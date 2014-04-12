@@ -148,8 +148,6 @@
         
 		userDisplayImageView.image = imageToSave;
 		[[ARMPlayerInfo sharedInstance] setPlayerDisplayImage:imageToSave];
-        // DEBUG: Hard-coding data for testing
-        [[ARMPlayerInfo sharedInstance] bluetoothDidConnectToGameTileWithName:@"Name" imageTargetID:@"1"];
 	}
 	
 	if (CFStringCompare ((CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo)

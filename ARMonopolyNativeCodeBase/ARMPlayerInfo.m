@@ -57,7 +57,7 @@ const NSString *kImageFolderName = @"images";
 {
 	self = [super init];
 	if (self) {
-		for (NSString *key in self.keysForEncoding)
+		for (NSString *key in [self keysForEncoding])
 		{
 			[self setValue:[decoder decodeObjectForKey:key] forKey:key];
 		}
@@ -87,7 +87,7 @@ const NSString *kImageFolderName = @"images";
 
 - (void)bluetoothDidConnectToGameTileWithName:(NSString *)name imageTargetID:(NSString *)imageTargetID
 {
-    gameTileName = name;
+    gameTileName = [NSString stringWithFormat:@"GameTile: %@", imageTargetID];
     gameTileImageTargetID = imageTargetID;
     
     // now that we are connected to a game tile, we can save our image in the right location

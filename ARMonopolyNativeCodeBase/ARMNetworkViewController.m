@@ -91,9 +91,9 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     [[ARMGameServerCommunicator sharedInstance] setDelegate:self];
 
     //DEBUG: Populate static data for testing
-    [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:       @"Sam"];
-    [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:   @"1"];
-    [[ARMPlayerInfo sharedInstance] setPlayerDisplayImage:      [UIImage new]];
+/*    [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:       @"Sam"];
+    [[ARMPlayerInfo sharedInstance] setPlayerDisplayImage:      [UIImage new]]; */
+    [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:   @"2"];
     
     if (![[ARMPlayerInfo sharedInstance] isReadyForLogin])
     {
@@ -112,8 +112,11 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     {
         switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
         {
+            case kLoggedIn:     // re-submit our current data, it could have changed
+                [self hideRightNavigationBarButtonItem];
+                [[ARMGameServerCommunicator sharedInstance] loginWithCompletionHandler:nil];
+                break;
             //--------------------- Get all sessions Cases ----------------------------//
-            case kLoggedIn:
             case kRetrievingGameSessions:
             case kJoiningGameSession:
             case kCreatingGameSession:
@@ -247,9 +250,11 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     //-------------------------- LeaveGameSession -----------------------------//
     [completionHandlerDictionary setObject:^(NSError *error)
      {
+         [weakSelf showCreateGameBarButtonItem];
+         
          if (basicHandler(error)) return;
          
-         [weakSelf showRightBarButtonItemWithBool:NO];
+         
          [[ARMGameServerCommunicator sharedInstance] getAllGameSessionsWithCompletionHandler:nil];
      }
                                     forKey:kGSLeaveGameSessionCompletionKey];
@@ -555,6 +560,38 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
                     break;
             }
         }
+        else if ([[error domain] isEqualToString:[ARMGameServerResponseErrorDomain copy]])
+        {
+            switch ((ARMGameServerResponseErrorCode)[error code])
+            {
+                    // Cases where the GameServerCommunicator will correct itself
+                case GSRNotInSameSessionErrorCode:          // We tried to get a players image who isn't in our session
+                case GSRClientAlreadyInSessionErrorCode:    // We tried to join or create a session when we are already in one
+                case GSRInvalidClientIDErrorCode:           // We sent a cookie, and we aren't logged in to the server.
+                case GSRCookieIDMismatchErrorCode:          // This shouldn't be sent, ever.
+                case GSRInvalidPostParameterErrorCode:      // We sent the wrong data in our request
+                case GSRClientNotMemberOfSessionErrorCode:  // We tried to get some info on a user or session we aren't in
+                    errorString = @"An internal error has occurred; don't worry, we'll fix it.";
+                    break;
+                    
+                case GSRUserNameAlreadyTakenErrorCode:
+                    errorString = @"A user with that name already exists\nPlease choose another name in 'Customize Profile'";
+                    break;
+                    
+                case GSRDeviceIDAlreadyTakenErrorCode:
+                    errorString = @"A user connected to that GameTile already exists on the server.\nPlease choose another device in 'Connect to GameTile'";
+                    break;
+                    
+                case GSRSessionExistsErrorCode:
+                    errorString = @"A Game with that name already exists on the server.\nPlease choose another name.";
+                    break;
+                    
+                case GSRUnknownServerErrorErrorCode:
+                default:
+                    errorString = @"An unknown error occured on the server, please try again later";
+                    break;
+            }
+        }
         else
         {
             errorString = @"An unknown error has occurred.\nPlease try again";
@@ -619,6 +656,185 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
 /****************************************************************************/
 /*                  TableView Delegate/Datasource Methods                   */
 /****************************************************************************/
+
+- (void)refreshTableViewWithAnimation
+{
+    static NSMutableArray *tableViewData = nil;
+    
+    NSMutableArray *newTableData;
+    if ([[ARMGameServerCommunicator sharedInstance] currentSessionName])
+    {
+        newTableData = [[ARMGameServerCommunicator sharedInstance] playersInSessionArray];
+    }
+    else
+    {
+        newTableData = [[ARMGameServerCommunicator sharedInstance] availableGameSessions];
+    }
+    
+    if (newTableData)
+    {
+        newTableData = [NSMutableArray arrayWithArray:newTableData];
+    }
+    
+    NSInteger currentNumberOfSections = [gameSessionsTableView numberOfSections];
+    NSInteger futureNumberOfSections = [self numberOfSectionsInTableView:gameSessionsTableView];
+    NSMutableArray *insertIndexPaths = [NSMutableArray new];
+    NSMutableArray *removeIndexPaths = [NSMutableArray new];
+    BOOL addNewSection = NO;
+    BOOL deleteAllSections = NO;
+    NSInteger currentSectionIndex;
+    
+    
+    if (currentNumberOfSections == futureNumberOfSections)
+    {
+        // we are just reloading one section of data, the last section
+        currentSectionIndex = currentNumberOfSections - 1;
+    }
+    else if (currentNumberOfSections < futureNumberOfSections)
+    {
+        addNewSection = YES;
+        // We are adding a section
+        // First delete all but the selected cell
+        for (NSInteger rowIndex = 0; rowIndex < [gameSessionsTableView numberOfRowsInSection:0]; rowIndex += 1)
+        {
+            if (rowIndex != selectedCellNumber)
+            {
+                [removeIndexPaths addObject:[NSIndexPath indexPathForRow:rowIndex inSection:0]];
+            }
+        }
+        
+        // next add all the new data to the second section
+        currentSectionIndex = 1;
+        tableViewData = nil;
+    }
+    else
+    {
+        deleteAllSections = YES;
+        currentSectionIndex = 0;
+        tableViewData = nil;
+    }
+    
+    if (tableViewData == nil)
+    {
+        if (!newTableData || [newTableData count] == 0)
+        {
+            // leave an open cell to show a "no players/games" message
+            [insertIndexPaths addObject:[NSIndexPath indexPathForRow:0 inSection:currentSectionIndex]];
+        }
+        else
+        {
+            tableViewData = [NSMutableArray arrayWithArray:newTableData];
+            for (NSInteger rowIndex = 0; rowIndex < [tableViewData count]; rowIndex++)
+            {
+                [insertIndexPaths addObject:[NSIndexPath indexPathForRow:rowIndex inSection:currentSectionIndex]];
+            }
+        }
+    }
+    else
+    {
+        // figure out which cells to add, and which to remove
+        NSInteger originalNumberOfCells = [tableViewData count];
+        NSArray *copyOfOriginalCells = [NSArray arrayWithArray:tableViewData];
+        NSInteger rowIndex;
+        
+        for (rowIndex = 0; rowIndex < originalNumberOfCells; rowIndex++)
+        {
+            NSUInteger objectIndex = [newTableData indexOfObject:copyOfOriginalCells[rowIndex]];
+            if (objectIndex == NSNotFound)
+            {
+                // Remove the object from our dataset
+                [removeIndexPaths addObject:[NSIndexPath indexPathForRow:rowIndex inSection:currentSectionIndex]];
+                [tableViewData removeObject:copyOfOriginalCells[rowIndex]];
+            }
+            else
+            {
+                // remove from the other object for faster searching, and to keep track of what to add after
+                [newTableData removeObjectAtIndex:objectIndex];
+            }
+            
+            if ([newTableData count] == 0) break;
+        }
+        if (rowIndex < originalNumberOfCells)
+        {
+            if ([newTableData count] == 0)
+            {
+                for (; rowIndex < originalNumberOfCells; rowIndex++)
+                {
+                    [removeIndexPaths addObject:[NSIndexPath indexPathForRow:rowIndex inSection:currentSectionIndex]];
+                    [tableViewData removeObject:copyOfOriginalCells[rowIndex]];
+                }
+            }
+            else
+            {
+                for (; rowIndex < [newTableData count]; rowIndex++)
+                {
+                    [insertIndexPaths addObject:[NSIndexPath indexPathForRow:rowIndex inSection:currentSectionIndex]];
+                    [tableViewData addObject:newTableData[rowIndex]];
+                }
+            }
+        }
+    }
+    
+    
+    [gameSessionsTableView beginUpdates];
+    
+    if (addNewSection)
+    {
+        [gameSessionsTableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else if (deleteAllSections)
+    {
+        // first delete all
+        [gameSessionsTableView deleteSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [gameSessionsTableView numberOfSections])] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        // then add one section at the beginning
+        [gameSessionsTableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
+    //finally insert and delete the rows we decided on
+    [gameSessionsTableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [gameSessionsTableView deleteRowsAtIndexPaths:removeIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    [gameSessionsTableView endUpdates];
+    
+    //GameServerConnectionStatus connectionStatus = [[ARMGameServerCommunicator sharedInstance] connectionStatus];
+    /*if (futureSections != previousSections)
+    {
+        [gameSessionsTableView beginUpdates];
+        if (futureSections == 2) // if we are adding a section to the top
+        {
+            NSArray *playersArray = [[ARMGameServerCommunicator sharedInstance] playersInSessionArray];
+            NSMutableArray *indexPathsArray = [NSMutableArray new];
+            for (NSInteger index = 0; index < [gameSessionsTableView numberOfRowsInSection:0]; index += 1)
+            {
+                if (index != selectedCellNumber)
+                {
+                    [indexPathsArray addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                }
+            }
+            
+            [gameSessionsTableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            [gameSessionsTableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            indexPathsArray = [NSMutableArray new];
+            
+            [playersArray enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+                [indexPathsArray addObject:[NSIndexPath indexPathForRow:index inSection:1]];
+                
+            }];
+            
+            [gameSessionsTableView insertRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        else // else we are removing the second section
+        {
+            [gameSessionsTableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        // [gameSessionsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:indexRange] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [gameSessionsTableView endUpdates];
+    }
+    [gameSessionsTableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:indexRange] withRowAnimation:UITableViewRowAnimationAutomatic];*/
+}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -882,6 +1098,8 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     return titleForFooter;
 }
 
+
+//TODO Uncheck cell after I leave a game
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *GameSessionCellIdentifier = @"GameSessionCell";
@@ -929,10 +1147,13 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
         if ([availableGameSessions count] == 0)
         {
             text = @"No Games Available";
+            [cell setUserInteractionEnabled:NO];
         }
         else
         {
             text = [(ARMGameSession *)availableGameSessions[indexPath.row] name];
+            // Allow the user to select this cell
+            [cell setUserInteractionEnabled:YES];
         }
         
         // Set Our custom Label
@@ -941,8 +1162,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
         // Hide the Checkmark because this cell is not selected
         [[cell viewWithTag:kTableCellTagForGameSessionCheckmark] setHidden:YES];
         
-        // Allow the user to select this cell
-        [cell setUserInteractionEnabled:YES];
+        
     }
     
     return cell;

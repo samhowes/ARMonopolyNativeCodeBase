@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 extern const NSString *ARMGameServerErrorDomain;
+extern const NSString *ARMGameServerResponseErrorDomain;
 //---------------------- Constants for Other Classes ------------------------//
 
 extern const NSString *kGSLoginCompletionKey;
@@ -30,10 +31,23 @@ typedef enum ARMGameServerErrorCode {
     ARMNoInternetConnectionErrorCode
 } ARMGameServerErrorCode;
 
+typedef enum ARMGameServerResponseErrorCode {
+    GSRUnknownServerErrorErrorCode = 0,
+    GSRClientNotMemberOfSessionErrorCode,
+    GSRUserNameAlreadyTakenErrorCode,
+    GSRDeviceIDAlreadyTakenErrorCode,
+    GSRInvalidPostParameterErrorCode,
+    GSRCookieIDMismatchErrorCode,
+    GSRSessionExistsErrorCode,
+    GSRInvalidClientIDErrorCode,
+    GSRClientAlreadyInSessionErrorCode,
+    GSRNotInSameSessionErrorCode
+} ARMGameServerResponseErrorCode;
+
 //--------------------------- URL/HTTP Constants ---------------------------//
 extern const NSString *ARMGameServerURLString;
 extern const NSString *kGSHTTPUserAgentHeaderString;
-extern const NSString *kGSHTTPAcceptContentHeaderString;
+extern const NSString *kGSHTTPJSONContentHeaderString;
 extern const NSString *kGSHTTPClientCookieName;
 
 

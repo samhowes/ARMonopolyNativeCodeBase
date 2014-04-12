@@ -12,6 +12,7 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="separatorColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <sections>
                             <tableViewSection headerTitle="Step 1" id="g6X-3q-kcZ">
                                 <cells>
@@ -369,7 +370,7 @@
                         <sections>
                             <tableViewSection id="3Bn-27-1NJ">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Mgu-6s-sdh">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Mgu-6s-sdh">
                                         <rect key="frame" x="0.0" y="129" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Mgu-6s-sdh" id="f57-hv-k4r">
@@ -482,12 +483,13 @@
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Players: Tap ⚙ to join a game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RbD-Qh-UDb">
                                         <rect key="frame" x="11" y="0.0" width="276" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="tintColor" red="0.88613852189999998" green="0.15840000000000001" blue="0.98999999999999999" alpha="1" colorSpace="deviceRGB"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                        <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.84999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="RbD-Qh-UDb" firstAttribute="leading" secondItem="9Xf-LH-UYA" secondAttribute="leading" constant="11" id="141-tT-mJX"/>
                                     <constraint firstAttribute="trailing" secondItem="QB0-4H-QGN" secondAttribute="trailing" constant="11" id="1I7-78-Cdj"/>
@@ -500,7 +502,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.03529411927" green="0.93725496529999996" blue="0.23921570180000001" alpha="1" colorSpace="deviceRGB"/>
+                        <color key="backgroundColor" red="0.49802500009536743" green="0.8856048583984375" blue="0.87867403030395508" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="9Xf-LH-UYA" firstAttribute="leading" secondItem="Fn7-me-azH" secondAttribute="leading" id="6lu-sO-Qwt"/>
                             <constraint firstItem="z6S-Od-fZk" firstAttribute="top" secondItem="9Xf-LH-UYA" secondAttribute="bottom" id="Lfc-gX-yad"/>
@@ -568,6 +570,7 @@
         <image name="LOGO.png" width="665" height="576"/>
         <image name="tableview_checkmark.png" width="42" height="42"/>
     </resources>
+    <color key="tintColor" red="0.88613852189780995" green="0.15840000000000015" blue="0.98999999999999999" alpha="1" colorSpace="deviceRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

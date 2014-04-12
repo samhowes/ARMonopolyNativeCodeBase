@@ -67,6 +67,7 @@ static ARMUnityCallbackWithBool unityAcquireCameraCallback;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [currentPlayersLabel setTextColor:[currentPlayersLabel tintColor]];
     if (unityAcquireCameraCallback)
     {
         [self saveOrRestoreCaptureFormat:NO];

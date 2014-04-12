@@ -307,12 +307,16 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
         switch ([bluetoothManager state])
         {
             case kConnectingToGameTile:
+            case kReadyToExchangeDataWithGameTile:
             case kDiscoveringGameTileAttributes:
             case kExchangingDataWithGameTile:
                 if (indexPath.row == indexPathOfSelectedCell.row)
                 {
                     [detailTextLabel setText:nil];
+                    
                     [selectedCellActivityIndicatorView startAnimating];
+                    [cell setAccessoryView:selectedCellActivityIndicatorView];
+                    UIView *accessoryView = [cell accessoryView];
                     [bluetoothActivitySpinner startAnimating];
                     [cell setUserInteractionEnabled:YES];
                     break;
@@ -478,7 +482,7 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
                                        delegate:nil
                               cancelButtonTitle:@"Come on, do better."
                               otherButtonTitles:nil] show];
-            NSLog(@"An unexpected error has occured in Bluetoth state %d: %@", [bluetoothManager state], error);
+            NSLog(@"An unexpected error has occured in Bluetoth state %ld: %@", [bluetoothManager state], error);
             [bluetoothManager recoverFromError:error];
         }
     }
@@ -522,17 +526,16 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
             // SUCCESS!
             case kCompletedExchangingDataWithGameTile:
                 [self addRefreshControl];
-                [selectedCellActivityIndicatorView stopAnimating];
-                selectedCellActivityIndicatorView = nil;
-                [[ARMPlayerInfo sharedInstance] setGameTileName:[bluetoothManager getNameOfConnectedGameTile]];
-                
-                [selectedTableViewCell setAccessoryView:nil];
                 [[[UIAlertView alloc] initWithTitle:@"GameTile Ready"
                                             message:@"You are successfully connected.\nYou may proceed to Settings Step 3."
                                            delegate:nil
                                   cancelButtonTitle:@"Awesome!"
                                   otherButtonTitles:nil] show];
                 
+                [selectedCellActivityIndicatorView stopAnimating];
+                selectedCellActivityIndicatorView = nil;
+                
+                [selectedTableViewCell setAccessoryView:nil];
                 [bluetoothManager disconnectFromGameTile];
                 break;
                 
