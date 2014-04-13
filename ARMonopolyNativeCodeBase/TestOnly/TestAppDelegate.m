@@ -38,16 +38,15 @@
     
     NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString *pathToImagesDirectory = [documentsDirectory stringByAppendingPathComponent:[kImageFolderName copy]];
-    NSString *destinationPath = [documentsDirectory stringByAppendingPathComponent:[kImageFolderName stringByAppendingPathComponent:[kDefaultImageFileName copy]]];
     
-    NSError *error;
+    NSError *error = nil;
     BOOL isDirectory;
-    NSString* sourcePath = [myBundle pathForResource:[kDefaultImageFileName stringByDeletingPathExtension] ofType:[kDefaultImageFileName pathExtension]];
-    NSLog(@"Copying bundle resources into Documets Directory: Source Path: %@\n Documents Path: %@ \n Folder Path: %@", sourcePath, documentsDirectory, destinationPath);
+    NSLog(@"Copying bundle resources into Documets Directory: \n-->ImagesDirectory: %@", pathToImagesDirectory);
+    
     // First: Create the images directory
-    if (![[NSFileManager defaultManager] fileExistsAtPath:[destinationPath stringByDeletingLastPathComponent] isDirectory:&isDirectory])
+    if (![[NSFileManager defaultManager] fileExistsAtPath:pathToImagesDirectory isDirectory:&isDirectory])
     {
-        if (![[NSFileManager defaultManager] createDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] withIntermediateDirectories:NO attributes:nil error:&error])
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:pathToImagesDirectory withIntermediateDirectories:NO attributes:nil error:&error])
         {
             NSLog(@"Error while creating images directory: %@", error);
         }
@@ -59,7 +58,7 @@
     }
     
     // First delete all images in the images directory
-    NSArray *filesInImageDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] error:&error];
+    NSArray *filesInImageDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pathToImagesDirectory error:nil];
     if ([filesInImageDirectory count] > 0)
     {
         NSLog(@"Removing old images from images Directory");
@@ -68,57 +67,23 @@
             [[NSFileManager defaultManager] removeItemAtPath:[pathToImagesDirectory stringByAppendingPathComponent:imagePath] error:&error];
             if (error)
             {
-                NSLog(@"Error removing old image files at launch: %@", error);
+                NSLog(@"Error removing old image files at launch: %@", [error description]);
             }
         }
     }
     
     // Second: Copy all default images over
+    NSString *sourcePath;
+    NSString *destinationPath;
     for (NSInteger ii = 0; ii < [fileNamesArray count]; ++ii)
     {
         sourcePath = [myBundle pathForResource:[fileNamesArray[ii] stringByDeletingPathExtension] ofType:[kDefaultImageFileName pathExtension]];
-        destinationPath = [pathToImagesDirectory stringByAppendingPathComponent:[NSString stringWithFormat:[kAvatarImageFilenameFormatString copy], [NSString stringWithFormat:@"%ld", ii]]];
+        destinationPath = [pathToImagesDirectory stringByAppendingPathComponent:[NSString stringWithFormat:[kAvatarImageFilenameFormatString copy], [NSString stringWithFormat:@"%ld", (long)ii]]];
         if (![[NSFileManager defaultManager] copyItemAtPath:sourcePath toPath:destinationPath error:&error])
         {
             NSLog(@"Error while copying bundle resources: %@", error);
         }
     }
-    
-    
-    /* Old Method
-    // Now Delete all old images
-    if ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath])
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:destinationPath error:&error];
-        error = nil;
-    }
-    
-    if (![[NSFileManager defaultManager] copyItemAtPath:sourcePath toPath:destinationPath error:&error])
-    {
-        NSLog(@"Error while copying bundle resources: %@", error);
-    }
-    else
-    {
-        NSLog(@"Successfully copied bundle resources!");
-    }
-    
-    // Delete Old images from the last game session if there are any
-    NSArray *filesInImageDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] error:&error];
-    if ([filesInImageDirectory count] >1)
-    {
-        NSLog(@"Removing old images from images Directory");
-        for (NSString *imagePath in filesInImageDirectory)
-        {
-            if (![imagePath isEqualToString:[kDefaultImageFileName copy]])
-            {
-                [[NSFileManager defaultManager] removeItemAtPath:[pathToImagesDirectory stringByAppendingPathComponent:imagePath] error:&error];
-                if (error)
-                {
-                    NSLog(@"Error removing old image files at launch: %@", error);
-                }
-            }
-        }
-    } */
 }
 
 

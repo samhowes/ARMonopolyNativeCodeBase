@@ -88,13 +88,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
 {
     [super viewWillAppear:animated];
 
-    [[ARMGameServerCommunicator sharedInstance] setDelegate:self];
-
-    //DEBUG: Populate static data for testing
-/*    [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:       @"Sam"];
-    [[ARMPlayerInfo sharedInstance] setPlayerDisplayImage:      [UIImage new]]; */
-    [[ARMPlayerInfo sharedInstance] setGameTileImageTargetID:   @"2"];
-    
+    [[ARMGameServerCommunicator sharedInstance] setDelegate:self];    
     if (![[ARMPlayerInfo sharedInstance] isReadyForLogin])
     {
         [[[UIAlertView alloc] initWithTitle:@"Configuration Error"
