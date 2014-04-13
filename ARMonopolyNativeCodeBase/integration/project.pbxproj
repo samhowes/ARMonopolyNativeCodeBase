@@ -53,7 +53,6 @@
 		8AF7755D1799329100341121 /* LifeCycleListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A292A9817992CE100409BA4 /* LifeCycleListener.mm */; };
 		8AF7756017997D2700341121 /* AppDelegateListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8AF7755F17997D1300341121 /* AppDelegateListener.mm */; };
 		8AFA69D9161605E7009663A5 /* iPhone_OrientationSupport.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8AFA69D8161605E7009663A5 /* iPhone_OrientationSupport.mm */; };
-		A540A74818F9ECBF0046939A /* ARMSplashScreen.png in Resources */ = {isa = PBXBuildFile; fileRef = A540A74718F9ECBF0046939A /* ARMSplashScreen.png */; };
 		A5483EC118E76F1000E84E87 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5483EA818E76F1000E84E87 /* Main.storyboard */; };
 		A5483EC218E76F1000E84E87 /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5483EAA18E76F1000E84E87 /* ARMPlayViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -fobjc-exceptions"; }; };
 		A5483EC318E76F1000E84E87 /* ARMAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5483EAC18E76F1000E84E87 /* ARMAppController.m */; };
@@ -75,6 +74,12 @@
 		A566BBD918EF3AF8003456FB /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A566BBD218EF1313003456FB /* LOGO.png */; };
 		A593898618F9D31600FDC185 /* ARMTableHeaderContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A593898518F9D31600FDC185 /* ARMTableHeaderContentView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -fobjc-exceptions"; }; };
 		A593898D18F9DBE800FDC185 /* tableview_checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = A593898C18F9DBE800FDC185 /* tableview_checkmark.png */; };
+		A5ED012918FAF897003BD4B3 /* Blue.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED012318FAF897003BD4B3 /* Blue.png */; };
+		A5ED012A18FAF897003BD4B3 /* Green.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED012418FAF897003BD4B3 /* Green.png */; };
+		A5ED012B18FAF897003BD4B3 /* Orange.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED012518FAF897003BD4B3 /* Orange.png */; };
+		A5ED012C18FAF897003BD4B3 /* Pink-Orange.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED012618FAF897003BD4B3 /* Pink-Orange.png */; };
+		A5ED012D18FAF897003BD4B3 /* Purple.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED012718FAF897003BD4B3 /* Purple.png */; };
+		A5ED012E18FAF897003BD4B3 /* Yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED012818FAF897003BD4B3 /* Yellow.png */; };
 		CC9FCA1D1445D76E004F4DC3 /* QCAR in Resources */ = {isa = PBXBuildFile; fileRef = CC9FCA171445D76E004F4DC3 /* QCAR */; };
 		CCE8C2BA135C7EA3000D8035 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCE8C2B9135C7EA3000D8035 /* Security.framework */; };
 		D82DCFC30E8000A5005D6AD8 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = D82DCFBB0E8000A5005D6AD8 /* main.mm */; };
@@ -189,7 +194,6 @@
 		8AFA69D7161605E7009663A5 /* iPhone_OrientationSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhone_OrientationSupport.h; sourceTree = "<group>"; };
 		8AFA69D8161605E7009663A5 /* iPhone_OrientationSupport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iPhone_OrientationSupport.mm; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A540A74718F9ECBF0046939A /* ARMSplashScreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ARMSplashScreen.png; sourceTree = "<group>"; };
 		A5483EA818E76F1000E84E87 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A5483EA918E76F1000E84E87 /* ARMPlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMPlayViewController.h; sourceTree = "<group>"; };
 		A5483EAA18E76F1000E84E87 /* ARMPlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMPlayViewController.m; sourceTree = "<group>"; };
@@ -227,6 +231,12 @@
 		A593898518F9D31600FDC185 /* ARMTableHeaderContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMTableHeaderContentView.m; sourceTree = "<group>"; };
 		A593898C18F9DBE800FDC185 /* tableview_checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tableview_checkmark.png; sourceTree = "<group>"; };
 		A593898E18F9DC1D00FDC185 /* SplashScreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SplashScreen.png; sourceTree = "<group>"; };
+		A5ED012318FAF897003BD4B3 /* Blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Blue.png; sourceTree = "<group>"; };
+		A5ED012418FAF897003BD4B3 /* Green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Green.png; sourceTree = "<group>"; };
+		A5ED012518FAF897003BD4B3 /* Orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Orange.png; sourceTree = "<group>"; };
+		A5ED012618FAF897003BD4B3 /* Pink-Orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pink-Orange.png"; sourceTree = "<group>"; };
+		A5ED012718FAF897003BD4B3 /* Purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Purple.png; sourceTree = "<group>"; };
+		A5ED012818FAF897003BD4B3 /* Yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Yellow.png; sourceTree = "<group>"; };
 		CC9FCA171445D76E004F4DC3 /* QCAR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = QCAR; path = Data/Raw/QCAR; sourceTree = SOURCE_ROOT; };
 		CCE8C2B9135C7EA3000D8035 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		D82DCFBA0E8000A5005D6AD8 /* iPhone_target_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iPhone_target_Prefix.pch; path = Classes/iPhone_target_Prefix.pch; sourceTree = SOURCE_ROOT; };
@@ -305,7 +315,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				A540A74718F9ECBF0046939A /* ARMSplashScreen.png */,
 				CC9FCA171445D76E004F4DC3 /* QCAR */,
 				CCE8C2B9135C7EA3000D8035 /* Security.framework */,
 				56C56C9717D6015100616839 /* Images.xcassets */,
@@ -439,6 +448,7 @@
 		A593898918F9D37E00FDC185 /* UI and Images */ = {
 			isa = PBXGroup;
 			children = (
+				A5ED012218FAF897003BD4B3 /* Avatars */,
 				A593898E18F9DC1D00FDC185 /* SplashScreen.png */,
 				A593898C18F9DBE800FDC185 /* tableview_checkmark.png */,
 				A566BBCF18EF1313003456FB /* ARMSectionHeaderView.xib */,
@@ -478,6 +488,19 @@
 				A593898A18F9D39A00FDC185 /* Model */,
 			);
 			name = ARMonpoly;
+			sourceTree = "<group>";
+		};
+		A5ED012218FAF897003BD4B3 /* Avatars */ = {
+			isa = PBXGroup;
+			children = (
+				A5ED012318FAF897003BD4B3 /* Blue.png */,
+				A5ED012418FAF897003BD4B3 /* Green.png */,
+				A5ED012518FAF897003BD4B3 /* Orange.png */,
+				A5ED012618FAF897003BD4B3 /* Pink-Orange.png */,
+				A5ED012718FAF897003BD4B3 /* Purple.png */,
+				A5ED012818FAF897003BD4B3 /* Yellow.png */,
+			);
+			path = Avatars;
 			sourceTree = "<group>";
 		};
 		D82DCFB50E8000A5005D6AD8 /* Classes */ = {
@@ -592,15 +615,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A540A74818F9ECBF0046939A /* ARMSplashScreen.png in Resources */,
 				A566BBD918EF3AF8003456FB /* LOGO.png in Resources */,
 				A566BBD418EF1313003456FB /* ARMSectionHeaderView.xib in Resources */,
+				A5ED012A18FAF897003BD4B3 /* Green.png in Resources */,
 				CC9FCA1D1445D76E004F4DC3 /* QCAR in Resources */,
+				A5ED012B18FAF897003BD4B3 /* Orange.png in Resources */,
 				A5483EC118E76F1000E84E87 /* Main.storyboard in Resources */,
 				56C56C9817D6015200616839 /* Images.xcassets in Resources */,
+				A5ED012C18FAF897003BD4B3 /* Pink-Orange.png in Resources */,
 				A593898D18F9DBE800FDC185 /* tableview_checkmark.png in Resources */,
+				A5ED012918FAF897003BD4B3 /* Blue.png in Resources */,
+				A5ED012E18FAF897003BD4B3 /* Yellow.png in Resources */,
 				83DEA7430EACED0700D8A291 /* Default.png in Resources */,
 				83DEA7440EACED0700D8A291 /* Icon.png in Resources */,
+				A5ED012D18FAF897003BD4B3 /* Purple.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

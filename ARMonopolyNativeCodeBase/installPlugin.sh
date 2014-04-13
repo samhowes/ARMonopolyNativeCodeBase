@@ -10,16 +10,17 @@ STORYBOARD="Main.storyboard ARMSectionHeaderView.xib"
 CLASSES="ARM*.m ARM*.h"
 
 IMAGES="LOGO.png tableview_checkmark.png"
+AVATAR_DIR="Avatars"
 IMAGEASSETS="Images.xcassets"
 
 COPY_FILES="$STORYBOARD $CLASSES $IMAGES"
 PRODUCT_DIR="../../ARMonopolyProduct"
-COMPILE_DIRNAME="../../ARMonopolyProduct/Libraries"
+LIBRARIES_DIR="../../ARMonopolyProduct/Libraries"
 
 SPLASH_SCREEN="integration/SplashScreen.mm"
 
 PROJECT_FILENAME="project.pbxproj"
-UNITY_PROJECT_FILE="$COMPILE_DIRNAME/../Unity-iPhone.xcodeproj/$PROJECT_FILENAME"
+UNITY_PROJECT_FILE="$LIBRARIES_DIR/../Unity-iPhone.xcodeproj/$PROJECT_FILENAME"
 UNITY_COPY_TO="integration/$PROJECT_FILENAME"
 
 
@@ -28,12 +29,12 @@ if [ $1 ]; then
     cp $UNITY_PROJECT_FILE $UNITY_COPY_TO
 
 else
-    echo "Copying classes into Unity Project folder at '$COMPILE_DIRNAME'..."
+    echo "Copying classes into Unity Project folder at '$LIBRARIES_DIR'..."
     ### Copy all the files over
     for file in $COPY_FILES
     do
         echo "Copying '$file'..."
-        cp $file "$COMPILE_DIRNAME/"
+        cp $file "$LIBRARIES_DIR/"
     done
 
     echo "Copying project file to '$UNITY_PROJECT_FILE'..."
@@ -46,6 +47,7 @@ else
 
     echo "Copying Images.xcassets over..."
     cp -a $IMAGEASSETS "$PRODUCT_DIR/Unity-iPhone/"
+    cp -a $AVATAR_DIR "$LIBRARIES_DIR/$AVATAR_DIR"
 fi
 
 echo "Done!"

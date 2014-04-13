@@ -35,6 +35,12 @@
 		A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */; };
 		A5C5BA7318C4E99B00435B10 /* ARMBluetoothManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */; };
 		A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */; };
+		A5ED011C18FAF4AA003BD4B3 /* Blue.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED011618FAF4AA003BD4B3 /* Blue.png */; };
+		A5ED011D18FAF4AA003BD4B3 /* Green.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED011718FAF4AA003BD4B3 /* Green.png */; };
+		A5ED011E18FAF4AA003BD4B3 /* Orange.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED011818FAF4AA003BD4B3 /* Orange.png */; };
+		A5ED011F18FAF4AA003BD4B3 /* Pink-Orange.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED011918FAF4AA003BD4B3 /* Pink-Orange.png */; };
+		A5ED012018FAF4AA003BD4B3 /* Purple.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED011A18FAF4AA003BD4B3 /* Purple.png */; };
+		A5ED012118FAF4AA003BD4B3 /* Yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED011B18FAF4AA003BD4B3 /* Yellow.png */; };
 		A5EF082218E9D7DE00981039 /* ARMNewGamePromptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */; };
 		A5F15B0918D3772F00271DD2 /* ARMGameSession.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F15B0818D3772F00271DD2 /* ARMGameSession.m */; };
 		A5F96C3A18F3134C00EDCD04 /* ARMTableHeaderContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F96C3918F3134C00EDCD04 /* ARMTableHeaderContentView.m */; };
@@ -112,6 +118,12 @@
 		A5C5BA6518C4E99B00435B10 /* Notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Notes.txt; sourceTree = "<group>"; };
 		A5C5BA6618C4E99B00435B10 /* TestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestAppDelegate.h; path = TestOnly/TestAppDelegate.h; sourceTree = "<group>"; };
 		A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAppDelegate.m; path = TestOnly/TestAppDelegate.m; sourceTree = "<group>"; };
+		A5ED011618FAF4AA003BD4B3 /* Blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Blue.png; sourceTree = "<group>"; };
+		A5ED011718FAF4AA003BD4B3 /* Green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Green.png; sourceTree = "<group>"; };
+		A5ED011818FAF4AA003BD4B3 /* Orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Orange.png; sourceTree = "<group>"; };
+		A5ED011918FAF4AA003BD4B3 /* Pink-Orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pink-Orange.png"; sourceTree = "<group>"; };
+		A5ED011A18FAF4AA003BD4B3 /* Purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Purple.png; sourceTree = "<group>"; };
+		A5ED011B18FAF4AA003BD4B3 /* Yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Yellow.png; sourceTree = "<group>"; };
 		A5EF082018E9D7DE00981039 /* ARMNewGamePromptViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNewGamePromptViewController.h; sourceTree = "<group>"; };
 		A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNewGamePromptViewController.m; sourceTree = "<group>"; };
 		A5F15B0718D3772F00271DD2 /* ARMGameSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMGameSession.h; sourceTree = "<group>"; };
@@ -158,6 +170,7 @@
 		A59F852D18C7E221005EE662 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				A5ED011518FAF4AA003BD4B3 /* Avatars */,
 				A54F62C018F3964F001DDCD3 /* LOGO.png */,
 				A54F62C118F3964F001DDCD3 /* tableview_checkmark.png */,
 			);
@@ -319,6 +332,20 @@
 			name = TestOnly;
 			sourceTree = "<group>";
 		};
+		A5ED011518FAF4AA003BD4B3 /* Avatars */ = {
+			isa = PBXGroup;
+			children = (
+				A5ED011618FAF4AA003BD4B3 /* Blue.png */,
+				A5ED011718FAF4AA003BD4B3 /* Green.png */,
+				A5ED011818FAF4AA003BD4B3 /* Orange.png */,
+				A5ED011918FAF4AA003BD4B3 /* Pink-Orange.png */,
+				A5ED011A18FAF4AA003BD4B3 /* Purple.png */,
+				A5ED011B18FAF4AA003BD4B3 /* Yellow.png */,
+			);
+			name = Avatars;
+			path = ARMonopolyNativeCodeBase/Avatars;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -401,11 +428,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				A50FED3A18F34C3300243A36 /* Main.storyboard in Resources */,
+				A5ED011F18FAF4AA003BD4B3 /* Pink-Orange.png in Resources */,
 				A5C5BA2C18C4E8E000435B10 /* InfoPlist.strings in Resources */,
+				A5ED011C18FAF4AA003BD4B3 /* Blue.png in Resources */,
 				A54F62C218F3964F001DDCD3 /* LOGO.png in Resources */,
+				A5ED012118FAF4AA003BD4B3 /* Yellow.png in Resources */,
 				A50FED3918F3465400243A36 /* ARMSectionHeaderView.xib in Resources */,
+				A5ED012018FAF4AA003BD4B3 /* Purple.png in Resources */,
+				A5ED011D18FAF4AA003BD4B3 /* Green.png in Resources */,
 				A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */,
 				A54F62C318F3964F001DDCD3 /* tableview_checkmark.png in Resources */,
+				A5ED011E18FAF4AA003BD4B3 /* Orange.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -40,10 +40,6 @@
     {
         userDisplayImageView.image = [userData playerDisplayImage];
     }
-    else
-    {
-        [userData setPlayerDisplayImage:userDisplayImageView.image];
-    }
 }
 
 - (void)didReceiveMemoryWarning

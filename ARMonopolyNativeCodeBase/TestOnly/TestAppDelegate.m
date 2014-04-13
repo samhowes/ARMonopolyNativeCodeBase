@@ -32,7 +32,7 @@
 - (void)prepareDocumentsDirectory
 {
     // Check for the default images that Unity will use
-    NSArray *fileNamesArray = @[@"Avatar-Purple.png", @"Avatar-Blue.png", @"Avatar-Orange.png", @"Avatar-Green.png"];
+    NSArray *fileNamesArray = @[@"Purple.png", @"Blue.png", @"Orange.png", @"Green.png"];
     
     NSBundle* myBundle = [NSBundle mainBundle];
     
@@ -77,7 +77,7 @@
     for (NSInteger ii = 0; ii < [fileNamesArray count]; ++ii)
     {
         sourcePath = [myBundle pathForResource:[fileNamesArray[ii] stringByDeletingPathExtension] ofType:[kDefaultImageFileName pathExtension]];
-        destinationPath = [pathToImagesDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"imageTargetID%d", ii]];
+        destinationPath = [pathToImagesDirectory stringByAppendingPathComponent:[NSString stringWithFormat:[kAvatarImageFilenameFormatString copy], [NSString stringWithFormat:@"%ld", ii]]];
         if (![[NSFileManager defaultManager] copyItemAtPath:sourcePath toPath:destinationPath error:&error])
         {
             NSLog(@"Error while copying bundle resources: %@", error);
