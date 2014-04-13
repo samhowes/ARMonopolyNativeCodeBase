@@ -69,6 +69,7 @@
 		A50FED3818F3465400243A36 /* ARMSectionHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ARMSectionHeaderView.xib; sourceTree = "<group>"; };
 		A52F6FAB18D1489500799EA4 /* ARMNetworkPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMNetworkPlayer.h; sourceTree = "<group>"; };
 		A52F6FAC18D1489500799EA4 /* ARMNetworkPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMNetworkPlayer.m; sourceTree = "<group>"; };
+		A540A74918F9F3D70046939A /* SplashScreen.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SplashScreen.mm; sourceTree = "<group>"; };
 		A5483EF918E7B20000E84E87 /* project.pbxproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.pbxproject; path = project.pbxproj; sourceTree = "<group>"; };
 		A5483EFE18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMTableHeaderViewWithActivityIndicator.h; sourceTree = "<group>"; };
 		A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMTableHeaderViewWithActivityIndicator.m; sourceTree = "<group>"; };
@@ -147,6 +148,7 @@
 		A5483EF818E7B20000E84E87 /* integration */ = {
 			isa = PBXGroup;
 			children = (
+				A540A74918F9F3D70046939A /* SplashScreen.mm */,
 				A5483EF918E7B20000E84E87 /* project.pbxproj */,
 			);
 			name = integration;

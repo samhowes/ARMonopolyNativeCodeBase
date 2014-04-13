@@ -165,7 +165,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
 - (void)registerCompletionHandlers
 {
     // --------    Set up some default handlers    --------//
-    __unsafe_unretained typeof(self) weakSelf = self;           // Make sure to avoid a retain loop
+    __typeof__(self) __unsafe_unretained weakSelf = self;           // Make sure to avoid a retain loop
     
     BOOL (^basicHandler)(NSError *error);
     BOOL (^handlerWithCustomTitle)(NSError *error, const NSString *title);

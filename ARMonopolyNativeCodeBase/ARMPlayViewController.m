@@ -67,6 +67,7 @@ static ARMUnityCallbackWithBool unityAcquireCameraCallback;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    UIImage *armSplashImage =[UIImage imageNamed:@"LaunchImage*"];
     [currentPlayersLabel setTextColor:[currentPlayersLabel tintColor]];
     if (unityAcquireCameraCallback)
     {

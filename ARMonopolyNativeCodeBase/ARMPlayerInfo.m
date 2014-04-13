@@ -130,7 +130,7 @@ const NSString *kImageFolderName = @"images";
 - (NSArray *)keysForEncoding;
 {
 	return [NSArray arrayWithObjects:@"playerDisplayName",
-			@"playerDisplayImage", @"gameTileImageTargetID", @"gameServerCookie", nil];
+			@"playerDisplayImage", @"gameServerCookie", nil];
 }
 
 - (BOOL)saveInstanceToArchive

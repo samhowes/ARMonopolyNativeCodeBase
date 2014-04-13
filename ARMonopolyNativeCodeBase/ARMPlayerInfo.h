@@ -30,14 +30,14 @@ extern const NSString *kAvatarImageFilenameFormatString;
 - (void)networkingDidLogInWithCookie:(NSHTTPCookie *)newCookie;
 
 // Local Player info
-@property NSString *playerDisplayName;
+@property (strong, nonatomic) NSString *playerDisplayName;
 
-@property UIImage *playerDisplayImage;
+@property (strong, nonatomic) UIImage *playerDisplayImage;
 
-@property NSString *gameTileImageTargetID;
-@property NSString *gameTileName;
+@property (strong, nonatomic) NSString *gameTileImageTargetID;
+@property (strong, nonatomic) NSString *gameTileName;
 
 // Networking info to store
-@property NSHTTPCookie *gameServerCookie;
+@property (strong, nonatomic) NSHTTPCookie *gameServerCookie;
 
 @end
