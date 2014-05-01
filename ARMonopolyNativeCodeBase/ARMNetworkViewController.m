@@ -88,9 +88,13 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
 {
     [super viewWillAppear:animated];
 
-    [[ARMGameServerCommunicator sharedInstance] setDelegate:self];    
+    [[ARMGameServerCommunicator sharedInstance] setDelegate:self];
     if (![[ARMPlayerInfo sharedInstance] isReadyForLogin])
     {
+        if (![[ARMPlayerInfo sharedInstance] playerDisplayName])
+            
+            
+            
         [[[UIAlertView alloc] initWithTitle:@"Configuration Error"
                                     message:@"Complete Steps 1 and 2 before connecting to the Game Server"
                                    delegate:nil
@@ -159,7 +163,7 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
 - (void)registerCompletionHandlers
 {
     // --------    Set up some default handlers    --------//
-    __typeof__(self) __unsafe_unretained weakSelf = self;           // Make sure to avoid a retain loop
+    __typeof__(self) __weak weakSelf = self;           // Make sure to avoid a retain loop
     
     BOOL (^basicHandler)(NSError *error);
     BOOL (^handlerWithCustomTitle)(NSError *error, const NSString *title);
@@ -319,7 +323,6 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
     NSRange indexRange = NSMakeRange(0, [self numberOfSectionsInTableView:gameSessionsTableView]);
     NSInteger previousSections = [gameSessionsTableView numberOfSections];
     NSInteger futureSections = [self numberOfSectionsInTableView:gameSessionsTableView];
-    GameServerConnectionStatus connectionStatus = [[ARMGameServerCommunicator sharedInstance] connectionStatus];
     if (futureSections != previousSections)
     {
         [gameSessionsTableView beginUpdates];
@@ -1045,7 +1048,14 @@ switch ([[ARMGameServerCommunicator sharedInstance] connectionStatus])
                 break;
                 
             case kLoggedIn:
-                titleForFooter = refreshPrompt;
+                if ([[[ARMGameServerCommunicator sharedInstance] availableGameSessions] count] == 0)
+                {
+                    titleForFooter = [refreshPrompt stringByAppendingString:@" or tap '+' to create"];
+                }
+                else
+                {
+                    titleForFooter = refreshPrompt;
+                }
                 break;
             
             case kRefreshingSessionInfo:

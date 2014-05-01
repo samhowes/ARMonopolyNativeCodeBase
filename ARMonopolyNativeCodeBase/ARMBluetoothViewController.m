@@ -54,6 +54,7 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     if (![[ARMPlayerInfo sharedInstance] isReadyToConnectToGameTile])
     {
         [[[UIAlertView alloc] initWithTitle:@"Configuration Error"
@@ -411,6 +412,7 @@ const NSString *ARMSectionHeaderViewIdentifier = @"ARMSectionHeaderViewIdentifie
         NSLog(@"Error with refresh control: %@", error);
     }
     [(UIRefreshControl *)sender endRefreshing];
+    [self reloadTableViewWithAnimation];
 }
 
 #pragma mark - LeDiscoveryDelegate

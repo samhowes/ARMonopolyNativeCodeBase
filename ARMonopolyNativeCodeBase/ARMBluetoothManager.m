@@ -119,7 +119,6 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
     }
 }
 
-#pragma mark TODO preserve state properly
 - (void)finishTasksWithoutDelegateAndPreserveState
 {
     delegate = nil;

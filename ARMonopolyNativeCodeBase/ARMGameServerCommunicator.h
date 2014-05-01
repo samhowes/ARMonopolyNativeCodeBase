@@ -129,6 +129,8 @@ typedef NSError * (^ARMImageProcessorType)(NSHTTPURLResponse*, UIImage *);
 
 + (id)sharedInstance;
 
++ (void)prepareDocumentsDirectory;
+
 - (void)finishTasksWithoutCompletionHandlerAndPreserveState;
 
 - (void)continueTasksWithCompletionHandler;

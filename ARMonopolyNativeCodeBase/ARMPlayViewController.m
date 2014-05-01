@@ -139,9 +139,11 @@ static ARMUnityCallbackWithBool unityAcquireCameraCallback;
     NSMutableString *listPlayersString = [NSMutableString new];
     for (ARMNetworkPlayer *player in [[ARMGameServerCommunicator sharedInstance] playersInSessionArray])
     {
-        [listPlayersString appendFormat:@"%@\n", [player playerName]];
+        
+        [listPlayersString appendFormat:@"%@: GameTile: %@\n", [player playerName], [player gameTileImageTargetID]];
     }
-    [[[UIAlertView alloc] initWithTitle:@"All Current Players:"
+    NSString *currentGameName = [[ARMGameServerCommunicator sharedInstance] currentSessionName];
+    [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Current Game: %@", currentGameName]
                                 message:listPlayersString
                               delegate:nil
                      cancelButtonTitle:@"OK"

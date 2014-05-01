@@ -19,6 +19,8 @@ extern const NSString *kAvatarImageFilenameFormatString;
 /* Save the user data to a persistent archive on disk */
 - (BOOL)saveInstanceToArchive;
 
+- (void)saveImageToFileSystem;
+
 - (BOOL)isReadyToConnectToGameTile;
 /* If we have adequate data for use with the game server */
 - (BOOL)isReadyForLogin;

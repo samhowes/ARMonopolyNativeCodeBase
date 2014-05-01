@@ -93,11 +93,19 @@ const NSString *kImageFolderName = @"images";
     
     // now that we are connected to a game tile, we can save our image in the right location
     // Save the file to the documents directory so vuforia can access it
-    NSString *destinationPath = [self pathToSaveUsersImage];
-    
-    NSData *imageData = UIImagePNGRepresentation(playerDisplayImage);
-    [imageData writeToFile:destinationPath atomically:NO];
+    [self saveImageToFileSystem];
 
+}
+
+- (void)saveImageToFileSystem
+{
+    if (gameTileName && gameTileImageTargetID)
+    {
+        NSString *destinationPath = [self pathToSaveUsersImage];
+        
+        NSData *imageData = UIImagePNGRepresentation(playerDisplayImage);
+        [imageData writeToFile:destinationPath atomically:NO];
+    }
 }
 
 /*

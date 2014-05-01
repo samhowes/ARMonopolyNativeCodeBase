@@ -17,6 +17,11 @@
 		A54F62C318F3964F001DDCD3 /* tableview_checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = A54F62C118F3964F001DDCD3 /* tableview_checkmark.png */; };
 		A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */; };
 		A59C427618E85A960075C3B7 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A59C427518E85A960075C3B7 /* MessageUI.framework */; };
+		A5A7519518FD517D00148277 /* ARMImageSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5A7519418FD517D00148277 /* ARMImageSelectionViewController.m */; };
+		A5A751A218FD54B500148277 /* frameMarker0.png in Resources */ = {isa = PBXBuildFile; fileRef = A5A7519E18FD54B500148277 /* frameMarker0.png */; };
+		A5A751A318FD54B500148277 /* frameMarker1.png in Resources */ = {isa = PBXBuildFile; fileRef = A5A7519F18FD54B500148277 /* frameMarker1.png */; };
+		A5A751A418FD54B500148277 /* frameMarker2.png in Resources */ = {isa = PBXBuildFile; fileRef = A5A751A018FD54B500148277 /* frameMarker2.png */; };
+		A5A751A518FD54B500148277 /* frameMarker3.png in Resources */ = {isa = PBXBuildFile; fileRef = A5A751A118FD54B500148277 /* frameMarker3.png */; };
 		A5C5BA2218C4E8E000435B10 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2118C4E8E000435B10 /* Foundation.framework */; };
 		A5C5BA2418C4E8E000435B10 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2318C4E8E000435B10 /* CoreGraphics.framework */; };
 		A5C5BA2618C4E8E000435B10 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5BA2518C4E8E000435B10 /* UIKit.framework */; };
@@ -84,6 +89,12 @@
 		A54F62C018F3964F001DDCD3 /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LOGO.png; path = ARMonopolyNativeCodeBase/LOGO.png; sourceTree = SOURCE_ROOT; };
 		A54F62C118F3964F001DDCD3 /* tableview_checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tableview_checkmark.png; path = ARMonopolyNativeCodeBase/tableview_checkmark.png; sourceTree = SOURCE_ROOT; };
 		A59C427518E85A960075C3B7 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		A5A7519318FD517D00148277 /* ARMImageSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMImageSelectionViewController.h; sourceTree = "<group>"; };
+		A5A7519418FD517D00148277 /* ARMImageSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMImageSelectionViewController.m; sourceTree = "<group>"; };
+		A5A7519E18FD54B500148277 /* frameMarker0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = frameMarker0.png; sourceTree = "<group>"; };
+		A5A7519F18FD54B500148277 /* frameMarker1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = frameMarker1.png; sourceTree = "<group>"; };
+		A5A751A018FD54B500148277 /* frameMarker2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = frameMarker2.png; sourceTree = "<group>"; };
+		A5A751A118FD54B500148277 /* frameMarker3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = frameMarker3.png; sourceTree = "<group>"; };
 		A5C5BA1E18C4E8E000435B10 /* ARMonopolyNativeCodeBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARMonopolyNativeCodeBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C5BA2118C4E8E000435B10 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A5C5BA2318C4E8E000435B10 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -307,6 +318,8 @@
 				A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */,
 				A5EF082018E9D7DE00981039 /* ARMNewGamePromptViewController.h */,
 				A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */,
+				A5A7519318FD517D00148277 /* ARMImageSelectionViewController.h */,
+				A5A7519418FD517D00148277 /* ARMImageSelectionViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -335,6 +348,10 @@
 		A5ED011518FAF4AA003BD4B3 /* Avatars */ = {
 			isa = PBXGroup;
 			children = (
+				A5A7519E18FD54B500148277 /* frameMarker0.png */,
+				A5A7519F18FD54B500148277 /* frameMarker1.png */,
+				A5A751A018FD54B500148277 /* frameMarker2.png */,
+				A5A751A118FD54B500148277 /* frameMarker3.png */,
 				A5ED011618FAF4AA003BD4B3 /* Blue.png */,
 				A5ED011718FAF4AA003BD4B3 /* Green.png */,
 				A5ED011818FAF4AA003BD4B3 /* Orange.png */,
@@ -430,13 +447,17 @@
 				A50FED3A18F34C3300243A36 /* Main.storyboard in Resources */,
 				A5ED011F18FAF4AA003BD4B3 /* Pink-Orange.png in Resources */,
 				A5C5BA2C18C4E8E000435B10 /* InfoPlist.strings in Resources */,
+				A5A751A518FD54B500148277 /* frameMarker3.png in Resources */,
 				A5ED011C18FAF4AA003BD4B3 /* Blue.png in Resources */,
+				A5A751A218FD54B500148277 /* frameMarker0.png in Resources */,
 				A54F62C218F3964F001DDCD3 /* LOGO.png in Resources */,
 				A5ED012118FAF4AA003BD4B3 /* Yellow.png in Resources */,
 				A50FED3918F3465400243A36 /* ARMSectionHeaderView.xib in Resources */,
 				A5ED012018FAF4AA003BD4B3 /* Purple.png in Resources */,
+				A5A751A418FD54B500148277 /* frameMarker2.png in Resources */,
 				A5ED011D18FAF4AA003BD4B3 /* Green.png in Resources */,
 				A5C5BA3418C4E8E000435B10 /* Images.xcassets in Resources */,
+				A5A751A318FD54B500148277 /* frameMarker1.png in Resources */,
 				A54F62C318F3964F001DDCD3 /* tableview_checkmark.png in Resources */,
 				A5ED011E18FAF4AA003BD4B3 /* Orange.png in Resources */,
 			);
@@ -471,6 +492,7 @@
 				A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */,
 				A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */,
 				A5F96C3A18F3134C00EDCD04 /* ARMTableHeaderContentView.m in Sources */,
+				A5A7519518FD517D00148277 /* ARMImageSelectionViewController.m in Sources */,
 				A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */,
 				A5C5BA6C18C4E99B00435B10 /* ARMEditProfileViewController.m in Sources */,
 			);

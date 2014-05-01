@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="SnH-7D-jqJ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="SnH-7D-jqJ">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -65,7 +65,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="BbQ-dO-xWw" kind="push" id="Wha-ac-r9k"/>
+                                            <segue destination="zCs-Th-yE4" kind="push" id="pMY-FL-tyh"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -138,7 +138,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Display Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CUq-SY-rS9">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter User Name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CUq-SY-rS9">
                                                     <rect key="frame" x="113" y="6" width="187" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <constraints>
@@ -233,14 +233,14 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J3d-fg-VRc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1783" y="-302"/>
+            <point key="canvasLocation" x="1729" y="-455"/>
         </scene>
         <!--Bluetooth View Controller - Bluetooth-->
         <scene sceneID="Oal-ad-0IP">
             <objects>
                 <tableViewController id="BbQ-dO-xWw" customClass="ARMBluetoothViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="gvl-Mh-WW9">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
@@ -283,6 +283,61 @@
                 <navigationItem title="Bluetooth" id="RNb-fr-xCV"/>
             </objects>
             <point key="canvasLocation" x="1423" y="242"/>
+        </scene>
+        <!--Image Selection View Controller - Select Your Target-->
+        <scene sceneID="adG-vV-CTd">
+            <objects>
+                <viewController id="zCs-Th-yE4" customClass="ARMImageSelectionViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="VXO-bu-DgM"/>
+                        <viewControllerLayoutGuide type="bottom" id="Kxj-Vm-q6K"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="HH8-8L-oio">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" continuous="NO" autorepeat="NO" wraps="YES" maximumValue="3" translatesAutoresizingMaskIntoConstraints="NO" id="JpA-pi-dNh">
+                                <rect key="frame" x="113" y="210" width="94" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <action selector="stepperDidChange:" destination="zCs-Th-yE4" eventType="valueChanged" id="g02-7J-CNH"/>
+                                </connections>
+                            </stepper>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2B8-4Z-W6L">
+                                <rect key="frame" x="75" y="20" width="170" height="170"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="170" id="QeL-bi-nxS"/>
+                                    <constraint firstAttribute="height" constant="170" id="agG-gw-iBO"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="170" id="shP-G0-GoC"/>
+                                </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="0wm-OA-8RF" appends="YES" id="SDz-vB-wFD"/>
+                                </connections>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="JpA-pi-dNh" firstAttribute="top" secondItem="2B8-4Z-W6L" secondAttribute="bottom" constant="20" id="9eT-i9-sjn"/>
+                            <constraint firstAttribute="centerX" secondItem="JpA-pi-dNh" secondAttribute="centerX" id="caq-Y1-vS8"/>
+                            <constraint firstItem="2B8-4Z-W6L" firstAttribute="top" secondItem="VXO-bu-DgM" secondAttribute="bottom" constant="20" id="lB3-EF-Q3q"/>
+                            <constraint firstAttribute="centerX" secondItem="2B8-4Z-W6L" secondAttribute="centerX" id="rGF-r1-3Qa"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Select Your Target" id="fjJ-at-WHa"/>
+                    <connections>
+                        <outlet property="imageView" destination="2B8-4Z-W6L" id="iPk-v2-dhC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XgR-my-dka" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="right" id="0wm-OA-8RF">
+                    <connections>
+                        <action selector="didSwipe:" destination="zCs-Th-yE4" id="tIt-eF-okk"/>
+                    </connections>
+                </swipeGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="2166" y="242"/>
         </scene>
         <!--Network View Controller - Network-->
         <scene sceneID="tMb-Re-Gtj">
@@ -357,7 +412,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LOW-gT-AN7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1783" y="765"/>
+            <point key="canvasLocation" x="1729" y="963"/>
         </scene>
         <!--New Game Prompt View Controller - Create Game-->
         <scene sceneID="dJe-OG-Qox">
@@ -433,7 +488,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fha-ir-24d" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="ZYy-QP-RYD" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2854" y="765"/>
+            <point key="canvasLocation" x="2764" y="963"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="iue-ss-zUB">
@@ -448,7 +503,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="taG-5m-apM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2320" y="765"/>
+            <point key="canvasLocation" x="2252" y="963"/>
         </scene>
         <!--Play View Controller-->
         <scene sceneID="pjG-Xz-nMI">

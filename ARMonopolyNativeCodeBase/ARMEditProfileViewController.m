@@ -42,6 +42,17 @@
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    NSString *userText = userDisplayStringTextField.text;
+    if ([userText length] > 0)
+    {
+        [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:userText];
+    }
+    [[ARMPlayerInfo sharedInstance] saveInstanceToArchive];                 //Credit for fixed bug goes to Nelson Moreira
+    [super viewWillDisappear:animated];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -136,6 +147,10 @@
         
 		userDisplayImageView.image = imageToSave;
 		[[ARMPlayerInfo sharedInstance] setPlayerDisplayImage:imageToSave];
+        if ([[ARMPlayerInfo sharedInstance] gameTileImageTargetID])
+        {
+            [[ARMPlayerInfo sharedInstance] saveImageToFileSystem];
+        }
 	}
 	
 	if (CFStringCompare ((CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo)

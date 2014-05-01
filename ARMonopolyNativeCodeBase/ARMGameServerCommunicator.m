@@ -21,7 +21,7 @@
 const NSString *ARMGameServerErrorDomain =                      @"ARMGameServerErrorDomain";
 const NSString *ARMGameServerResponseErrorDomain =              @"ARMGameServerResponseErrorDomain";
 
-const NSString *ARMGameServerURLString =                        @"http://mary008-0103-dhcp249:3002";
+const NSString *ARMGameServerURLString =                        @"http://mary008-0103-dhcp249.bu.edu:3002";
 const NSString *kGSHTTPUserAgentHeaderString =                  @"ARMonopoy iOS";
 const NSString *kGSHTTPJSONContentHeaderString =                @"application/json";
 const NSString *kGSHTTPClientCookieName =                       @"clientID";
@@ -143,6 +143,66 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     return this;
 }
 
++ (void)prepareDocumentsDirectory
+{
+    // Check for the default images that Unity will use
+    NSArray *fileNamesArray = @[@"Purple.png", @"Blue.png", @"Orange.png", @"Green.png"];
+    
+    NSBundle* myBundle = [NSBundle mainBundle];
+    
+    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *pathToImagesDirectory = [documentsDirectory stringByAppendingPathComponent:[kImageFolderName copy]];
+    
+    NSError *error = nil;
+    BOOL isDirectory;
+    NSLog(@"Copying bundle resources into Documets Directory: \n-->ImagesDirectory: %@", pathToImagesDirectory);
+    
+    // First: Create the images directory
+    if (![[NSFileManager defaultManager] fileExistsAtPath:pathToImagesDirectory isDirectory:&isDirectory])
+    {
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:pathToImagesDirectory withIntermediateDirectories:NO attributes:nil error:&error])
+        {
+            NSLog(@"Error while creating images directory: %@", error);
+        }
+        error = nil;
+    }
+    else if (!isDirectory)
+    {
+        NSLog(@"Error: image folder name '%@' is not a directory!", [kImageFolderName copy]);
+    }
+    
+    // First delete all images in the images directory
+    NSArray *filesInImageDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pathToImagesDirectory error:nil];
+    if ([filesInImageDirectory count] > 0)
+    {
+        NSLog(@"Removing old images from images Directory");
+        for (NSString *imagePath in filesInImageDirectory)
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:[pathToImagesDirectory stringByAppendingPathComponent:imagePath] error:&error];
+            if (error)
+            {
+                NSLog(@"Error removing old image files at launch: %@", [error description]);
+            }
+        }
+    }
+    
+    // Second: Copy all default images over
+    NSString *sourcePath;
+    NSString *destinationPath;
+    for (NSInteger ii = 0; ii < [fileNamesArray count]; ++ii)
+    {
+        sourcePath = [myBundle pathForResource:[fileNamesArray[ii] stringByDeletingPathExtension] ofType:[kDefaultImageFileName pathExtension]];
+        destinationPath = [pathToImagesDirectory stringByAppendingPathComponent:[NSString stringWithFormat:[kAvatarImageFilenameFormatString copy], [NSString stringWithFormat:@"%ld", (long)ii]]];
+        if (![[NSFileManager defaultManager] copyItemAtPath:sourcePath toPath:destinationPath error:&error])
+        {
+            NSLog(@"Error while copying bundle resources: %@", error);
+        }
+    }
+    // Third: Copy the users image back
+    [[ARMPlayerInfo sharedInstance] saveImageToFileSystem];
+    
+}
+
 - (id)init
 {
     self = [super init];
@@ -202,6 +262,9 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
         }
     }
     networkImagePathStringsArray = nil;
+    // Now put back the original Default Images
+    [ARMGameServerCommunicator prepareDocumentsDirectory];
+    
 }
 
 #pragma mark - Public Networking Methods
@@ -483,6 +546,7 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     
     HTTPURLProcessorType processor = ^NSError *(NSHTTPURLResponse *httpResponse, NSDictionary *jsonObject)
     {
+        connectionStatus = kInGameSession;
         [self receiveCurrentSessionResponseWithJSONObject:jsonObject];
         return nil;
     };
@@ -541,6 +605,9 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
 - (void)leaveSessionWithCompletionHandler:(CompletionHandlerType)completionHandler
 {
     connectionStatus = kLeavingGameSession;
+    currentSessionID = nil;
+    currentSessionName = nil;
+    playersInSessionArray = nil;
     if (completionHandler == nil)
     {
         completionHandler = [completionHandlerDictionary objectForKey:kGSLeaveGameSessionCompletionKey];
@@ -556,9 +623,6 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     {
         // Clean up our instance variables
         connectionStatus = kLoggedIn;
-        currentSessionID = nil;
-        currentSessionName = nil;
-        playersInSessionArray = nil;
         return nil;
     };
     
@@ -664,7 +728,9 @@ NSData *dataFromJSONObject(NSDictionary *jsonObject)
     {
         NSError *jsonError;
         [request setHTTPMethod:@"POST"];
-        NSData *postBody = [NSJSONSerialization dataWithJSONObject:postJSONObject options:NSJSONWritingPrettyPrinted error:&jsonError];
+        NSMutableData *postBody = [NSMutableData new];
+        [postBody appendData:[NSJSONSerialization dataWithJSONObject:postJSONObject options:NSJSONWritingPrettyPrinted error:&jsonError]];
+        [postBody appendData:[@"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
         [request setHTTPBody: postBody];
         if (jsonError) throwError(jsonError);
     }
