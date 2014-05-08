@@ -196,7 +196,7 @@ NSError *ARMErrorWithCode(ARMBluetoothManagerErrorCode code)
 
 - (NSError *)connectToGameTileWithID:(ARMGameTileIDType)gameTileID
 {
-    NSLog(@"Attempting to connect to GameTIle %d", gameTileID);
+    NSLog(@"Attempting to connect to GameTile %d", gameTileID);
     if (state != kScanningForGameTiles)
     {
         NSLog(@"Internal error: got a connection message when not scanning for game tiles");

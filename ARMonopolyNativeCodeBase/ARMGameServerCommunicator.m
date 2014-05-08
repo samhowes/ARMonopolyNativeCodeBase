@@ -16,12 +16,15 @@
 /****************************************************************************/
 /*                  Initialization of Constants                             */
 /****************************************************************************/
+                                                                // Example values:  @"http://168.197.1.1:3002";
+                                                                // or               @"http://mydomain.com:3002";
+const NSString *ARMGameServerURLString =                        @"http://mary008-0103-dhcp249.bu.edu:3002";
 
 //--------------------------- URL/HTTP Constants ---------------------------//
 const NSString *ARMGameServerErrorDomain =                      @"ARMGameServerErrorDomain";
 const NSString *ARMGameServerResponseErrorDomain =              @"ARMGameServerResponseErrorDomain";
 
-const NSString *ARMGameServerURLString =                        @"http://mary008-0103-dhcp249.bu.edu:3002";
+
 const NSString *kGSHTTPUserAgentHeaderString =                  @"ARMonopoy iOS";
 const NSString *kGSHTTPJSONContentHeaderString =                @"application/json";
 const NSString *kGSHTTPClientCookieName =                       @"clientID";

@@ -9,14 +9,14 @@
 #import "ARMImageSelectionViewController.h"
 #import "ARMPlayerInfo.h"
 
+
 @interface ARMImageSelectionViewController ()
-{
-    NSInteger currentImageIndex;
-}
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 
 @property (strong, nonatomic) NSMutableArray *imagesArray;
+@property (weak, nonatomic) IBOutlet UIStepper *stepper;
+@property (weak, nonatomic) IBOutlet UILabel *errorLabel;
 
 @end
 
@@ -24,6 +24,10 @@
 
 @synthesize imagesArray;
 @synthesize imageView;
+@synthesize stepper;
+@synthesize errorLabel;
+
+static NSInteger currentImageIndex;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -45,43 +49,54 @@
     {
         [imagesArray addObject:[UIImage imageNamed:imageName]];
     }
-    currentImageIndex = 0;
     
     [imageView setImage:imagesArray[currentImageIndex]];
-   /*
-    UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(didSwipe:)];
-    [imageView addGestureRecognizer:rightSwipe];
-    
-    UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(didSwipe:)];
-    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-    [imageView addGestureRecognizer:leftSwipe];*/
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    static UIColor *stepperTintColor = nil;
     [super viewWillAppear:animated];
     if (![[ARMPlayerInfo sharedInstance] isReadyToConnectToGameTile])
     {
+        [stepper setEnabled:NO];
+        stepperTintColor = [stepper tintColor];
+        [stepper setTintColor:[UIColor grayColor]];
+        [errorLabel setHidden:NO];
         [[[UIAlertView alloc] initWithTitle:@"Configuration Error"
                                     message:@"You must customize your profile before you can connect to a GameTile"
                                    delegate:nil
                           cancelButtonTitle:@"I will go do that!"
                           otherButtonTitles:nil] show];
     }
+    else
+    {
+        if (stepperTintColor != nil)
+        {
+            [stepper setTintColor:stepperTintColor];
+        }
+        [stepper setEnabled:YES];
+        [errorLabel setHidden:YES];
+    }
+    [stepper setValue:currentImageIndex];
 }
 
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [[ARMPlayerInfo sharedInstance] bluetoothDidConnectToGameTileWithName:@"UserSelected" imageTargetID:[NSString stringWithFormat:@"%ld", (long)currentImageIndex]];
+    if ([[ARMPlayerInfo sharedInstance] isReadyToConnectToGameTile])
+    {
+        
+        [[ARMPlayerInfo sharedInstance] bluetoothDidConnectToGameTileWithName:@"UserSelected" imageTargetID:[NSString stringWithFormat:@"%ld", (long)currentImageIndex]];
+    }
+    
     [super viewWillDisappear:animated];
 }
 
 - (IBAction)stepperDidChange:(id)sender
 {
     static double oldSteperValue = 0;
-    UIStepper *stepper = (UIStepper *)sender;
+    //UIStepper *stepper = (UIStepper *)sender;
     double newStepperValue = [stepper value];
     
     if (oldSteperValue == 0 && newStepperValue == 3)
@@ -101,31 +116,7 @@
         [self incrementImageWithBool:NO];
     }
     oldSteperValue = newStepperValue;
-
-}
-
--(IBAction)didSwipe : (UISwipeGestureRecognizer *) sender
-{
-    UISwipeGestureRecognizerDirection direction = sender.direction;
-    switch (direction)
-    {
-        case UISwipeGestureRecognizerDirectionRight:
-            currentImageIndex = (currentImageIndex + 1) % 4;
-            break;
-            
-        case UISwipeGestureRecognizerDirectionLeft :
-            currentImageIndex -= 1;
-            if (currentImageIndex == 0)
-            {
-                currentImageIndex = 3;
-            }
-            break;
-            
-        default:
-            break;
-    }
     
-    imageView.image = imagesArray[currentImageIndex];
 }
 
 - (void)incrementImageWithBool:(BOOL)increment
@@ -156,14 +147,14 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

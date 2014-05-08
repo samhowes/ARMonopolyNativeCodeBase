@@ -16,6 +16,7 @@
 		A54F62C218F3964F001DDCD3 /* LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = A54F62C018F3964F001DDCD3 /* LOGO.png */; };
 		A54F62C318F3964F001DDCD3 /* tableview_checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = A54F62C118F3964F001DDCD3 /* tableview_checkmark.png */; };
 		A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */; };
+		A56A953519159B9F00218818 /* ARMSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A56A953419159B9F00218818 /* ARMSettingsTableViewController.m */; };
 		A59C427618E85A960075C3B7 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A59C427518E85A960075C3B7 /* MessageUI.framework */; };
 		A5A7519518FD517D00148277 /* ARMImageSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5A7519418FD517D00148277 /* ARMImageSelectionViewController.m */; };
 		A5A751A218FD54B500148277 /* frameMarker0.png in Resources */ = {isa = PBXBuildFile; fileRef = A5A7519E18FD54B500148277 /* frameMarker0.png */; };
@@ -37,7 +38,6 @@
 		A5C5BA6C18C4E99B00435B10 /* ARMEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5518C4E99B00435B10 /* ARMEditProfileViewController.m */; };
 		A5C5BA6D18C4E99B00435B10 /* ARMNetworkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5718C4E99B00435B10 /* ARMNetworkViewController.m */; };
 		A5C5BA6E18C4E99B00435B10 /* ARMPlayerInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */; };
-		A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */; };
 		A5C5BA7318C4E99B00435B10 /* ARMBluetoothManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */; };
 		A5C5BA7618C4E99B00435B10 /* TestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C5BA6718C4E99B00435B10 /* TestAppDelegate.m */; };
 		A5ED011C18FAF4AA003BD4B3 /* Blue.png in Resources */ = {isa = PBXBuildFile; fileRef = A5ED011618FAF4AA003BD4B3 /* Blue.png */; };
@@ -88,6 +88,8 @@
 		A54E40B818D64B5D00D343C2 /* ARMException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMException.m; sourceTree = "<group>"; };
 		A54F62C018F3964F001DDCD3 /* LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LOGO.png; path = ARMonopolyNativeCodeBase/LOGO.png; sourceTree = SOURCE_ROOT; };
 		A54F62C118F3964F001DDCD3 /* tableview_checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tableview_checkmark.png; path = ARMonopolyNativeCodeBase/tableview_checkmark.png; sourceTree = SOURCE_ROOT; };
+		A56A953319159B9F00218818 /* ARMSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMSettingsTableViewController.h; sourceTree = "<group>"; };
+		A56A953419159B9F00218818 /* ARMSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMSettingsTableViewController.m; sourceTree = "<group>"; };
 		A59C427518E85A960075C3B7 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A5A7519318FD517D00148277 /* ARMImageSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMImageSelectionViewController.h; sourceTree = "<group>"; };
 		A5A7519418FD517D00148277 /* ARMImageSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMImageSelectionViewController.m; sourceTree = "<group>"; };
@@ -121,8 +123,6 @@
 		A5C5BA5918C4E99B00435B10 /* ARMPlayerInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMPlayerInfo.m; sourceTree = "<group>"; };
 		A5C5BA5A18C4E99B00435B10 /* ARMPlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMPlayViewController.h; sourceTree = "<group>"; };
 		A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMPlayViewController.m; sourceTree = "<group>"; };
-		A5C5BA5C18C4E99B00435B10 /* ARMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMSettingsViewController.h; sourceTree = "<group>"; };
-		A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMSettingsViewController.m; sourceTree = "<group>"; };
 		A5C5BA6118C4E99B00435B10 /* installPlugin.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = installPlugin.sh; sourceTree = "<group>"; };
 		A5C5BA6218C4E99B00435B10 /* ARMBluetoothManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMBluetoothManager.h; sourceTree = "<group>"; };
 		A5C5BA6318C4E99B00435B10 /* ARMBluetoothManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARMBluetoothManager.m; sourceTree = "<group>"; };
@@ -290,11 +290,11 @@
 		A5C5BA7818C4E9D000435B10 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A5C5BA5018C4E99B00435B10 /* ARMAppController.h */,
+				A5C5BA5118C4E99B00435B10 /* ARMAppController.m */,
 				A5C5BA5A18C4E99B00435B10 /* ARMPlayViewController.h */,
 				A5C5BA5B18C4E99B00435B10 /* ARMPlayViewController.m */,
 				A5DA875318E0D57D00C53ACF /* TestOnly */,
-				A5C5BA5018C4E99B00435B10 /* ARMAppController.h */,
-				A5C5BA5118C4E99B00435B10 /* ARMAppController.m */,
 				A5C5BA7A18C4EA3300435B10 /* Settings */,
 				A5C5BA7B18C4EA3D00435B10 /* Model */,
 			);
@@ -310,16 +310,16 @@
 				A5C5BA5518C4E99B00435B10 /* ARMEditProfileViewController.m */,
 				A5C5BA5618C4E99B00435B10 /* ARMNetworkViewController.h */,
 				A5C5BA5718C4E99B00435B10 /* ARMNetworkViewController.m */,
-				A5C5BA5C18C4E99B00435B10 /* ARMSettingsViewController.h */,
-				A5C5BA5D18C4E99B00435B10 /* ARMSettingsViewController.m */,
-				A5F96C3818F3134C00EDCD04 /* ARMTableHeaderContentView.h */,
-				A5F96C3918F3134C00EDCD04 /* ARMTableHeaderContentView.m */,
-				A5483EFE18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.h */,
-				A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */,
 				A5EF082018E9D7DE00981039 /* ARMNewGamePromptViewController.h */,
 				A5EF082118E9D7DE00981039 /* ARMNewGamePromptViewController.m */,
 				A5A7519318FD517D00148277 /* ARMImageSelectionViewController.h */,
 				A5A7519418FD517D00148277 /* ARMImageSelectionViewController.m */,
+				A5483EFE18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.h */,
+				A5483EFF18E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m */,
+				A5F96C3818F3134C00EDCD04 /* ARMTableHeaderContentView.h */,
+				A5F96C3918F3134C00EDCD04 /* ARMTableHeaderContentView.m */,
+				A56A953319159B9F00218818 /* ARMSettingsTableViewController.h */,
+				A56A953419159B9F00218818 /* ARMSettingsTableViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -486,10 +486,10 @@
 				A503B22A18D211BC000D7595 /* ARMGameServerCommunicator.m in Sources */,
 				A52F6FAD18D1489500799EA4 /* ARMNetworkPlayer.m in Sources */,
 				A5C5BA7318C4E99B00435B10 /* ARMBluetoothManager.m in Sources */,
+				A56A953519159B9F00218818 /* ARMSettingsTableViewController.m in Sources */,
 				A5C5BA6E18C4E99B00435B10 /* ARMPlayerInfo.m in Sources */,
 				A5C5BA6D18C4E99B00435B10 /* ARMNetworkViewController.m in Sources */,
 				A5483F0018E7B63000E84E87 /* ARMTableHeaderViewWithActivityIndicator.m in Sources */,
-				A5C5BA7018C4E99B00435B10 /* ARMSettingsViewController.m in Sources */,
 				A5690A2418C514AF0090B5CA /* ARMPlayViewController.m in Sources */,
 				A5F96C3A18F3134C00EDCD04 /* ARMTableHeaderContentView.m in Sources */,
 				A5A7519518FD517D00148277 /* ARMImageSelectionViewController.m in Sources */,

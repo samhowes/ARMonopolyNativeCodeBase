@@ -8,7 +8,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "ARMEditProfileViewController.h"
 
-@interface ARMEditProfileViewController ()
+@interface ARMEditProfileViewController () <UINavigationControllerDelegate>
 
 @property UIImagePickerController *cameraUI;
 
@@ -49,6 +49,7 @@
     {
         [[ARMPlayerInfo sharedInstance] setPlayerDisplayName:userText];
     }
+    [[ARMPlayerInfo sharedInstance] saveImageToFileSystem];
     [[ARMPlayerInfo sharedInstance] saveInstanceToArchive];                 //Credit for fixed bug goes to Nelson Moreira
     [super viewWillDisappear:animated];
 }

@@ -7,6 +7,7 @@
 //
 
 #import "ARMPlayerInfo.h"
+#import "ARMGameServerCommunicator.h"
 
 const NSString *kAvatarImageFilenameFormatString = @"imageTargetID%@.png";
 const NSString *kDefaultImageFileName = @"LOGO.png";
@@ -68,7 +69,7 @@ const NSString *kImageFolderName = @"images";
 
 - (BOOL)isReadyToConnectToGameTile
 {
-    if (playerDisplayName)
+    if (playerDisplayName && playerDisplayImage)
     {
         return YES;
     }
@@ -90,6 +91,7 @@ const NSString *kImageFolderName = @"images";
 {
     gameTileName = [NSString stringWithFormat:@"GameTile: %@", imageTargetID];
     gameTileImageTargetID = imageTargetID;
+    [ARMGameServerCommunicator prepareDocumentsDirectory]; // Make sure to clear out the old image.
     
     // now that we are connected to a game tile, we can save our image in the right location
     // Save the file to the documents directory so vuforia can access it

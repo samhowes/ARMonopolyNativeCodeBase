@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Settings View Controller - Test-->
+        <!--Settings Table View Controller - Test-->
         <scene sceneID="THd-YB-Acy">
             <objects>
-                <tableViewController title="Test" id="eaQ-Tk-guP" customClass="ARMSettingsViewController" sceneMemberID="viewController">
+                <tableViewController title="Test" id="eaQ-Tk-guP" customClass="ARMSettingsTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="wex-Yh-oK1">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -64,9 +64,6 @@
                                                 <constraint firstItem="ZCj-bJ-WmC" firstAttribute="top" secondItem="9Py-sp-eCu" secondAttribute="top" constant="11" id="tWN-P8-zRm"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="zCs-Th-yE4" kind="push" id="pMY-FL-tyh"/>
-                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -102,7 +99,7 @@
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="eaQ-Tk-guP" id="7gx-p5-Sda"/>
-                            <outlet property="delegate" destination="eaQ-Tk-guP" id="V4c-6O-Rau"/>
+                            <outlet property="delegate" destination="eaQ-Tk-guP" id="JRl-8O-gPK"/>
                         </connections>
                     </tableView>
                     <toolbarItems/>
@@ -114,6 +111,8 @@
                         <outlet property="cameraToolbar" destination="cdN-gE-TxO" id="k9V-KO-KhF"/>
                         <outlet property="userDisplayImageView" destination="lST-ik-b2b" id="i9q-Qj-sZ0"/>
                         <outlet property="userDisplayStringTextField" destination="CUq-SY-rS9" id="547-3r-UQz"/>
+                        <segue destination="BbQ-dO-xWw" kind="push" identifier="ConnectWithBluetoothSegue" id="rPp-OB-dcj"/>
+                        <segue destination="zCs-Th-yE4" kind="push" identifier="ChooseImageTargetSegue" id="Pj0-8q-9Af"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bsQ-8N-OzM" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -233,14 +232,14 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J3d-fg-VRc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1729" y="-455"/>
+            <point key="canvasLocation" x="1341" y="-635"/>
         </scene>
         <!--Bluetooth View Controller - Bluetooth-->
         <scene sceneID="Oal-ad-0IP">
             <objects>
                 <tableViewController id="BbQ-dO-xWw" customClass="ARMBluetoothViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="gvl-Mh-WW9">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
@@ -282,7 +281,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iyn-I3-dXV" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationItem title="Bluetooth" id="RNb-fr-xCV"/>
             </objects>
-            <point key="canvasLocation" x="1423" y="242"/>
+            <point key="canvasLocation" x="1864" y="-18"/>
         </scene>
         <!--Image Selection View Controller - Select Your Target-->
         <scene sceneID="adG-vV-CTd">
@@ -316,10 +315,20 @@
                                     <outletCollection property="gestureRecognizers" destination="0wm-OA-8RF" appends="YES" id="SDz-vB-wFD"/>
                                 </connections>
                             </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You must configure your profile first" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wob-3U-CkT">
+                                <rect key="frame" x="24" y="247" width="272" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.99215692281723022" green="0.18039216101169586" blue="0.14117647707462311" alpha="1" colorSpace="deviceRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="JpA-pi-dNh" firstAttribute="top" secondItem="2B8-4Z-W6L" secondAttribute="bottom" constant="20" id="9eT-i9-sjn"/>
+                            <constraint firstAttribute="trailing" secondItem="wob-3U-CkT" secondAttribute="trailing" constant="24" id="APs-th-ULK"/>
+                            <constraint firstItem="wob-3U-CkT" firstAttribute="top" secondItem="JpA-pi-dNh" secondAttribute="bottom" constant="8" id="FNp-m0-txF"/>
+                            <constraint firstItem="wob-3U-CkT" firstAttribute="leading" secondItem="HH8-8L-oio" secondAttribute="leading" constant="24" id="RRQ-ej-u2h"/>
                             <constraint firstAttribute="centerX" secondItem="JpA-pi-dNh" secondAttribute="centerX" id="caq-Y1-vS8"/>
                             <constraint firstItem="2B8-4Z-W6L" firstAttribute="top" secondItem="VXO-bu-DgM" secondAttribute="bottom" constant="20" id="lB3-EF-Q3q"/>
                             <constraint firstAttribute="centerX" secondItem="2B8-4Z-W6L" secondAttribute="centerX" id="rGF-r1-3Qa"/>
@@ -327,7 +336,9 @@
                     </view>
                     <navigationItem key="navigationItem" title="Select Your Target" id="fjJ-at-WHa"/>
                     <connections>
+                        <outlet property="errorLabel" destination="wob-3U-CkT" id="2QZ-Kd-m4j"/>
                         <outlet property="imageView" destination="2B8-4Z-W6L" id="iPk-v2-dhC"/>
+                        <outlet property="stepper" destination="JpA-pi-dNh" id="gJl-V3-mdP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XgR-my-dka" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -337,7 +348,7 @@
                     </connections>
                 </swipeGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2166" y="242"/>
+            <point key="canvasLocation" x="2286" y="334"/>
         </scene>
         <!--Network View Controller - Network-->
         <scene sceneID="tMb-Re-Gtj">
@@ -412,7 +423,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LOW-gT-AN7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1729" y="963"/>
+            <point key="canvasLocation" x="1341" y="1175"/>
         </scene>
         <!--New Game Prompt View Controller - Create Game-->
         <scene sceneID="dJe-OG-Qox">
@@ -488,7 +499,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fha-ir-24d" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="ZYy-QP-RYD" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2764" y="963"/>
+            <point key="canvasLocation" x="2376" y="1175"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="iue-ss-zUB">
@@ -503,7 +514,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="taG-5m-apM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2252" y="963"/>
+            <point key="canvasLocation" x="1864" y="1175"/>
         </scene>
         <!--Play View Controller-->
         <scene sceneID="pjG-Xz-nMI">
@@ -566,6 +577,7 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="d8p-bn-wjf">
+                        <barButtonItem key="backBarButtonItem" title="Play" id="ql3-M3-zSv"/>
                         <barButtonItem key="leftBarButtonItem" id="M4P-q6-TMo">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="6uc-2v-b54" userLabel="Settings">
                                 <rect key="frame" x="16" y="0.0" width="44" height="44"/>
